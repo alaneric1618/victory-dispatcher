@@ -74,24 +74,27 @@ public class Tank extends Entity implements KeyListener {
 	boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);
 	if (Math.abs(desiredTread-tread) > 8.0) {
 	    if (desiredTread > tread) {
-		tread += 7.5;
+		tread += 10.0;
 		if (isTurretLocked) {
-		    desiredTurret += 7.5;
+		    desiredTurret += 10.0;
+		    turret += 10.0;
 		}
 	    }
 	    if (desiredTread < tread) {
-		tread -= 7.5;
+		tread -= 10.0;
 		if (isTurretLocked) {
-		    desiredTurret -= 7.5;
+		    desiredTurret -= 10.0;
+		    turret -= 10.0;
 		}
 	    }
 	}
-	if (Math.abs(desiredTurret-turret) > 8.0) {
+	double turretDiff = Math.abs(desiredTurret-turret);
+	if (turretDiff > 1.0) {
 	    if (desiredTurret > turret) {
-		turret += 7.5;
+		turret += turretDiff/5.0;
 	    }
 	    if (desiredTurret < turret) {
-		turret -= 7.5;
+		turret -= turretDiff/5.0;
 	    }
 	}
 
@@ -136,6 +139,10 @@ public class Tank extends Entity implements KeyListener {
 	    g.fillOval((int)cx2-2, (int)cy2-2, 4, 4);
 	    g.drawLine(cx2, cy2, xb, yb);
 	    g.fillOval(xb-2, yb-2, 4, 4);
+	    int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
+	    int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
+	    g.setColor(new Color(150, 150, 150));
+	    g.drawLine(cx2, cy2, losX, losY);
 	    
 	}
     }
@@ -143,10 +150,10 @@ public class Tank extends Entity implements KeyListener {
     public void keyPressed(KeyEvent e) {
 	int code = e.getKeyCode();
         if (e.VK_A == code) {
-	    turnTread(-7.5, false);
+	    turnTread(-10.0, false);
         }
         if (e.VK_D == code) {
-	    turnTread(7.5, false);
+	    turnTread(10.0, false);
         }
         if (e.VK_W == code) {
 	    vel = 3;
@@ -155,10 +162,10 @@ public class Tank extends Entity implements KeyListener {
 	    vel = -2;
         }
 	if (e.VK_Q == code) {
-	    turnTurret(-7.5, false);
+	    turnTurret(-2.5, false);
 	}
 	if (e.VK_E == code) {
-	    turnTurret(7.5, false);
+	    turnTurret(2.5, false);
 	}
 	if (e.VK_L == code) {
 	    isTurretLocked = !isTurretLocked;

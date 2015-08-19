@@ -26,7 +26,7 @@ public class VD extends JFrame implements KeyListener {
 
     public static final int WIDTH = 640;
     public static final int HEIGHT= 480;
-    public static final boolean DEBUG = true;
+    public static boolean DEBUG = false;
 
     public VD() {
         this.initGame();
@@ -107,6 +107,9 @@ public class VD extends JFrame implements KeyListener {
                 currentRoom.paused = true;
             }
         }
+	if (keyEvent.getKeyCode() == KeyEvent.VK_H) {
+	    VD.DEBUG = !VD.DEBUG;
+	}
     }
 
     @Override
