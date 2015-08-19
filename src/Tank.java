@@ -52,6 +52,7 @@ public class Tank extends Entity implements KeyListener {
     };
 
     public Tank(Room room) {
+	this.room = room;
 	treadSight = new Polygon();
 	turretSight = new Polygon();
 	int hp = 100;
@@ -66,8 +67,31 @@ public class Tank extends Entity implements KeyListener {
 
     @Override
     public void update(float dt) {
-	x += vel*Math.cos(Math.toRadians(tread));
-	y += vel*Math.sin(Math.toRadians(tread));
+	double testX;
+	double testY;
+	Rectangle testRect;
+	//test X and Y
+	testX = x+vel*Math.cos(Math.toRadians(tread));
+	testY = y+vel*Math.sin(Math.toRadians(tread));
+	testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
+	if (room.isLocationFree(testRect)) {
+	    x += vel*Math.cos(Math.toRadians(tread));
+	    y += vel*Math.sin(Math.toRadians(tread));
+	}
+	//test X
+	testX = x+vel*Math.cos(Math.toRadians(tread));
+	testY = y;
+	testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
+	if (room.isLocationFree(testRect)) {
+	    x += vel*Math.cos(Math.toRadians(tread));
+	}
+	//test X
+	testX = x;
+	testY = y+vel*Math.sin(Math.toRadians(tread));
+	testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
+	if (room.isLocationFree(testRect)) {
+	    y += vel*Math.sin(Math.toRadians(tread));
+	}
 	centerX = x+32;
 	centerY = y+32;
 	turretX = x+32-(16*Math.cos(Math.toRadians(tread)));

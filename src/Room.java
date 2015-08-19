@@ -12,7 +12,6 @@ public class Room implements KeyListener {
     ArrayList<Entity> scene = new ArrayList<Entity>();
     Tank tank;
     ArrayList<Block> blocks = new ArrayList<Block>();
-    int[] board = {};
     int x = 0;
     int y = 0; //for debug
     int frame = 0; //for debug
@@ -26,15 +25,10 @@ public class Room implements KeyListener {
 
     public Room() {
         tank = new Tank(this);
-        //Block sprite theme information located in Block object)
-        for (int i=0; i < board.length; i++) {
-            int m = i%28;
-            int n = i/28;
-            if (board[i] != 0 && board[i] <= 64) {
-                Block block = new Block(board[i], m, n+3);
-                blocks.add(block);
-            }
-        }
+	for (int i = 0; i < 10; i++) {
+	    Block block = new Block(4+i, 10);
+	    blocks.add(block);
+	}
     }
 
     public void update(float dt) {
