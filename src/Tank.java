@@ -14,8 +14,8 @@ public class Tank extends Entity implements KeyListener {
     private Room room;
     private int hp;
     private float cannonCooldown;
-    private Arc2D sight;
-    private Arc2D hearing;
+    private Polygon treadSight;
+    private Polygon turretSight;
     private double tread;
     private double desiredTread;
     private double turret;
@@ -23,6 +23,8 @@ public class Tank extends Entity implements KeyListener {
     private double vel;
     private double x;
     private double y;
+    private double centerX;
+    private double centerY;
     private double turretX;
     private double turretY;
     private double cannonX;
@@ -50,9 +52,10 @@ public class Tank extends Entity implements KeyListener {
     };
 
     public Tank(Room room) {
+	treadSight = new Polygon();
+	turretSight = new Polygon();
 	int hp = 100;
 	float cannonCooldown = -1;
-	//desiredTread = 0;
 	boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
 	boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);	
     }
@@ -65,6 +68,8 @@ public class Tank extends Entity implements KeyListener {
     public void update(float dt) {
 	x += vel*Math.cos(Math.toRadians(tread));
 	y += vel*Math.sin(Math.toRadians(tread));
+	centerX = x+32;
+	centerY = y+32;
 	turretX = x+32-(16*Math.cos(Math.toRadians(tread)));
 	turretY = y+32-(16*Math.sin(Math.toRadians(tread)));
 	cannonX = turretX+(20*Math.cos(Math.toRadians(turret)));
@@ -97,7 +102,31 @@ public class Tank extends Entity implements KeyListener {
 		turret -= turretDiff/5.0;
 	    }
 	}
+	updateSight();
+    }
 
+    protected void updateSight() {
+	treadSight.reset();
+	turretSight.reset();
+	int angle = 44;
+	int stepSize = 2;
+	int i = 0;
+	int count = angle/stepSize;
+	treadSight.addPoint((int)centerX, (int)centerY);
+	for (double theta = tread-(angle/2); i < count; theta+=stepSize ) {
+	    double xa = centerX+800*Math.cos(Math.toRadians(theta));
+	    double ya = centerY+800*Math.sin(Math.toRadians(theta));
+	    treadSight.addPoint((int)xa, (int)ya);
+	    i++;
+	}
+	i = 0;
+	turretSight.addPoint((int)turretX, (int)turretY);
+	for (double theta = turret-(angle/2); i < count; theta+=stepSize ) {
+	    double xa = turretX+800*Math.cos(Math.toRadians(theta));
+	    double ya = turretY+800*Math.sin(Math.toRadians(theta));
+	    turretSight.addPoint((int)xa, (int)ya);
+	    i++;
+	}
     }
 
     protected void turnTread(double deg, boolean isAbsolute) {
@@ -141,8 +170,14 @@ public class Tank extends Entity implements KeyListener {
 	    g.fillOval(xb-2, yb-2, 4, 4);
 	    int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
 	    int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
-	    g.setColor(new Color(150, 150, 150));
+	    g.setColor(new Color(200, 0, 0));
+	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f));
 	    g.drawLine(cx2, cy2, losX, losY);
+	    g.setColor(new Color(50, 50, 100));
+	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
+	    g.fillPolygon(treadSight);
+	    g.fillPolygon(turretSight);
+	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 	    
 	}
     }
