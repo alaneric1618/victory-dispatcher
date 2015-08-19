@@ -1,0 +1,91 @@
+import java.awt.Rectangle;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+
+public class Room implements KeyListener {
+
+    public boolean paused = false;
+
+    ArrayList<Entity> scene = new ArrayList<Entity>();
+    Tank tank;
+    ArrayList<Block> blocks = new ArrayList<Block>();
+    int[] board = {};
+    int x = 0;
+    int y = 0; //for debug
+    int frame = 0; //for debug
+    int globalCount = 0;
+    int dotTimer = 0;
+    boolean isGlobal = false;
+    public int xcoor;
+    public int ycoor;
+    public boolean buttonPress;
+
+
+    public Room() {
+        tank = new Tank(this);
+        //Block sprite theme information located in Block object)
+        for (int i=0; i < board.length; i++) {
+            int m = i%28;
+            int n = i/28;
+            if (board[i] != 0 && board[i] <= 64) {
+                Block block = new Block(board[i], m, n+3);
+                blocks.add(block);
+            }
+        }
+    }
+
+    public void update(float dt) {
+	tank.update(dt);
+    }
+
+    public void draw(Graphics2D g) {
+        //Draw background
+        g.setColor(new Color(128, 128, 128));
+        g.fillRect(0, 0, VD.WIDTH, VD.HEIGHT);
+        //Draw blocks
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            block.draw(g);
+        }
+        //Draw pause
+        if (paused) {
+            Symbols pauseSymbols = new Symbols("paused", 130, 20);
+            pauseSymbols.alignment = Symbols.Alignment.LEFT_JUSTIFIED;
+            pauseSymbols.draw(g);
+        }
+        //DEBUG
+        if (VD.DEBUG) {
+            g.setColor(Color.white); //DEMO...DELETE LATER
+            g.drawLine(0, y, VD.WIDTH, y); //DEMO...DELETE LATER
+        }
+	tank.draw(g);
+    }
+
+    public void keyPressed(KeyEvent e) {
+        tank.keyPressed(e);
+    }
+
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public boolean isLocationFree(Rectangle r) {
+        boolean free = true;
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            if (r.intersects(block.boundingBox)) {
+		free = false;
+            }
+        }
+        return free;
+    }
+
+}
+

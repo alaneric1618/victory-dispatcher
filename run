@@ -1,0 +1,12 @@
+#!/bin/bash
+mkdir bin/ 2> /dev/null
+files=""
+for file in `ls ./src`; do
+    if [[ $file =~ Test ]]; then
+        : #NO-OP
+    else
+        files=$files" ./src/"$file
+    fi
+done
+javac -d ./bin $files
+java -cp ./bin/ VD
