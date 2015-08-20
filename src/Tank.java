@@ -99,19 +99,21 @@ public class Tank extends Entity {
 	vel=0;
 	boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
 	boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);
-	if (Math.abs(desiredTread-tread) > 8.0) {
+	double treadDiff = Math.abs(desiredTread-tread);
+	double treadRate = treadDiff/2.0;
+	if (treadDiff > 1.0) {
 	    if (desiredTread > tread) {
-		tread += 10.0;
+		tread += treadRate;
 		if (isTurretLocked) {
-		    desiredTurret += 10.0;
-		    turret += 10.0;
+		    desiredTurret += treadRate;
+		    turret += treadRate;
 		}
 	    }
 	    if (desiredTread < tread) {
-		tread -= 10.0;
+		tread -= treadRate;
 		if (isTurretLocked) {
-		    desiredTurret -= 10.0;
-		    turret -= 10.0;
+		    desiredTurret -= treadRate;
+		    turret -= treadRate;
 		}
 	    }
 	}
