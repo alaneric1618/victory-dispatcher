@@ -3,13 +3,13 @@ import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Tank extends Entity implements KeyListener {
+public class Tank extends Entity {
 
     private Room room;
     private int hp;
@@ -30,9 +30,23 @@ public class Tank extends Entity implements KeyListener {
     private double cannonX;
     private double cannonY;
     private boolean isTurretLocked = true;
+    private boolean[] keys = new boolean[256];
+    private double time = 0.0;
+    private KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
     public Tank(Room room) {
 	this.room = room;
+	manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+		public boolean dispatchKeyEvent(KeyEvent e) {
+		    if (KeyEvent.KEY_PRESSED == e.getID()) {
+			keys[e.getKeyCode()] = true;
+		    }
+		    if (KeyEvent.KEY_RELEASED == e.getID()) {
+			keys[e.getKeyCode()] = false;
+		    }
+		    return true;
+		}
+	});
 	treadSight = new Polygon();
 	turretSight = new Polygon();
 	int hp = 100;
@@ -47,6 +61,7 @@ public class Tank extends Entity implements KeyListener {
 
     @Override
     public void update(float dt) {
+	time += dt;
 	double testX;
 	double testY;
 	Rectangle testRect;
@@ -100,10 +115,10 @@ public class Tank extends Entity implements KeyListener {
 	double turretDiff = Math.abs(desiredTurret-turret);
 	if (turretDiff > 1.0) {
 	    if (desiredTurret > turret) {
-		turret += turretDiff/5.0;
+		turret += turretDiff/3.0;
 	    }
 	    if (desiredTurret < turret) {
-		turret -= turretDiff/5.0;
+		turret -= turretDiff/3.0;
 	    }
 	}
 	updateSight();
@@ -153,6 +168,7 @@ public class Tank extends Entity implements KeyListener {
     @Override
     public void draw(Graphics2D g) {
 	super.draw(g);
+	handleUserControl();
 	int index = (int)(((-tread+90+(3600))%360)/7.5);
         int turretIndex = (int)(((-turret+90+(3600))%360)/7.5);
 	drawSprite(g, 64, index, 0, 5, 0);
@@ -184,41 +200,31 @@ public class Tank extends Entity implements KeyListener {
 	    g.fillPolygon(treadSight);
 	    g.fillPolygon(turretSight);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-	    
 	}
     }
 
-    public void keyPressed(KeyEvent e) {
-	int code = e.getKeyCode();
-        if (e.VK_A == code) {
+    private void handleUserControl() {
+	if (keys[KeyEvent.VK_A]) {
 	    turnTread(-10.0, false);
-        }
-        if (e.VK_D == code) {
+	}
+	if (keys[KeyEvent.VK_D]) {
 	    turnTread(10.0, false);
-        }
-        if (e.VK_W == code) {
+	}
+	if (keys[KeyEvent.VK_W]) {
 	    vel = 3;
-        }
-        if (e.VK_S == code) {
+	}
+	if (keys[KeyEvent.VK_S]) {
 	    vel = -2;
-        }
-	if (e.VK_Q == code) {
+	}
+	if (keys[KeyEvent.VK_J]) {
 	    turnTurret(-2.5, false);
 	}
-	if (e.VK_E == code) {
+	if (keys[KeyEvent.VK_K]) {
 	    turnTurret(2.5, false);
 	}
-	if (e.VK_L == code) {
-	    isTurretLocked = !isTurretLocked;
+	if (keys[KeyEvent.VK_H]) {
+	    VD.DEBUG = !VD.DEBUG;
 	}
-    }
-
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    public void keyTyped(KeyEvent e) {
-
     }
 
     public String toString() {

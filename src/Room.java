@@ -59,7 +59,7 @@ public class Room implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
-        tank.keyPressed(e);
+
     }
 
     public void keyReleased(KeyEvent e) {
