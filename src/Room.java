@@ -1,30 +1,33 @@
-import java.awt.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
 
-public class Room implements KeyListener {
+public class Room {
 
     public boolean paused = false;
 
     ArrayList<Entity> scene = new ArrayList<Entity>();
-    Tank tank;
+    ArrayList<Tank> tanks = new ArrayList<Tank>();
     ArrayList<Block> blocks = new ArrayList<Block>();
-    int x = 0;
-    int y = 0; //for debug
-    int frame = 0; //for debug
-    int globalCount = 0;
-    int dotTimer = 0;
-    boolean isGlobal = false;
-    public int xcoor;
-    public int ycoor;
-    public boolean buttonPress;
+    // int x = 0;
+    // int y = 0; //for debug
+    //int frame = 0; //for debug
+    //int globalCount = 0;
+    //int dotTimer = 0;
+    //boolean isGlobal = false;
+    //public int xcoor;
+    //public int ycoor;
+    //public boolean buttonPress;
     public Rectangle roomRect = new Rectangle(0, 0, VD.WIDTH-32, VD.HEIGHT-64);
 
-
     public Room() {
-        tank = new Tank(this);
+        Tank player = new TankPlayer();
+	Tank cpu = new TankMajorTom();
+	player.setRoom(this);
+	tanks.add(player);
+	cpu.setRoom(this);	
+	tanks.add(cpu);
 	for (int i = 0; i < 10; i++) {
 	    Block block = new Block(4+i, 10);
 	    blocks.add(block);
@@ -34,7 +37,13 @@ public class Room implements KeyListener {
     }
 
     public void update(float dt) {
-	tank.update(dt);
+	for (Tank tank : tanks) {
+	    tank.update(dt);
+	}
+    }
+
+    public int getTankCount() {
+	return tanks.size();
     }
 
     public void draw(Graphics2D g) {
@@ -56,24 +65,13 @@ public class Room implements KeyListener {
 	g.drawLine(0, VD.HEIGHT-64, VD.WIDTH, VD.HEIGHT-64);
         //DEBUG
         if (VD.DEBUG) {
-            g.setColor(Color.white); //DEMO...DELETE LATER
-            g.drawLine(0, y, VD.WIDTH, y); //DEMO...DELETE LATER
+            
         }
-	tank.draw(g);
+	for (Tank tank : tanks) {
+	    tank.draw(g);
+	}
     }
-
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    public void keyTyped(KeyEvent e) {
-
-    }
-
+    
     public Polygon getSight(Point p, double angle, double fov) {
 	Polygon poly = new Polygon();
 	poly.addPoint(p.x, p.y);
@@ -114,6 +112,38 @@ public class Room implements KeyListener {
             }
         }
         return free;
+    }
+
+    public HashSet<VisibleEntity> getVisibleEntities(Tank forTank, Polygon poly1, Polygon poly2) {
+	HashSet<VisibleEntity> ents = new HashSet<VisibleEntity>();
+	for (Tank tank : tanks) {
+	    if (tank == forTank) continue;
+	    Rectangle box = tank.getBoundingBox();
+	    if (poly1.intersects(box) || poly2.intersects(box)) {
+		VisibleEntity.Type type = VisibleEntity.Type.TANK;
+		VisibleEntity.Side side = VisibleEntity.Side.BAD;
+		Rectangle rect = box;
+		double dir = tank.getDir();
+		double turretDir = tank.getTurretDir();
+		double speed = tank.getSpeed();
+		VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
+		ents.add(ent);
+	    }
+	}
+	for (Block block : blocks) {
+	    Rectangle box = block.getBoundingBox();
+	    if (poly1.intersects(box) || poly2.intersects(box)) {
+		VisibleEntity.Type type = VisibleEntity.Type.BLOCK;
+		VisibleEntity.Side side = VisibleEntity.Side.NEUTRAL;
+		Rectangle rect = box;
+		double dir = 0.0;
+		double turretDir = 0.0;
+		double speed = 0.0;
+		VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
+		ents.add(ent);
+	    }
+	}
+	return ents;
     }
 
 }

@@ -214,10 +214,7 @@ public class Pacman extends Entity implements KeyListener {
             desiredVelY = 1;
         }
        if(e.VK_CONTROL == code ) {
-	   room.xcoor = getCoordinateX();
-	   room.ycoor = getCoordinateY();
 	   buttonPress = true;
-	   room.buttonPress = buttonPress;
        }
     }
 

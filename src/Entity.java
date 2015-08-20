@@ -30,6 +30,10 @@ public class Entity {
 
     }
 
+    public Rectangle getBoundingBox() {
+	return boundingBox;
+    }
+
     //Used for collision detection.
     //Note the polymorphic ability of a child of the Entity.
     public boolean intersects(Entity other) {

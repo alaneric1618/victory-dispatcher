@@ -9,9 +9,10 @@ import java.awt.geom.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Tank extends Entity {
+public class Tank extends Entity implements TankInterface {
 
     private Room room;
+    private Color color = Color.white;
     private int hp;
     private float cannonCooldown;
     private Polygon treadSight;
@@ -20,7 +21,8 @@ public class Tank extends Entity {
     private double desiredTread;
     private double turret;
     private double desiredTurret;
-    private double vel;
+    private double speed;
+    private double lastSpeed;
     private double x;
     private double y;
     private double centerX;
@@ -30,133 +32,133 @@ public class Tank extends Entity {
     private double cannonX;
     private double cannonY;
     private boolean isTurretLocked = true;
-    private boolean[] keys = new boolean[256];
     private double time = 0.0;
-    private KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
-    public Tank(Room room) {
-	this.room = room;
-	manager.addKeyEventDispatcher(new KeyEventDispatcher() {
-		public boolean dispatchKeyEvent(KeyEvent e) {
-		    int code = e.getKeyCode();
-		    if (code < 256) {
-			if (KeyEvent.KEY_PRESSED == e.getID()) {
-			    keys[code] = true;
-			}
-			if (KeyEvent.KEY_RELEASED == e.getID()) {
-			    keys[code] = false;
-			}
-		    }
-		    return true;
-		}
-	});
+    public Tank() {
 	treadSight = new Polygon();
 	turretSight = new Polygon();
 	int hp = 100;
 	float cannonCooldown = -1;
-	boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
-	boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);	
-    }
-    
-    protected TankControl getTankControls() {
-	return new TankControl();
+	onCreation();
     }
 
-    @Override
-    public void update(float dt) {
-	time += dt;
-	double testX;
-	double testY;
-	Rectangle testRect;
-	//test X and Y
-	testX = x+vel*Math.cos(Math.toRadians(tread));
-	testY = y+vel*Math.sin(Math.toRadians(tread));
-	testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
-	if (room.isLocationFree(testRect)) {
-	    x += vel*Math.cos(Math.toRadians(tread));
-	    y += vel*Math.sin(Math.toRadians(tread));
+    final public void setRoom(Room room) {
+	final int count = room.getTankCount();
+	switch (count) {
+	case 0:
+	    x = 10; y = 10;
+	    desiredTread = 45.0; desiredTurret = desiredTread;
+	    color = Color.cyan;
+	    break;
+	case 1:
+	    x = 510; y = 350;
+	    desiredTread = 225.0; desiredTurret = desiredTread;
+	    color = Color.magenta;
+	    break;
+	case 2:
+	    x = 10; y = 350;
+	    desiredTread = 315.0; desiredTurret = desiredTread;
+	    color = Color.yellow;
+	    break;
+	case 3:
+	    x = 510; y = 10;
+	    desiredTread = 135.0; desiredTurret = desiredTread;
+	    color = Color.black;
+	    break;
+	default:
+	    x = 225; y = 175;
+	    desiredTread = 270.0; desiredTurret = desiredTread;
+	    break;
 	}
-	//test X
-	testX = x+vel*Math.cos(Math.toRadians(tread));
-	testY = y;
-	testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
-	if (room.isLocationFree(testRect)) {
-	    x += vel*Math.cos(Math.toRadians(tread));
-	}
-	//test X
-	testX = x;
-	testY = y+vel*Math.sin(Math.toRadians(tread));
-	testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
-	if (room.isLocationFree(testRect)) {
-	    y += vel*Math.sin(Math.toRadians(tread));
-	}
-	centerX = x+32;
-	centerY = y+32;
-	turretX = x+32-(14*Math.cos(Math.toRadians(tread)));
-	turretY = y+20-(8*Math.sin(Math.toRadians(tread)));
-	cannonX = turretX+(20*Math.cos(Math.toRadians(turret)));
-	cannonY = turretY+(20*Math.sin(Math.toRadians(turret)));
-	vel=0;
 	boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
 	boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);
-	double treadDiff = Math.abs(desiredTread-tread);
-	double treadRate = treadDiff/2.0;
-	if (treadDiff > 1.0) {
-	    if (desiredTread > tread) {
-		tread += treadRate;
-		if (isTurretLocked) {
-		    desiredTurret += treadRate;
-		    turret += treadRate;
+	this.room = room;
+    }
+        
+    @Override
+    final public void update(float dt) {
+	if (room != null) {
+	    loop(dt);
+	    time += dt;
+	    double testX;
+	    double testY;
+	    Rectangle testRect;
+	    //test X and Y
+	    testX = x+speed*Math.cos(Math.toRadians(tread));
+	    testY = y+speed*Math.sin(Math.toRadians(tread));
+	    testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
+	    if (room.isLocationFree(testRect)) {
+		x += speed*Math.cos(Math.toRadians(tread));
+		y += speed*Math.sin(Math.toRadians(tread));
+	    }
+	    //test X
+	    testX = x+speed*Math.cos(Math.toRadians(tread));
+	    testY = y;
+	    testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
+	    if (room.isLocationFree(testRect)) {
+		x += speed*Math.cos(Math.toRadians(tread));
+	    }
+	    //test X
+	    testX = x;
+	    testY = y+speed*Math.sin(Math.toRadians(tread));
+	    testRect = new Rectangle((int)testX+16, (int)testY+16, 32, 32);
+	    if (room.isLocationFree(testRect)) {
+		y += speed*Math.sin(Math.toRadians(tread));
+	    }
+	    centerX = x+32;
+	    centerY = y+32;
+	    turretX = x+32-(14*Math.cos(Math.toRadians(tread)));
+	    turretY = y+20-(8*Math.sin(Math.toRadians(tread)));
+	    cannonX = turretX+(20*Math.cos(Math.toRadians(turret)));
+	    cannonY = turretY+(20*Math.sin(Math.toRadians(turret)));
+	    lastSpeed = speed;	    
+	    speed=0;
+	    boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
+	    boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);
+	    double treadDiff = Math.abs(desiredTread-tread);
+	    double treadRate = treadDiff/2.0;
+	    if (treadDiff > 1.0) {
+		if (desiredTread > tread) {
+		    tread += treadRate;
+		    if (isTurretLocked) {
+			desiredTurret += treadRate;
+			turret += treadRate;
+		    }
+		}
+		if (desiredTread < tread) {
+		    tread -= treadRate;
+		    if (isTurretLocked) {
+			desiredTurret -= treadRate;
+			turret -= treadRate;
+		    }
 		}
 	    }
-	    if (desiredTread < tread) {
-		tread -= treadRate;
-		if (isTurretLocked) {
-		    desiredTurret -= treadRate;
-		    turret -= treadRate;
+	    double turretDiff = Math.abs(desiredTurret-turret);
+	    if (turretDiff > 1.0) {
+		if (desiredTurret > turret) {
+		    turret += turretDiff/5.0;
+		}
+		if (desiredTurret < turret) {
+		    turret -= turretDiff/5.0;
 		}
 	    }
-	}
-	double turretDiff = Math.abs(desiredTurret-turret);
-	if (turretDiff > 1.0) {
-	    if (desiredTurret > turret) {
-		turret += turretDiff/5.0;
-	    }
-	    if (desiredTurret < turret) {
-		turret -= turretDiff/5.0;
-	    }
-	}
-	updateSight();
-    }
-
-    protected void updateSight() {
-	treadSight.reset();
-	turretSight.reset();
-	treadSight = room.getSight(new Point((int)centerX, (int)centerY), tread, 45);
-	turretSight = room.getSight(new Point((int)turretX, (int)turretY), turret, 45);
-    }
-
-    protected void turnTread(double deg, boolean isAbsolute) {
-	if (isAbsolute) {
-	    desiredTread = deg;
-	} else {
-	    desiredTread += deg;
+	    updateSight();
+	    loop(dt);
 	}
     }
 
-    protected void turnTurret(double deg, boolean isAbsolute) {
-	isTurretLocked = false;
-	if (isAbsolute) {
-	    desiredTurret = deg;
-	} else {
-	    desiredTurret += deg;
+    final private void updateSight() {
+	if (room != null) {
+	    treadSight.reset();
+	    turretSight.reset();
+	    treadSight = room.getSight(new Point((int)centerX, (int)centerY), tread, 45);
+	    turretSight = room.getSight(new Point((int)turretX, (int)turretY), turret, 45);
 	}
     }
 
     @Override
-    public void draw(Graphics2D g) {
+    final public void draw(Graphics2D g) {
 	super.draw(g);
-	handleUserControl();
 	int index = (int)(((-tread+90+(3600))%360)/7.5);
         int turretIndex = (int)(((-turret+90+(3600))%360)/7.5);
 	drawSprite(g, 64, index, 0, 5, 0);
@@ -183,38 +185,11 @@ public class Tank extends Entity {
 	    g.setColor(new Color(200, 0, 0));
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f));
 	    g.drawLine(cx2, cy2, losX, losY);
-	    g.setColor(new Color(50, 50, 100));
-	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
+	    g.setColor(color);
+	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f));
 	    g.fillPolygon(treadSight);
 	    g.fillPolygon(turretSight);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-	}
-    }
-
-    private void handleUserControl() {
-	if (keys[KeyEvent.VK_A]) {
-	    turnTread(-10.0, false);
-	}
-	if (keys[KeyEvent.VK_D]) {
-	    turnTread(10.0, false);
-	}
-	if (keys[KeyEvent.VK_W]) {
-	    vel = 3;
-	}
-	if (keys[KeyEvent.VK_S]) {
-	    vel = -2;
-	}
-	if (keys[KeyEvent.VK_J]) {
-	    turnTurret(-5.0, false);
-	}
-	if (keys[KeyEvent.VK_K]) {
-	    turnTurret(5.0, false);
-	}
-	if (keys[KeyEvent.VK_H]) {
-	    VD.DEBUG = !VD.DEBUG;
-	}
-	if (keys[KeyEvent.VK_L]) {
-	    isTurretLocked = !isTurretLocked;
 	}
     }
 
@@ -223,6 +198,77 @@ public class Tank extends Entity {
 	s +="Turret:"+turret+"\t";
 	return s;
     }
+
+    ///////START OF USER AI INTERFACE/////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+
+    //implementable start
+    public void onCreation() {
+
+    }
+    public void onHit() {
+
+    }
+    public void loop(float dt) {
+
+    }
+    //implementable end
+
+    //callable start
+    final protected double getSpeed() {
+	return lastSpeed;
+    }
+
+    final protected double getDir() {
+	return tread;
+    }
+
+    final protected double getTurretDir() {
+	return turret;
+    }
+    
+    final protected HashSet<VisibleEntity> getVisibleEntities() {
+	if (room == null) return null;
+	HashSet<VisibleEntity> visible = room.getVisibleEntities(this, treadSight, turretSight);
+	return visible;
+    }
+
+    final protected void forward() {
+	speed = 3.0;
+    }
+
+    final protected void backward() {
+	speed = -2.0;
+    }
+
+    final protected void turnTread(double deg, boolean isAbsolute) {
+	if (isAbsolute) {
+	    desiredTread = deg;
+	} else {
+	    desiredTread += deg;
+	}
+    }
+
+    final protected void turnTurretTo(double x, double y) {
+    }
+    
+    final protected void turnTurret(double deg, boolean isAbsolute) {
+	isTurretLocked = false;
+	if (isAbsolute) {
+	    desiredTurret = deg;
+	} else {
+	    desiredTurret += deg;
+	}
+    }
+
+    final protected void fire() {
+	
+    }
+    //callable end
+
+    ///////END OF USER AI INTERFACE///////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    
 }
 
 

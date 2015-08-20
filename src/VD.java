@@ -26,7 +26,7 @@ public class VD extends JFrame implements KeyListener {
 
     public static final int WIDTH = 640;
     public static final int HEIGHT= 480;
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
 
     public VD() {
         this.initGame();
@@ -46,7 +46,6 @@ public class VD extends JFrame implements KeyListener {
         currentRoom = new Room();
         gamePanel.room = currentRoom;
         frame.addKeyListener(this);
-        frame.addKeyListener(currentRoom);
         frame.pack();
         frame.setVisible(true);
         while (running) {
