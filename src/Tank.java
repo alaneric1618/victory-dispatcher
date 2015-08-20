@@ -1,6 +1,6 @@
 import java.awt.Color;
 import javax.imageio.ImageIO;
-import java.awt.geom.AffineTransform;
+import java.awt.geom.*;
 import java.io.File;
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -38,11 +38,14 @@ public class Tank extends Entity {
 	this.room = room;
 	manager.addKeyEventDispatcher(new KeyEventDispatcher() {
 		public boolean dispatchKeyEvent(KeyEvent e) {
-		    if (KeyEvent.KEY_PRESSED == e.getID()) {
-			keys[e.getKeyCode()] = true;
-		    }
-		    if (KeyEvent.KEY_RELEASED == e.getID()) {
-			keys[e.getKeyCode()] = false;
+		    int code = e.getKeyCode();
+		    if (code < 256) {
+			if (KeyEvent.KEY_PRESSED == e.getID()) {
+			    keys[code] = true;
+			}
+			if (KeyEvent.KEY_RELEASED == e.getID()) {
+			    keys[code] = false;
+			}
 		    }
 		    return true;
 		}
@@ -127,25 +130,8 @@ public class Tank extends Entity {
     protected void updateSight() {
 	treadSight.reset();
 	turretSight.reset();
-	int angle = 44;
-	int stepSize = 2;
-	int i = 0;
-	int count = angle/stepSize;
-	treadSight.addPoint((int)centerX, (int)centerY);
-	for (double theta = tread-(angle/2); i < count; theta+=stepSize ) {
-	    double xa = centerX+800*Math.cos(Math.toRadians(theta));
-	    double ya = centerY+800*Math.sin(Math.toRadians(theta));
-	    treadSight.addPoint((int)xa, (int)ya);
-	    i++;
-	}
-	i = 0;
-	turretSight.addPoint((int)turretX, (int)turretY);
-	for (double theta = turret-(angle/2); i < count; theta+=stepSize ) {
-	    double xa = turretX+800*Math.cos(Math.toRadians(theta));
-	    double ya = turretY+800*Math.sin(Math.toRadians(theta));
-	    turretSight.addPoint((int)xa, (int)ya);
-	    i++;
-	}
+	treadSight = room.getSight(new Point((int)centerX, (int)centerY), tread, 45);
+	turretSight = room.getSight(new Point((int)turretX, (int)turretY), turret, 45);
     }
 
     protected void turnTread(double deg, boolean isAbsolute) {
