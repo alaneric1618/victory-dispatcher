@@ -31,26 +31,6 @@ public class Tank extends Entity implements KeyListener {
     private double cannonY;
     private boolean isTurretLocked = true;
 
-    private int[] seqi = new int[] {
-	0,0,0,1,2,3,4,
-	6,1,1,1,1,1,1,
-	2,3,4,6,2,2,2,
-	2,2,3,4,5,6,3,
-	3,3,4,5,6,4,4,
-	4,0,5,5,3,5,6,
-	5,5,6,0,0,0
-    };
-
-    private int[] seqj = new int[] {
-	4,5,6,0,0,0,0,
-	0,1,2,3,4,5,6,
-	1,1,1,1,2,3,4,
-	5,6,2,2,2,2,4,
-	5,6,3,3,3,4,5,
-	6,0,0,1,3,4,4,
-	5,6,5,1,2,3
-    };
-
     public Tank(Room room) {
 	this.room = room;
 	treadSight = new Polygon();
@@ -94,8 +74,8 @@ public class Tank extends Entity implements KeyListener {
 	}
 	centerX = x+32;
 	centerY = y+32;
-	turretX = x+32-(16*Math.cos(Math.toRadians(tread)));
-	turretY = y+32-(16*Math.sin(Math.toRadians(tread)));
+	turretX = x+32-(14*Math.cos(Math.toRadians(tread)));
+	turretY = y+20-(8*Math.sin(Math.toRadians(tread)));
 	cannonX = turretX+(20*Math.cos(Math.toRadians(turret)));
 	cannonY = turretY+(20*Math.sin(Math.toRadians(turret)));
 	vel=0;
@@ -173,8 +153,10 @@ public class Tank extends Entity implements KeyListener {
     @Override
     public void draw(Graphics2D g) {
 	super.draw(g);
-	int index = (int)(((-tread+(3600))%360)/7.5);
-	drawSprite(g, 64, seqi[index], seqj[index]);
+	int index = (int)(((-tread+90+(3600))%360)/7.5);
+        int turretIndex = (int)(((-turret+90+(3600))%360)/7.5);
+	drawSprite(g, 64, index, 0, 5, 0);
+        drawSprite(g, 64, turretIndex, 2, (int)(turretX-centerX)+5, (int)(turretY-centerY)+12);
 	if (VD.DEBUG) {
 	    int cx1 = (int)x;
 	    int cy1 = (int)y;

@@ -14,7 +14,7 @@ public class Entity {
     public static BufferedImage spriteMap;
     static {
 	try {
-	    spriteMap = ImageIO.read(new File("./media/white-truck.png")); //Frames to animate
+	    spriteMap = ImageIO.read(new File("./media/vd_master_sheet.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
