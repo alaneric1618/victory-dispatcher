@@ -115,10 +115,10 @@ public class Tank extends Entity {
 	double turretDiff = Math.abs(desiredTurret-turret);
 	if (turretDiff > 1.0) {
 	    if (desiredTurret > turret) {
-		turret += turretDiff/3.0;
+		turret += turretDiff/5.0;
 	    }
 	    if (desiredTurret < turret) {
-		turret -= turretDiff/3.0;
+		turret -= turretDiff/5.0;
 	    }
 	}
 	updateSight();
@@ -217,13 +217,16 @@ public class Tank extends Entity {
 	    vel = -2;
 	}
 	if (keys[KeyEvent.VK_J]) {
-	    turnTurret(-2.5, false);
+	    turnTurret(-5.0, false);
 	}
 	if (keys[KeyEvent.VK_K]) {
-	    turnTurret(2.5, false);
+	    turnTurret(5.0, false);
 	}
 	if (keys[KeyEvent.VK_H]) {
 	    VD.DEBUG = !VD.DEBUG;
+	}
+	if (keys[KeyEvent.VK_L]) {
+	    isTurretLocked = !isTurretLocked;
 	}
     }
 

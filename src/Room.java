@@ -21,6 +21,7 @@ public class Room implements KeyListener {
     public int xcoor;
     public int ycoor;
     public boolean buttonPress;
+    public Rectangle roomRect = new Rectangle(0, 0, VD.WIDTH-32, VD.HEIGHT-64);
 
 
     public Room() {
@@ -50,6 +51,8 @@ public class Room implements KeyListener {
             pauseSymbols.alignment = Symbols.Alignment.LEFT_JUSTIFIED;
             pauseSymbols.draw(g);
         }
+	g.setColor(Color.black);
+	g.drawLine(0, VD.HEIGHT-64, VD.WIDTH, VD.HEIGHT-64);
         //DEBUG
         if (VD.DEBUG) {
             g.setColor(Color.white); //DEMO...DELETE LATER
@@ -72,6 +75,9 @@ public class Room implements KeyListener {
 
     public boolean isLocationFree(Rectangle r) {
         boolean free = true;
+	if (!roomRect.contains(r)) {
+	    return false;
+	}
         for (int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);
             if (r.intersects(block.boundingBox)) {
