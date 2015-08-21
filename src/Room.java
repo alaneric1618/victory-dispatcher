@@ -10,6 +10,7 @@ public class Room {
     ArrayList<Entity> scene = new ArrayList<Entity>();
     ArrayList<Tank> tanks = new ArrayList<Tank>();
     ArrayList<Block> blocks = new ArrayList<Block>();
+    ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     // int x = 0;
     // int y = 0; //for debug
     //int frame = 0; //for debug
@@ -37,6 +38,18 @@ public class Room {
     }
 
     public void update(float dt) {
+        ArrayList<Bullet> toRemoveBullets = new ArrayList<Bullet>();
+        synchronized (bullets) {
+            for (Bullet bullet : bullets) {
+                if (bullet.time > 3000) {
+                    toRemoveBullets.add(bullet);
+                }
+                bullet.update(dt);
+            }
+            for (Bullet bullet : toRemoveBullets) {
+                bullets.remove(bullet);
+            }
+        }
 	for (Tank tank : tanks) {
 	    tank.update(dt);
 	}
@@ -46,13 +59,18 @@ public class Room {
 	return tanks.size();
     }
 
+    public void addBullet(Bullet bullet) {
+        synchronized (bullets) {
+            bullets.add(bullet);
+        }
+    }
+
     public void draw(Graphics2D g) {
         //Draw background
         g.setColor(new Color(128, 128, 128));
         g.fillRect(0, 0, VD.WIDTH, VD.HEIGHT);
         //Draw blocks
-        for (int i = 0; i < blocks.size(); i++) {
-            Block block = blocks.get(i);
+        for (Block block : blocks) {
             block.draw(g);
         }
         //Draw pause
@@ -70,6 +88,9 @@ public class Room {
 	for (Tank tank : tanks) {
 	    tank.draw(g);
 	}
+        for (Bullet bullet : bullets) {
+            bullet.draw(g);
+        }
     }
     
     public Polygon getSight(Point p, double angle, double fov) {

@@ -33,6 +33,8 @@ public class Tank extends Entity implements TankInterface {
     private double cannonY;
     private boolean isTurretLocked = true;
     private double time = 0.0;
+    private double bulletTime = 0.0;
+    private double bulletWait = 850.0;
 
     public Tank() {
 	treadSight = new Polygon();
@@ -80,6 +82,7 @@ public class Tank extends Entity implements TankInterface {
 	if (room != null) {
 	    loop(dt);
 	    time += dt;
+            bulletTime += dt;
 	    double testX;
 	    double testY;
 	    Rectangle testRect;
@@ -159,10 +162,10 @@ public class Tank extends Entity implements TankInterface {
     @Override
     final public void draw(Graphics2D g) {
 	super.draw(g);
-	int index = (int)(((-tread+90+(3600))%360)/7.5);
-        int turretIndex = (int)(((-turret+90+(3600))%360)/7.5);
-	drawSprite(g, 64, index, 0, 5, 0);
-        drawSprite(g, 64, turretIndex, 2, (int)(turretX-centerX)+5, (int)(turretY-centerY)+12);
+	int index = (int)(((tread+270+(3600))%360)/7.5);
+        int turretIndex = (int)(((turret+270+(3600))%360)/7.5);
+	drawSprite(g, 64, index, 3, 5, 0);
+        drawSprite(g, 64, turretIndex, 0, (int)(turretX-centerX)+5, (int)(turretY-centerY)+12);
 	if (VD.DEBUG) {
 	    int cx1 = (int)x;
 	    int cy1 = (int)y;
@@ -186,7 +189,7 @@ public class Tank extends Entity implements TankInterface {
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f));
 	    g.drawLine(cx2, cy2, losX, losY);
 	    g.setColor(color);
-	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.05f));
+	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
 	    g.fillPolygon(treadSight);
 	    g.fillPolygon(turretSight);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
@@ -261,8 +264,16 @@ public class Tank extends Entity implements TankInterface {
 	}
     }
 
+    final protected boolean isFireAllowed() {
+        return bulletTime > bulletWait;
+    }
+
     final protected void fire() {
-	
+        if (bulletTime > bulletWait) {
+            bulletTime = 0.0;
+            Bullet bullet = new Bullet(cannonX, cannonY, turret);
+            room.addBullet(bullet);
+        }
     }
     //callable end
 

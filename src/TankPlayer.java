@@ -63,6 +63,15 @@ public class TankPlayer extends Tank implements TankInterface {
 	if (keys[KeyEvent.VK_K]) {
 	    turnTurret(5.0, false);
 	}
+        if (keys[KeyEvent.VK_SPACE]) {
+            fire();
+        }
+        if (keys[KeyEvent.VK_1]) {
+            VD.DEBUG = false;
+        }
+        if (keys[KeyEvent.VK_2]) {
+            VD.DEBUG = true;
+        }
     }
 
 }
