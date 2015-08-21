@@ -22,9 +22,7 @@ public class Entity {
     //The bounding box is used for collision detection, updating and drawing.
     protected Rectangle boundingBox = new Rectangle();
     protected Rectangle boundingSprite = new Rectangle();
-    //spriteI and spriteJ are used by inherited objects to keep track of which sprite they want to draw.
-    protected int spriteI = 0;
-    protected int spriteJ = 0;
+    protected float spriteSize = 1.0f;
 
     public Entity() {
 
@@ -66,8 +64,8 @@ public class Entity {
 	int offset = 4;
 	double x = boundingSprite.getX();
 	double y = boundingSprite.getY();
-	g.clipRect((int)x, (int)y, w, h);
-	g.drawImage(Entity.spriteMap, new AffineTransform(1f , 0f , 0f , 1f , x-i, y-j), null);
+	g.clipRect((int)x, (int)y, (int)(w*spriteSize), (int)(h*spriteSize));
+	g.drawImage(Entity.spriteMap, new AffineTransform(spriteSize, 0f , 0f , spriteSize, (x-(i*spriteSize)), (y-(j*spriteSize))), null);
 	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
     }
 
@@ -82,8 +80,8 @@ public class Entity {
 	int offset = 4;
 	double x = boundingSprite.getX();
 	double y = boundingSprite.getY();
-	g.clipRect((int)x, (int)y, size, size);
-	g.drawImage(Entity.spriteMap, new AffineTransform(1f , 0f , 0f , 1f , x-offset-(i*size), y-offset-1-(j*size)), null);
+	g.clipRect((int)x, (int)y, (int)(size*spriteSize), (int)(size*spriteSize));
+	g.drawImage(Entity.spriteMap, new AffineTransform(spriteSize, 0f , 0f , spriteSize, x-offset-(i*size*spriteSize), y-offset-1-(j*size*spriteSize)), null);
 	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
     }
 
@@ -99,8 +97,8 @@ public class Entity {
 	int offset = 4;
 	double x = boundingSprite.getX();
 	double y = boundingSprite.getY();
-	g.clipRect((int)x+offsetX, (int)y+offsetY, size, size);
-	g.drawImage(Entity.spriteMap, new AffineTransform(1f , 0f , 0f , 1f , x-offset-(i*size)+offsetX, y-offset-1-(j*size)+offsetY), null);
+	g.clipRect((int)x+offsetX, (int)y+offsetY, (int)(size*spriteSize), (int)(size*spriteSize));
+	g.drawImage(Entity.spriteMap, new AffineTransform(spriteSize, 0f , 0f , spriteSize, x-offset-(i*size*spriteSize)+offsetX, y-offset-1-(j*size*spriteSize)+offsetY), null);
 	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
     }
 

@@ -11,6 +11,7 @@ public class Room {
     ArrayList<Tank> tanks = new ArrayList<Tank>();
     ArrayList<Block> blocks = new ArrayList<Block>();
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    ArrayList<Decal> decals = new ArrayList<Decal>();
     // int x = 0;
     // int y = 0; //for debug
     //int frame = 0; //for debug
@@ -56,23 +57,29 @@ public class Room {
 	    blocks.add(block);
 	    block = new Block(Block.Type.H, 8, 10);
 	    blocks.add(block);
-
 	}
     }
 
     public void update(float dt) {
-        ArrayList<Bullet> toRemoveBullets = new ArrayList<Bullet>();
         synchronized (bullets) {
+	    ArrayList<Bullet> toRemoveBullets = new ArrayList<Bullet>();
             for (Bullet bullet : bullets) {
+		Rectangle box = bullet.getBoundingBox();		
                 if (bullet.time > 3000) {
                     toRemoveBullets.add(bullet);
                 }
                 bullet.update(dt);
+		if (box.x < 8 || box.x > VD.WIDTH-32
+		    || box.y < 0 || box.y > VD.HEIGHT-72) {
+		    toRemoveBullets.add(bullet);
+		    decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));		    
+		}
 		//collision detect bullet w/ blocks
 		for (Block block : blocks) {
 		    if (bullet.intersects(block)) {
-			toRemoveBullets.add(bullet);
+			toRemoveBullets.add(bullet);			
 			block.destroy();
+			decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
 		    }
 		}
             }
@@ -80,6 +87,17 @@ public class Room {
                 bullets.remove(bullet);
             }
         }
+	synchronized (decals) {
+	    ArrayList<Decal> toRemoveDecals = new ArrayList<Decal>();	    
+	    for (Decal decal : decals) {
+		if (decal.isDestroyed()) {
+		    toRemoveDecals.add(decal);
+		}
+	    }
+	    for (Decal decal : toRemoveDecals) {
+		decals.remove(decal);
+	    }
+	}
 	for (Tank tank : tanks) {
 	    tank.update(dt);
 	}
@@ -121,6 +139,9 @@ public class Room {
         for (Bullet bullet : bullets) {
             bullet.draw(g);
         }
+	for (Decal decal : decals) {
+	    decal.draw(g);
+	}
     }
     
     public Polygon getSight(Point p, double angle, double fov) {

@@ -68,6 +68,7 @@ public class VD extends JFrame implements KeyListener {
             long timeComputationEnd = System.currentTimeMillis();
             long timeComputationTaken = timeComputationEnd - timeComputationStart;
             long timeToSleep = this.timeInterval - timeComputationTaken;
+	    //System.out.println("Time taken:" + dt + "  ");
             if (timeToSleep >= 0) {
                 Thread.sleep(timeToSleep);
             } else {

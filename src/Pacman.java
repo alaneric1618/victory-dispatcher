@@ -26,6 +26,8 @@ public class Pacman extends Entity implements KeyListener {
     int coordX;
     int coordY;
     boolean moving = false;
+    int spriteI = 0;
+    int spriteJ = 0;
     public int x;
     public int y;
     public boolean buttonPress;
