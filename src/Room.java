@@ -29,11 +29,34 @@ public class Room {
 	tanks.add(player);
 	cpu.setRoom(this);	
 	tanks.add(cpu);
-	for (int i = 0; i < 10; i++) {
-	    Block block = new Block(4+i, 10);
+	for (int i = 2; i < 9; i++) {
+	    if (i != 5) {
+		Block block = new Block(Block.Type.H, 4+i, 6);
+		blocks.add(block);
+		Block block2 = new Block(Block.Type.V,9, 1+i);
+		blocks.add(block2);
+	    } else {
+		Block block = new Block(Block.Type.ALL, 9, 6);
+		blocks.add(block);
+	    }
+	    Block block = new Block(Block.Type.DL, 9, 2);
 	    blocks.add(block);
-	    Block block2 = new Block(8+i, 18);
-	    blocks.add(block2);
+	    block = new Block(Block.Type.DR, 9, 2);
+	    blocks.add(block);
+	    block = new Block(Block.Type.H, 10, 2);
+	    blocks.add(block);
+	    block = new Block(Block.Type.H, 8, 2);
+	    blocks.add(block);
+
+	    block = new Block(Block.Type.UL, 9, 10);
+	    blocks.add(block);
+	    block = new Block(Block.Type.UR, 9, 10);
+	    blocks.add(block);
+	    block = new Block(Block.Type.H, 10, 10);
+	    blocks.add(block);
+	    block = new Block(Block.Type.H, 8, 10);
+	    blocks.add(block);
+
 	}
     }
 
@@ -45,6 +68,13 @@ public class Room {
                     toRemoveBullets.add(bullet);
                 }
                 bullet.update(dt);
+		//collision detect bullet w/ blocks
+		for (Block block : blocks) {
+		    if (bullet.intersects(block)) {
+			toRemoveBullets.add(bullet);
+			block.destroy();
+		    }
+		}
             }
             for (Bullet bullet : toRemoveBullets) {
                 bullets.remove(bullet);

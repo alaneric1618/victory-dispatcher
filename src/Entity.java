@@ -62,6 +62,22 @@ public class Entity {
     //           This is because a single spritemap may have various standard sizes.
     //    i - tile column number
     //    j - tile row number
+    public void drawSprite(Graphics2D g, int i, int j, int w, int h) {
+	int offset = 4;
+	double x = boundingSprite.getX();
+	double y = boundingSprite.getY();
+	g.clipRect((int)x, (int)y, w, h);
+	g.drawImage(Entity.spriteMap, new AffineTransform(1f , 0f , 0f , 1f , x-i, y-j), null);
+	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+    }
+
+    // drawSprite
+    //    This is the easiest way to draw a sprite from the spritemap.
+    //    g - graphics context
+    //    size - the standard size desired from spritemap.
+    //           This is because a single spritemap may have various standard sizes.
+    //    i - tile column number
+    //    j - tile row number
     public void drawSprite(Graphics2D g,int size, int i, int j) {
 	int offset = 4;
 	double x = boundingSprite.getX();
