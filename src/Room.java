@@ -72,14 +72,24 @@ public class Room {
 		if (box.x < 8 || box.x > VD.WIDTH-32
 		    || box.y < 0 || box.y > VD.HEIGHT-72) {
 		    toRemoveBullets.add(bullet);
-		    decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));		    
+		    decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                    for (int i = 0; i < 5; i++) {
+                        int xr = (int)(10*Math.random())+11;
+                        int yr = (int)(10*Math.random())+11;
+                        decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
+                    }
 		}
 		//collision detect bullet w/ blocks
 		for (Block block : blocks) {
 		    if (bullet.intersects(block)) {
-			toRemoveBullets.add(bullet);			
+			toRemoveBullets.add(bullet);
 			block.destroy();
-			decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                        decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                        for (int i = 0; i < 5; i++) {
+                            int xr = (int)(10*Math.random())+11;
+                            int yr = (int)(10*Math.random())+11;
+                            decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
+                        }
 		    }
 		}
             }

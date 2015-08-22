@@ -5,8 +5,8 @@ public class Bullet extends Entity {
 
     private double x;
     private double y;
-    private double angle;
     public double time = 0;
+    final public double angle;
 
     public Bullet(double x, double y, double angle) {
         super();
