@@ -10,6 +10,7 @@ public class Bullet extends Entity {
 
     public Bullet(double x, double y, double angle) {
         super();
+        spriteSize = 1.6f;
         this.x = x;
         this.y = y;
         this.angle = angle;
@@ -28,7 +29,7 @@ public class Bullet extends Entity {
     public void draw(Graphics2D g) {
         super.draw(g);
 	int index = (int)(((angle+270+(3600))%360)/7.5);
-	drawSprite(g, 64, index, 1, -20, -20);
+	drawSprite(g, 64, index, 1, -37, -32);
     }
     
 }

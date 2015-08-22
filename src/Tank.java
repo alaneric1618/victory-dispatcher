@@ -166,6 +166,31 @@ public class Tank extends Entity implements TankInterface {
     @Override
     final public void draw(Graphics2D g) {
 	super.draw(g);
+        //draw tracker
+        Polygon poly = new Polygon();
+        double rot = ((int)(time/6)%360);
+        for (double theta = 0+rot; theta < 320.0+rot; theta+=5) {
+            double xt = centerX+34*Math.cos(Math.toRadians(theta));
+            double yt = centerY+22*Math.sin(Math.toRadians(theta));
+            poly.addPoint((int)xt, (int)yt);
+        }
+        for (double theta = 320+rot; theta > 0.0+rot; theta-=5) {
+            double xt = centerX+28*Math.cos(Math.toRadians(theta));
+            double yt = centerY+16*Math.sin(Math.toRadians(theta))-2;
+            poly.addPoint((int)xt, (int)yt);
+        }
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        g.setColor(color);
+        g.fillPolygon(poly);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        //draw laser
+        int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
+        int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
+        g.setColor(color);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        g.drawLine((int)turretX, (int)turretY, losX, losY);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        //get index
 	int index = (int)(((tread+270+(3600))%360)/7.5);
         int turretIndex = (int)(((turret+270+(3600))%360)/7.5);
 	drawSprite(g, 64, index, 3, 5, 0);
@@ -191,11 +216,6 @@ public class Tank extends Entity implements TankInterface {
 	    g.fillOval((int)cx2-2, (int)cy2-2, 4, 4);
 	    g.drawLine(cx2, cy2, xb, yb);
 	    g.fillOval(xb-2, yb-2, 4, 4);
-	    int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
-	    int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
-	    g.setColor(new Color(200, 0, 0));
-	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.35f));
-	    g.drawLine(cx2, cy2, losX, losY);
 	    g.setColor(color);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
 	    g.fillPolygon(treadSight);
