@@ -35,6 +35,8 @@ public class Tank extends Entity implements TankInterface {
     private double time = 0.0;
     private double bulletTime = 0.0;
     private double bulletWait = 850.0;
+    private float turretSize = 1.0f;
+    private double turretPull = 1.0;
 
     public Tank() {
 	treadSight = new Polygon();
@@ -110,12 +112,14 @@ public class Tank extends Entity implements TankInterface {
 	    }
 	    centerX = x+32;
 	    centerY = y+32;
-	    turretX = x+32-(14*Math.cos(Math.toRadians(tread)));
-	    turretY = y+20-(8*Math.sin(Math.toRadians(tread)));
+	    turretX = x+32-(14*Math.cos(Math.toRadians(tread)))-(((turretPull-1)*32)*Math.cos(Math.toRadians(turret)));
+	    turretY = y+20-(8*Math.sin(Math.toRadians(tread)))-(((turretPull-1)*32)*Math.sin(Math.toRadians(turret)));
 	    cannonX = turretX+(20*Math.cos(Math.toRadians(turret)));
 	    cannonY = turretY+(20*Math.sin(Math.toRadians(turret)));
-	    lastSpeed = speed;	    
+	    lastSpeed = speed;
 	    speed=0;
+            turretSize = ((turretSize-1.0f)/2.0f)+1.0f;
+            turretPull = ((turretPull-1.0f)/1.3f)+1.0f;
 	    boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
 	    boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);
 	    double treadDiff = Math.abs(desiredTread-tread);
@@ -165,7 +169,11 @@ public class Tank extends Entity implements TankInterface {
 	int index = (int)(((tread+270+(3600))%360)/7.5);
         int turretIndex = (int)(((turret+270+(3600))%360)/7.5);
 	drawSprite(g, 64, index, 3, 5, 0);
-        drawSprite(g, 64, turretIndex, 0, (int)(turretX-centerX)+5, (int)(turretY-centerY)+12);
+        this.spriteSize = turretSize;
+        drawSprite(g, 64, turretIndex, 0, 
+                   (int)(turretX-centerX)+5-(int)((turretSize-1)*32),
+                   (int)(turretY-centerY)+12-(int)((turretSize-1)*32));
+        this.spriteSize = 1.0f;
 	if (VD.DEBUG) {
 	    int cx1 = (int)x;
 	    int cy1 = (int)y;
@@ -272,6 +280,8 @@ public class Tank extends Entity implements TankInterface {
         if (bulletTime > bulletWait) {
             bulletTime = 0.0;
             Bullet bullet = new Bullet(cannonX, cannonY, turret);
+            turretSize = 1.2f;
+            turretPull = 1.2f;
             room.addBullet(bullet);
         }
     }
