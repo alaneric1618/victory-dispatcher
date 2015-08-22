@@ -31,7 +31,7 @@ public class Block extends Entity {
 	    i = 2;
 	    break;
 	case V:
-	    h = 26;
+	    h = 32;
 	    w = 16;
 	    i = 3;
 	    break;
