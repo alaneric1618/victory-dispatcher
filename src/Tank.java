@@ -128,8 +128,8 @@ public class Tank extends Entity implements TankInterface {
 	    centerY = y+32;
 	    turretX = x+32-(14*Math.cos(Math.toRadians(tread)))-(((turretPull-1)*32)*Math.cos(Math.toRadians(turret)));
 	    turretY = y+20-(8*Math.sin(Math.toRadians(tread)))-(((turretPull-1)*32)*Math.sin(Math.toRadians(turret)));
-	    cannonX = turretX+(20*Math.cos(Math.toRadians(turret)));
-	    cannonY = turretY+(20*Math.sin(Math.toRadians(turret)));
+	    cannonX = turretX+(16*Math.cos(Math.toRadians(turret)));
+	    cannonY = turretY+(16*Math.sin(Math.toRadians(turret)));
 	    lastSpeed = speed;
 	    speed=0;
             turretSize = ((turretSize-1.0f)/2.0f)+1.0f;
@@ -197,16 +197,6 @@ public class Tank extends Entity implements TankInterface {
         g.setColor(color);
         g.fillPolygon(poly);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        //draw laser
-        int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
-        int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
-        g.setColor(color);
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-        Polygon laser = room.getSight(new Point((int)cannonX, (int)cannonY), turret, 1.0);
-        if (laser.npoints == 2) {
-            g.drawLine(laser.xpoints[0], laser.ypoints[0], laser.xpoints[1], laser.ypoints[1]);
-        }
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         //get index
 	int index = (int)(((tread+270+(3600))%360)/7.5);
         int turretIndex = (int)(((turret+270+(3600))%360)/7.5);
@@ -239,6 +229,16 @@ public class Tank extends Entity implements TankInterface {
 	    g.fillPolygon(turretSight);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 	}
+        //draw laser
+        int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
+        int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
+        g.setColor(color);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        Polygon laser = room.getSight(new Point((int)cannonX, (int)cannonY), turret, 1.0);
+        if (laser.npoints == 2) {
+            g.drawLine(laser.xpoints[0], laser.ypoints[0], laser.xpoints[1], laser.ypoints[1]);
+        }
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
 
     public String toString() {

@@ -16,8 +16,8 @@ public class Bullet extends Entity {
         this.x = x;
         this.y = y;
         this.angle = angle;
-        this.boundingBox = new Rectangle((int)x+24, (int)y+24, 16, 16);
-        this.boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
+        boundingBox = new Rectangle((int)x+4, (int)y+4, 8, 8);
+        boundingSprite = new Rectangle((int)x, (int)y, 16, 16);
     }
 
     public Tank.Player getPlayer() {
