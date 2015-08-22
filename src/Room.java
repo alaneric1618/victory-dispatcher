@@ -180,25 +180,42 @@ public class Room {
 	int stepSize = 2;
 	int i = 0;
 	int count = (int)(fov/stepSize);
-	for (double theta = angle-(fov/2); i < count; theta+=stepSize ) {
-	    double x = p.x+800*Math.cos(Math.toRadians(theta));
-	    double y = p.y+800*Math.sin(Math.toRadians(theta));
-	    Line2D l = new Line2D.Double(p.x, p.y, x, y);
-	    for (Block block : blocks) {
-	    	Rectangle r = block.boundingBox;
-	    	if (l.intersects(r)) {
-		    double xt = r.x+r.width/2.0;
-		    double yt = r.y+r.height/2.0;		    
-		    double dist = Math.sqrt((xt-p.x)*(xt-p.x) + (yt-p.y)*(yt-p.y));
-		    x = p.x+dist*Math.cos(Math.toRadians(theta));
-		    y = p.y+dist*Math.sin(Math.toRadians(theta));
-		    l = new Line2D.Double(p.x, p.y, x, y);
-	    	}
-		
-	    }
-	    poly.addPoint((int)x, (int)y);
-	    i++;
-	}
+        if (fov < 2.0) {
+            double x = p.x+800*Math.cos(Math.toRadians(angle));
+            double y = p.y+800*Math.sin(Math.toRadians(angle));
+            Line2D l = new Line2D.Double(p.x, p.y, x, y);
+            for (Block block : blocks) {
+                Rectangle r = block.boundingBox;
+                if (l.intersects(r)) {
+                    double xt = r.x+r.width/2.0;
+                    double yt = r.y+r.height/2.0;		    
+                    double dist = Math.sqrt((xt-p.x)*(xt-p.x) + (yt-p.y)*(yt-p.y));
+                    x = p.x+dist*Math.cos(Math.toRadians(angle));
+                    y = p.y+dist*Math.sin(Math.toRadians(angle));
+                    l = new Line2D.Double(p.x, p.y, x, y);
+                }
+            }
+            poly.addPoint((int)x, (int)y);
+        } else {
+            for (double theta = angle-(fov/2); i < count; theta+=stepSize ) {
+                double x = p.x+800*Math.cos(Math.toRadians(theta));
+                double y = p.y+800*Math.sin(Math.toRadians(theta));
+                Line2D l = new Line2D.Double(p.x, p.y, x, y);
+                for (Block block : blocks) {
+                    Rectangle r = block.boundingBox;
+                    if (l.intersects(r)) {
+                        double xt = r.x+r.width/2.0;
+                        double yt = r.y+r.height/2.0;		    
+                        double dist = Math.sqrt((xt-p.x)*(xt-p.x) + (yt-p.y)*(yt-p.y));
+                        x = p.x+dist*Math.cos(Math.toRadians(theta));
+                        y = p.y+dist*Math.sin(Math.toRadians(theta));
+                        l = new Line2D.Double(p.x, p.y, x, y);
+                    }
+                }
+                poly.addPoint((int)x, (int)y);
+                i++;
+            }
+        }
 	return poly;
     }
 

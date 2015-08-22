@@ -188,7 +188,10 @@ public class Tank extends Entity implements TankInterface {
         int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
         g.setColor(color);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-        g.drawLine((int)turretX, (int)turretY, losX, losY);
+        Polygon laser = room.getSight(new Point((int)cannonX, (int)cannonY), turret, 1.0);
+        if (laser.npoints == 2) {
+            g.drawLine(laser.xpoints[0], laser.ypoints[0], laser.xpoints[1], laser.ypoints[1]);
+        }
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         //get index
 	int index = (int)(((tread+270+(3600))%360)/7.5);
