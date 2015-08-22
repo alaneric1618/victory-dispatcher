@@ -2,8 +2,22 @@ import java.awt.event.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
+import javax.imageio.ImageIO;
+import java.awt.geom.AffineTransform;
+import java.io.File;
+import java.awt.image.BufferedImage;
 
 public class Room {
+
+    public static BufferedImage spriteMap;
+    static {
+	try {
+	    spriteMap = ImageIO.read(new File("./media/lot.png")); //Frames to animate
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
 
     public boolean paused = false;
 
@@ -28,7 +42,7 @@ public class Room {
 	Tank cpu = new TankMajorTom();
 	player.setRoom(this);
 	tanks.add(player);
-	cpu.setRoom(this);	
+	cpu.setRoom(this);
 	tanks.add(cpu);
 	for (int i = 2; i < 9; i++) {
 	    if (i != 5) {
@@ -69,11 +83,12 @@ public class Room {
                     toRemoveBullets.add(bullet);
                 }
                 bullet.update(dt);
-		if (box.x < 8 || box.x > VD.WIDTH-32
+                //collision detect bullet with screen
+		if (box.x < 8 || box.x > VD.WIDTH-10
 		    || box.y < 0 || box.y > VD.HEIGHT-72) {
 		    toRemoveBullets.add(bullet);
 		    decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < 20; i++) {
                         int xr = (int)(10*Math.random())+11;
                         int yr = (int)(10*Math.random())+11;
                         decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
@@ -85,7 +100,7 @@ public class Room {
 			toRemoveBullets.add(bullet);
 			block.destroy();
                         decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
-                        for (int i = 0; i < 5; i++) {
+                        for (int i = 0; i < 20; i++) {
                             int xr = (int)(10*Math.random())+11;
                             int yr = (int)(10*Math.random())+11;
                             decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
@@ -125,8 +140,11 @@ public class Room {
 
     public void draw(Graphics2D g) {
         //Draw background
-        g.setColor(new Color(128, 128, 128));
+        //g.setColor(new Color(112, 112, 112));
         g.fillRect(0, 0, VD.WIDTH, VD.HEIGHT);
+	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+        //System.out.println(spriteMap);
+	g.drawImage(spriteMap, new AffineTransform(0.615f, 0f , 0f , 0.42f, -250.0, -180.0), null);
         //Draw blocks
         for (Block block : blocks) {
             block.draw(g);
@@ -137,8 +155,10 @@ public class Room {
             pauseSymbols.alignment = Symbols.Alignment.LEFT_JUSTIFIED;
             pauseSymbols.draw(g);
         }
-	g.setColor(Color.black);
-	g.drawLine(0, VD.HEIGHT-64, VD.WIDTH, VD.HEIGHT-64);
+	g.setColor(new Color(55, 55, 55));
+        g.drawLine(0, VD.HEIGHT-64, VD.WIDTH, VD.HEIGHT-64);
+        g.setColor(new Color(125, 125, 125));
+        g.fillRect(0, VD.HEIGHT-64, VD.WIDTH, 128);
         //DEBUG
         if (VD.DEBUG) {
             
