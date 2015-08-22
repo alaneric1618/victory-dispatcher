@@ -162,14 +162,18 @@ public class Tank extends Entity implements TankInterface {
             desiredTread = ((desiredTread%360) + 360) % 360;
             //Turret Rotation
 	    double turretDiff = Math.abs(turret-desiredTurret);
-	    double turretRate = turretDiff/5.0;
+            double turretDivisor = 8.0;
+            if (isTurretLocked) {
+                turretDivisor = 4.0;
+            }
+	    double turretRate = turretDiff/turretDivisor;
 	    if (turretDiff > 1.0) {
 		if (turretDiff < 180) {
                     if (turret < desiredTurret) turret+=turretRate;
                     else turret-=turretRate;
 		}
 		else {
-                    turretRate = (360.0-turretDiff)/5.0;
+                    turretRate = (360.0-turretDiff)/turretDivisor;
                     if (turret < desiredTurret) {
                         turret-=turretRate;
                     } else {
