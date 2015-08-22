@@ -64,8 +64,10 @@ public class Tank extends Entity implements TankInterface {
 	player = room.getNewPlayerEnum();
 	switch (player) {
 	case P1:
+	    // x = 10; y = 10;
+	    // desiredTread = 45.0; desiredTurret = desiredTread;
 	    x = 10; y = 10;
-	    desiredTread = 45.0; desiredTurret = desiredTread;
+	    desiredTread = 0.0; desiredTurret = desiredTread;
 	    color = Color.cyan;
 	    break;
 	case P2:
@@ -136,33 +138,52 @@ public class Tank extends Entity implements TankInterface {
             turretPull = ((turretPull-1.0f)/1.3f)+1.0f;
 	    boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
 	    boundingBox = new Rectangle((int)x+16, (int)y+16, 32, 32);
-	    double treadDiff = Math.abs(desiredTread-tread);
+            //Tank Rotation
+	    double treadDiff = Math.abs(tread-desiredTread);
 	    double treadRate = treadDiff/2.0;
 	    if (treadDiff > 1.0) {
-		if (desiredTread > tread) {
-		    tread += treadRate;
-		    if (isTurretLocked) {
-			desiredTurret += treadRate;
-			turret += treadRate;
-		    }
+		if (treadDiff < 180) {
+                    if (tread < desiredTread) tread+=treadRate;
+                    else tread-=treadRate;
 		}
-		if (desiredTread < tread) {
-		    tread -= treadRate;
-		    if (isTurretLocked) {
-			desiredTurret -= treadRate;
-			turret -= treadRate;
-		    }
-		}
+		else {
+                    treadRate = (360.0-treadDiff)/2.0;
+                    if (tread < desiredTread) {
+                        tread-=treadRate;
+                    } else {
+                        tread+=treadRate;
+                    }
+                }
 	    }
-	    double turretDiff = Math.abs(desiredTurret-turret);
+            if (isTurretLocked) {
+                desiredTurret = tread;
+            }
+            tread = ((tread%360) + 360) % 360;
+            desiredTread = ((desiredTread%360) + 360) % 360;
+            //Turret Rotation
+	    double turretDiff = Math.abs(turret-desiredTurret);
+	    double turretRate = turretDiff/5.0;
 	    if (turretDiff > 1.0) {
-		if (desiredTurret > turret) {
-		    turret += turretDiff/5.0;
+		if (turretDiff < 180) {
+                    if (turret < desiredTurret) turret+=turretRate;
+                    else turret-=turretRate;
 		}
-		if (desiredTurret < turret) {
-		    turret -= turretDiff/5.0;
-		}
+		else {
+                    turretRate = (360.0-turretDiff)/5.0;
+                    if (turret < desiredTurret) {
+                        turret-=turretRate;
+                    } else {
+                        turret+=turretRate;
+                    }
+                }
 	    }
+            if (isTurretLocked) {
+                desiredTurret = turret;
+            }
+            turret = ((turret%360) + 360) % 360;
+            desiredTurret = ((desiredTurret%360) + 360) % 360;
+
+            //Updates
 	    updateSight();
 	    loop(dt);
 	}
@@ -290,11 +311,17 @@ public class Tank extends Entity implements TankInterface {
     }
 
     final protected void turnTread(double deg, boolean isAbsolute) {
+        deg = ((deg%360)+360)%360;
 	if (isAbsolute) {
 	    desiredTread = deg;
 	} else {
 	    desiredTread += deg;
+            desiredTread=((desiredTread%360)+360)%360;
 	}
+    }
+
+    final protected void lockTurret() {
+        isTurretLocked = true;
     }
 
     final protected void turnTurretTo(double x, double y) {

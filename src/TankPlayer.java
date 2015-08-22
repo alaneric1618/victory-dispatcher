@@ -72,6 +72,9 @@ public class TankPlayer extends Tank implements TankInterface {
         if (keys[KeyEvent.VK_2]) {
             VD.DEBUG = true;
         }
+        if (keys[KeyEvent.VK_L]) {
+            lockTurret();
+        }
     }
 
 }
