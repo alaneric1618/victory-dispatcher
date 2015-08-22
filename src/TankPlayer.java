@@ -6,8 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 public class TankPlayer extends Tank implements TankInterface {
     private boolean[] keys = new boolean[256];
@@ -27,7 +26,21 @@ public class TankPlayer extends Tank implements TankInterface {
 		    }
 		    return true;
 		}
-	});
+        });
+
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+                public void eventDispatched(AWTEvent event) {
+                    Point o = VD.getOriginOnScreen();
+                    Point s = MouseInfo.getPointerInfo().getLocation();
+                    Point p = new Point(s.x-o.x, s.y-o.y);
+                    turnTurretTo(p.x, p.y);
+                }
+        }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+                public void eventDispatched(AWTEvent event) {
+                    fire();
+                }
+        }, AWTEvent.MOUSE_EVENT_MASK);
     }
     
     public void onHit() {

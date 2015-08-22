@@ -1,8 +1,6 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Dimension;
+import java.awt.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -10,8 +8,9 @@ import java.util.*;
 public class VD extends JFrame implements KeyListener {
 
     public static Thread gameThread;
+    public static GamePanel runningGamePanel;
     
-    GamePanel gamePanel = new GamePanel();
+    public GamePanel gamePanel = new GamePanel();
     public Graphics g;
     public boolean running;
     public boolean paused = false;
@@ -43,6 +42,7 @@ public class VD extends JFrame implements KeyListener {
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g = frame.getContentPane().getGraphics();
         frame.getContentPane().add(gamePanel);
+        runningGamePanel = gamePanel;
         currentRoom = new Room();
         gamePanel.room = currentRoom;
         frame.addKeyListener(this);
@@ -123,6 +123,14 @@ public class VD extends JFrame implements KeyListener {
         public void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D)g;
             currentRoom.draw(g2);
+        }
+    }
+
+    static public Point getOriginOnScreen() {
+        if (runningGamePanel != null) {
+            return runningGamePanel.getLocationOnScreen();
+        } else {
+            return null;
         }
     }
 

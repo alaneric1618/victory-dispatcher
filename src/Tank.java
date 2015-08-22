@@ -46,6 +46,8 @@ public class Tank extends Entity implements TankInterface {
     private double bulletWait = 850.0;
     private float turretSize = 1.0f;
     private double turretPull = 1.0;
+    private boolean isAiming = false;
+    private Point  point = new Point(0, 0);
 
     public Tank() {
         this.player = player;
@@ -161,10 +163,20 @@ public class Tank extends Entity implements TankInterface {
             tread = ((tread%360) + 360) % 360;
             desiredTread = ((desiredTread%360) + 360) % 360;
             //Turret Rotation
+            if (isAiming) {
+                double angle = Math.toDegrees(Math.atan2(point.y-turretY, point.x-turretX));
+                while(angle < 0){
+                    angle += 360;
+                }
+                desiredTurret = angle;
+            }
 	    double turretDiff = Math.abs(turret-desiredTurret);
             double turretDivisor = 8.0;
             if (isTurretLocked) {
                 turretDivisor = 4.0;
+            }
+            if (isAiming) {
+                turretDivisor = 2.0;
             }
 	    double turretRate = turretDiff/turretDivisor;
 	    if (turretDiff > 1.0) {
@@ -186,7 +198,6 @@ public class Tank extends Entity implements TankInterface {
             }
             turret = ((turret%360) + 360) % 360;
             desiredTurret = ((desiredTurret%360) + 360) % 360;
-
             //Updates
 	    updateSight();
 	    loop(dt);
@@ -325,13 +336,18 @@ public class Tank extends Entity implements TankInterface {
     }
 
     final protected void lockTurret() {
+        isAiming = false;
         isTurretLocked = true;
     }
 
     final protected void turnTurretTo(double x, double y) {
+	isTurretLocked = false;
+        isAiming = true;
+        point = new Point((int)x, (int)y);
     }
-    
+
     final protected void turnTurret(double deg, boolean isAbsolute) {
+        isAiming = false;
 	isTurretLocked = false;
 	if (isAbsolute) {
 	    desiredTurret = deg;
