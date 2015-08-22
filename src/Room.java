@@ -141,6 +141,13 @@ public class Room {
 	tanks.add(tank);
     }
 
+    public void add(Bullet bullet) {
+        synchronized (bullets) {
+            bullets.add(bullet);
+        }
+    }
+
+
     public void remove(Tank tank) {
 
     }
@@ -162,12 +169,6 @@ public class Room {
             return Tank.Player.P4;
         default:
             return Tank.Player.NONE;
-        }
-    }
-
-    public void addBullet(Bullet bullet) {
-        synchronized (bullets) {
-            bullets.add(bullet);
         }
     }
 

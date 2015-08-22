@@ -316,10 +316,10 @@ public class Tank extends Entity implements TankInterface {
     final protected void fire() {
         if (bulletTime > bulletWait) {
             bulletTime = 0.0;
-            Bullet bullet = new Bullet(player, cannonX, cannonY, turret);
+            Bullet bullet = new Bullet(player, cannonX-8, cannonY-8, turret);
             turretSize = 1.2f;
             turretPull = 1.2f;
-            room.addBullet(bullet);
+            room.add(bullet);
         }
     }
     //callable end
