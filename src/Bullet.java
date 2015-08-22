@@ -3,19 +3,25 @@ import java.util.*;
 
 public class Bullet extends Entity {
 
+    private Tank.Player player;
     private double x;
     private double y;
     public double time = 0;
     final public double angle;
 
-    public Bullet(double x, double y, double angle) {
+    public Bullet(Tank.Player player, double x, double y, double angle) {
         super();
+        this.player = player;
         spriteSize = 1.6f;
         this.x = x;
         this.y = y;
         this.angle = angle;
         this.boundingBox = new Rectangle((int)x+24, (int)y+24, 16, 16);
         this.boundingSprite = new Rectangle((int)x, (int)y, 64, 64);
+    }
+
+    public Tank.Player getPlayer() {
+        return player;
     }
 
     public void update(float dt) {

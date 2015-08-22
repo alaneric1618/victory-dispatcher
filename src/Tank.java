@@ -11,6 +11,15 @@ import java.awt.event.KeyListener;
 
 public class Tank extends Entity implements TankInterface {
 
+    public enum Player {
+        P1,
+        P2,
+        P3,
+        P4,
+        NONE
+    }
+
+    private Tank.Player player;
     private Room room;
     private Color color = Color.white;
     private int hp;
@@ -39,6 +48,7 @@ public class Tank extends Entity implements TankInterface {
     private double turretPull = 1.0;
 
     public Tank() {
+        this.player = player;
 	treadSight = new Polygon();
 	turretSight = new Polygon();
 	int hp = 100;
@@ -46,25 +56,29 @@ public class Tank extends Entity implements TankInterface {
 	onCreation();
     }
 
+    public Tank.Player getPlayer() {
+        return player;
+    }
+
     final public void setRoom(Room room) {
-	final int count = room.getTankCount();
-	switch (count) {
-	case 0:
+	player = room.getNewPlayerEnum();
+	switch (player) {
+	case P1:
 	    x = 10; y = 10;
 	    desiredTread = 45.0; desiredTurret = desiredTread;
 	    color = Color.cyan;
 	    break;
-	case 1:
+	case P2:
 	    x = 510; y = 350;
 	    desiredTread = 225.0; desiredTurret = desiredTread;
 	    color = Color.magenta;
 	    break;
-	case 2:
+	case P3:
 	    x = 10; y = 350;
 	    desiredTread = 315.0; desiredTurret = desiredTread;
 	    color = Color.yellow;
 	    break;
-	case 3:
+	case P4:
 	    x = 510; y = 10;
 	    desiredTread = 135.0; desiredTurret = desiredTread;
 	    color = Color.black;
@@ -302,7 +316,7 @@ public class Tank extends Entity implements TankInterface {
     final protected void fire() {
         if (bulletTime > bulletWait) {
             bulletTime = 0.0;
-            Bullet bullet = new Bullet(cannonX, cannonY, turret);
+            Bullet bullet = new Bullet(player, cannonX, cannonY, turret);
             turretSize = 1.2f;
             turretPull = 1.2f;
             room.addBullet(bullet);

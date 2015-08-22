@@ -38,12 +38,8 @@ public class Room {
     public Rectangle roomRect = new Rectangle(0, 0, VD.WIDTH-32, VD.HEIGHT-64);
 
     public Room() {
-        Tank player = new TankPlayer();
-	Tank cpu = new TankMajorTom();
-	player.setRoom(this);
-	tanks.add(player);
-	cpu.setRoom(this);
-	tanks.add(cpu);
+        add(new TankPlayer());
+	add(new TankMajorTom());
 	for (int i = 2; i < 9; i++) {
 	    if (i != 5) {
 		Block block = new Block(Block.Type.H, 4+i, 6);
@@ -107,6 +103,18 @@ public class Room {
                         }
 		    }
 		}
+                //collision detect bullet w/ tanks
+                for (Tank tank : tanks) {
+		    if (bullet.intersects(tank) && bullet.getPlayer() != tank.getPlayer()) {
+			toRemoveBullets.add(bullet);
+                        decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                        for (int i = 0; i < 20; i++) {
+                            int xr = (int)(10*Math.random())+11;
+                            int yr = (int)(10*Math.random())+11;
+                            decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
+                        }
+		    }
+		}
             }
             for (Bullet bullet : toRemoveBullets) {
                 bullets.remove(bullet);
@@ -128,8 +136,33 @@ public class Room {
 	}
     }
 
-    public int getTankCount() {
+    public void add(Tank tank) {
+        tank.setRoom(this);
+	tanks.add(tank);
+    }
+
+    public void remove(Tank tank) {
+
+    }
+
+    public int getPlayerCount() {
 	return tanks.size();
+    }
+
+    public Tank.Player getNewPlayerEnum() {
+        final int nplayers = getPlayerCount();
+        switch (nplayers) {
+        case 0:
+            return Tank.Player.P1;
+        case 1:
+            return Tank.Player.P2;
+        case 2:
+            return Tank.Player.P3;
+        case 3:
+            return Tank.Player.P4;
+        default:
+            return Tank.Player.NONE;
+        }
     }
 
     public void addBullet(Bullet bullet) {
