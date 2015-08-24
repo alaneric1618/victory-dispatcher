@@ -16,13 +16,31 @@ public class Tank extends Entity implements TankInterface {
         P2,
         P3,
         P4,
-        NONE
+        NONE;
+
+        public Color getColor() {
+            Color color = Color.white;
+            switch (this) {
+            case P1:
+                color = Color.cyan;
+                break;
+            case P2:
+                color = Color.magenta;
+                break;
+            case P3:
+                color = Color.yellow;
+                break;
+            case P4:
+                color = Color.black;
+                break;
+            }
+            return color;
+        }
     }
 
     private Tank.Player player;
     private Room room;
     private Color color = Color.white;
-    private int hp;
     private float cannonCooldown;
     private Polygon treadSight;
     private Polygon turretSight;
@@ -53,7 +71,6 @@ public class Tank extends Entity implements TankInterface {
         this.player = player;
 	treadSight = new Polygon();
 	turretSight = new Polygon();
-	int hp = 100;
 	float cannonCooldown = -1;
 	onCreation();
     }

@@ -10,7 +10,10 @@ import java.awt.image.BufferedImage;
 public class Room {
 
     public static BufferedImage spriteMap;
-    public static BufferedImage healthIcon;
+    public static BufferedImage hp1;
+    public static BufferedImage hp2;
+    public static BufferedImage hp3;
+    public static BufferedImage hp4;
     static {
 	try {
 	    spriteMap = ImageIO.read(new File("./media/lot.png")); //Frames to animate
@@ -18,17 +21,31 @@ public class Room {
 	    e.printStackTrace();
 	}
 	try {
-	    healthIcon = ImageIO.read(new File("./media/side.png")); //Frames to animate
+	    hp1 = ImageIO.read(new File("./media/side.png")); //Frames to animate
+	    hp2 = ImageIO.read(new File("./media/side.png")); //Frames to animate
+	    hp3 = ImageIO.read(new File("./media/side.png")); //Frames to animate
+	    hp4 = ImageIO.read(new File("./media/side.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
+        for (int x = 0; x < hp1.getWidth(); x++) {
+            for (int y = 0; y < hp1.getHeight(); y++) {
+                int alpha = (hp1.getRGB(x, y) >> 24);
+                if (alpha != 0) {
+                    hp1.setRGB(x, y, Color.cyan.getRGB());
+                    hp2.setRGB(x, y, Color.magenta.getRGB());
+                    hp3.setRGB(x, y, Color.yellow.getRGB());
+                    hp4.setRGB(x, y, Color.black.getRGB());
+                }
+            }
+        }
     }
-
 
     public boolean paused = false;
 
     ArrayList<Entity> scene = new ArrayList<Entity>();
     HashMap<Tank.Player, Tank> tanks = new HashMap<Tank.Player, Tank>();
+    HashMap<Tank.Player, Double> hps = new HashMap<Tank.Player, Double>();
     ArrayList<Block> blocks = new ArrayList<Block>();
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     ArrayList<Decal> decals = new ArrayList<Decal>();
@@ -142,10 +159,25 @@ public class Room {
 	}
     }
 
+    public double getHP(Tank.Player player) {
+        if (hps.containsKey(player)) {
+            Double hp = hps.get(player);
+            return hp;
+        } else {
+            return 0.0;
+        }
+        
+    }
+
+    public void setHP(Tank.Player player, double hp) {
+        hps.put(player, new Double(hp));
+    }
+
     public void add(Tank tank) {
         tank.setRoom(this);
         Tank.Player player = getNewPlayerEnum();
 	tanks.put(player, tank);
+        hps.put(player, new Double(100));
     }
 
     public void add(Bullet bullet) {
@@ -153,7 +185,6 @@ public class Room {
             bullets.add(bullet);
         }
     }
-
 
     public void remove(Tank tank) {
 
@@ -213,6 +244,35 @@ public class Room {
 	for (Decal decal : decals) {
 	    decal.draw(g);
 	}
+        //HUD
+        for (Tank.Player player : hps.keySet()) {
+            g.setColor(player.getColor());
+            int i = 0;
+            BufferedImage img = null;
+            switch (player) {
+            case P1:
+                i = 1;
+                img = hp1;
+                break;
+            case P2:
+                i = 2;
+                img = hp2;
+                break;
+            case P3:
+                i = 3;
+                img = hp3;
+                break;
+            case P4:
+                i = 4;
+                img = hp4;
+                break;
+            default:
+                break;
+            }
+            if (img != null) {
+                g.drawImage(img, new AffineTransform(2f, 0f , 0f , 2f, (i-1)*155+20, 400), null);
+            }
+        }
     }
     
     public Polygon getSight(Point p, double angle, double fov) {
