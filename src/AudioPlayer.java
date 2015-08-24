@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 
 public enum AudioPlayer {
-    DOT("dot.wav");
+    OPENER("opener.wav");
 
     private Clip clip;
 

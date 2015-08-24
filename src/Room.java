@@ -10,9 +10,15 @@ import java.awt.image.BufferedImage;
 public class Room {
 
     public static BufferedImage spriteMap;
+    public static BufferedImage healthIcon;
     static {
 	try {
 	    spriteMap = ImageIO.read(new File("./media/lot.png")); //Frames to animate
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+	try {
+	    healthIcon = ImageIO.read(new File("./media/side.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
@@ -22,7 +28,7 @@ public class Room {
     public boolean paused = false;
 
     ArrayList<Entity> scene = new ArrayList<Entity>();
-    ArrayList<Tank> tanks = new ArrayList<Tank>();
+    HashMap<Tank.Player, Tank> tanks = new HashMap<Tank.Player, Tank>();
     ArrayList<Block> blocks = new ArrayList<Block>();
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     ArrayList<Decal> decals = new ArrayList<Decal>();
@@ -104,7 +110,7 @@ public class Room {
 		    }
 		}
                 //collision detect bullet w/ tanks
-                for (Tank tank : tanks) {
+                for (Tank tank : tanks.values()) {
 		    if (bullet.intersects(tank) && bullet.getPlayer() != tank.getPlayer()) {
 			toRemoveBullets.add(bullet);
                         decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
@@ -131,14 +137,15 @@ public class Room {
 		decals.remove(decal);
 	    }
 	}
-	for (Tank tank : tanks) {
+	for (Tank tank : tanks.values()) {
 	    tank.update(dt);
 	}
     }
 
     public void add(Tank tank) {
         tank.setRoom(this);
-	tanks.add(tank);
+        Tank.Player player = getNewPlayerEnum();
+	tanks.put(player, tank);
     }
 
     public void add(Bullet bullet) {
@@ -197,7 +204,7 @@ public class Room {
         if (VD.DEBUG) {
             
         }
-	for (Tank tank : tanks) {
+	for (Tank tank : tanks.values()) {
 	    tank.draw(g);
 	}
         for (Bullet bullet : bullets) {
@@ -269,7 +276,7 @@ public class Room {
 
     public HashSet<VisibleEntity> getVisibleEntities(Tank forTank, Polygon poly1, Polygon poly2) {
 	HashSet<VisibleEntity> ents = new HashSet<VisibleEntity>();
-	for (Tank tank : tanks) {
+	for (Tank tank : tanks.values()) {
 	    if (tank == forTank) continue;
 	    Rectangle box = tank.getBoundingBox();
 	    if (poly1.intersects(box) || poly2.intersects(box)) {
