@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 public class Room {
 
     public static BufferedImage spriteMap;
+    public static BufferedImage hp;
     public static BufferedImage hp1;
     public static BufferedImage hp2;
     public static BufferedImage hp3;
@@ -21,6 +22,7 @@ public class Room {
 	    e.printStackTrace();
 	}
 	try {
+	    hp = ImageIO.read(new File("./media/side.png")); //Frames to animate
 	    hp1 = ImageIO.read(new File("./media/side.png")); //Frames to animate
 	    hp2 = ImageIO.read(new File("./media/side.png")); //Frames to animate
 	    hp3 = ImageIO.read(new File("./media/side.png")); //Frames to animate
@@ -49,6 +51,10 @@ public class Room {
     ArrayList<Block> blocks = new ArrayList<Block>();
     ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     ArrayList<Decal> decals = new ArrayList<Decal>();
+    double shownHP1 = 70.0;
+    double shownHP2 = 70.0;
+    double shownHP3 = 70.0;
+    double shownHP4 = 70.0;
     // int x = 0;
     // int y = 0; //for debug
     //int frame = 0; //for debug
@@ -136,6 +142,15 @@ public class Room {
                             int yr = (int)(10*Math.random())+11;
                             decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
                         }
+                        Tank.Player player = tank.getPlayer();
+                        double hp = (double)hps.get(player);
+                        //deduce health
+                        double newHP = hp-20.0;
+                        if (newHP < 0.0) newHP = 0.0;
+                        hps.put(player, new Double(newHP));
+                        if (hp < 0.0) { //dead
+                            
+                        }
 		    }
 		}
             }
@@ -221,7 +236,7 @@ public class Room {
         for (Block block : blocks) {
             block.draw(g);
         }
-        //Draw pause
+        //draw pause
         if (paused) {
             Symbols pauseSymbols = new Symbols("paused", 130, 20);
             pauseSymbols.alignment = Symbols.Alignment.LEFT_JUSTIFIED;
@@ -246,31 +261,54 @@ public class Room {
 	}
         //HUD
         for (Tank.Player player : hps.keySet()) {
+            double health = (double)hps.get(player);
+            double shownHealth = 0.0;
+            double diff = 0.0;
             g.setColor(player.getColor());
             int i = 0;
             BufferedImage img = null;
             switch (player) {
             case P1:
-                i = 1;
+                i = 0*155+20;
                 img = hp1;
+                diff = Math.abs(shownHP1-health);
+                if (diff > 0.01 && shownHP1 > health) shownHP1-=diff/5.0;
+                if (diff > 0.01 && shownHP1 < health) shownHP1+=diff/5.0;
+                shownHealth = shownHP1;
                 break;
             case P2:
-                i = 2;
+                i = 1*155+20;
                 img = hp2;
+                diff = Math.abs(shownHP2-health);
+                if (diff > 0.01 && shownHP2 > health) shownHP2-=diff/5.0;
+                if (diff > 0.01 && shownHP2 < health) shownHP2+=diff/5.0;
+                shownHealth = shownHP2;
                 break;
             case P3:
-                i = 3;
+                i = 2*155+20;
                 img = hp3;
+                diff = Math.abs(shownHP3-health);
+                if (diff > 0.01 && shownHP3 > health) shownHP3-=diff/5.0;
+                if (diff > 0.01 && shownHP3 < health) shownHP3+=diff/5.0;
+                shownHealth = shownHP3;
                 break;
             case P4:
-                i = 4;
+                i = 3*155+20;
                 img = hp4;
+                diff = Math.abs(shownHP2-health);
+                if (diff > 0.01 && shownHP4 > health) shownHP4-=diff/5.0;
+                if (diff > 0.01 && shownHP4 < health) shownHP4+=diff/5.0;
+                shownHealth = shownHP4;
                 break;
             default:
                 break;
             }
             if (img != null) {
-                g.drawImage(img, new AffineTransform(2f, 0f , 0f , 2f, (i-1)*155+20, 400), null);
+                int pixels = (int)(1.15*(shownHealth/2.0));
+                g.drawImage(hp, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
+                g.clipRect(i, 400, pixels+4, 64);
+                g.drawImage(img, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
+                g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
             }
         }
     }
