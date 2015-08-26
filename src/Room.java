@@ -104,7 +104,7 @@ public class Room {
 	    ArrayList<Bullet> toRemoveBullets = new ArrayList<Bullet>();
             for (Bullet bullet : bullets) {
 		Rectangle box = bullet.getBoundingBox();		
-                if (bullet.time > 3000) {
+                if (bullet.time > 5000) {
                     toRemoveBullets.add(bullet);
                 }
                 bullet.update(dt);
@@ -227,9 +227,8 @@ public class Room {
 
     public void draw(Graphics2D g) {
         //Draw background
-        //g.setColor(new Color(112, 112, 112));
-        g.fillRect(0, 0, VD.WIDTH, VD.HEIGHT);
-	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+        g.setColor(Color.black);
+	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
         //System.out.println(spriteMap);
 	g.drawImage(spriteMap, new AffineTransform(0.615f, 0f , 0f , 0.42f, -250.0, -180.0), null);
         //Draw blocks
@@ -308,7 +307,8 @@ public class Room {
                 g.drawImage(hp, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
                 g.clipRect(i, 400, pixels+4, 64);
                 g.drawImage(img, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
-                g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+                //g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+		g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
             }
         }
     }

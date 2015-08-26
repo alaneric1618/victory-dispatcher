@@ -66,7 +66,7 @@ public class Entity {
 	double y = boundingSprite.getY();
 	g.clipRect((int)x, (int)y, (int)(w*spriteSize), (int)(h*spriteSize));
 	g.drawImage(Entity.spriteMap, new AffineTransform(spriteSize, 0f , 0f , spriteSize, (x-(i*spriteSize)), (y-(j*spriteSize))), null);
-	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
     }
 
     // drawSprite
@@ -82,7 +82,7 @@ public class Entity {
 	double y = boundingSprite.getY();
 	g.clipRect((int)x, (int)y, (int)(size*spriteSize), (int)(size*spriteSize));
 	g.drawImage(Entity.spriteMap, new AffineTransform(spriteSize, 0f , 0f , spriteSize, x-offset-(i*size*spriteSize), y-offset-1-(j*size*spriteSize)), null);
-	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
     }
 
     // drawSprite
@@ -99,7 +99,7 @@ public class Entity {
 	double y = boundingSprite.getY();
 	g.clipRect((int)x+offsetX, (int)y+offsetY, (int)(size*spriteSize), (int)(size*spriteSize));
 	g.drawImage(Entity.spriteMap, new AffineTransform(spriteSize, 0f , 0f , spriteSize, x-offset-(i*size*spriteSize)+offsetX, y-offset-1-(j*size*spriteSize)+offsetY), null);
-	g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
+	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
     }
 
 

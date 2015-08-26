@@ -28,6 +28,7 @@ public class VD extends JFrame implements KeyListener {
     
     public static Thread gameThread;
     public static GamePanel runningGamePanel;
+    public static VD frame;
     public static VD.OS os;
 
     static {
@@ -61,8 +62,11 @@ public class VD extends JFrame implements KeyListener {
     public static final int HEIGHT= 480;
     public static boolean DEBUG = false;
     public static BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    public static float hScale = 1.0f;
-    public static float vScale = 1.0f;
+    public static double hScale = 1.0f;
+    public static double vScale = 1.0f;
+    public static int hOffset = 0;
+    public static int vOffset = 0;
+    public static boolean isFullScreen = false;
 
 
     public VD() {
@@ -75,6 +79,7 @@ public class VD extends JFrame implements KeyListener {
         AudioPlayer.stopAll();
         running = true;
         JFrame frame = this;
+	this.frame = this;
 	if (os == VD.OS.WIN) {
 	    frame.setMinimumSize(new Dimension(VD.WIDTH+18 , VD.HEIGHT+30));
 	    //frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
@@ -84,6 +89,7 @@ public class VD extends JFrame implements KeyListener {
 	}
 	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
+	frame.setBackground(Color.black);
         frame.setTitle("Victory Dispatcher");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g = frame.getContentPane().getGraphics();
@@ -94,6 +100,15 @@ public class VD extends JFrame implements KeyListener {
         frame.addKeyListener(this);
         frame.pack();
         frame.setVisible(true);
+	toggleFullScreen();
+	new Thread(() -> {
+		try {
+		    Thread.sleep(3000);
+		} catch (Exception e) {
+
+		}
+		toggleFullScreen();
+	}).start();
         while (running) {
             gameLoop();
         }
@@ -165,11 +180,15 @@ public class VD extends JFrame implements KeyListener {
 
     public class GamePanel extends JPanel {
         public Room room;
+
         //DRAW LOOP
         public void paintComponent(Graphics g) {
 	    Graphics2D g2 = (Graphics2D)g;
+	    g2.translate(hOffset, vOffset);
 	    g2.scale(VD.hScale, VD.vScale);
 	    currentRoom.draw(g2);
+	    g2.setColor(Color.black);
+	    //g2.fillRect(100, 100, 1000, 100);
         }
     }
 
@@ -180,6 +199,49 @@ public class VD extends JFrame implements KeyListener {
             return null;
         }
     }
+
+    public static void toggleFullScreen() {
+	if (frame != null) {
+	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();	    
+	    if (isFullScreen) {
+		isFullScreen = !isFullScreen;
+		frame.removeNotify();
+		hScale = 1.0;
+		vScale = 1.0;
+		hOffset = 0;
+		vOffset = 0;
+		if (os == VD.OS.WIN) {
+		    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH+18, VD.HEIGHT+30);
+		} else {
+		    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
+		}
+		frame.setUndecorated(false);
+		frame.addNotify();
+	    } else {
+		isFullScreen = !isFullScreen;
+		double hRatio = (double)VD.WIDTH/screen.width;
+		double vRatio = (double)VD.HEIGHT/screen.height;
+		double windowRatio = (double)VD.WIDTH/VD.HEIGHT;
+		double screenRatio = (double)screen.width/screen.height;
+		if (windowRatio > screenRatio) { //restrict width
+		    hScale = hScale/hRatio;
+		    vScale = vScale/hRatio;
+		    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
+		    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
+		} else { //restrict height
+		    hScale = hScale/vRatio;
+		    vScale = vScale/vRatio;
+		    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
+		    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
+		}
+		frame.removeNotify();
+		frame.setUndecorated(true);
+		frame.setBounds(0, 0, screen.width, screen.height);
+		frame.addNotify();
+	    }
+	}
+    }
+    
 
     public static void main(String[] args) {
 	gameThread = new Thread(new Runnable() {
