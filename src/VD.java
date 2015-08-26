@@ -1,6 +1,8 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.*;
+import java.awt.image.*;
+import java.awt.geom.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -58,6 +60,10 @@ public class VD extends JFrame implements KeyListener {
     public static final int WIDTH = 640;
     public static final int HEIGHT= 480;
     public static boolean DEBUG = false;
+    public static BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    public static float hScale = 1.0f;
+    public static float vScale = 1.0f;
+
 
     public VD() {
         this.initGame();
@@ -71,9 +77,13 @@ public class VD extends JFrame implements KeyListener {
         JFrame frame = this;
 	if (os == VD.OS.WIN) {
 	    frame.setMinimumSize(new Dimension(VD.WIDTH+18 , VD.HEIGHT+30));
+	    //frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
+	    //frame.setUndecorated(true);
 	} else {
 	    frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
 	}
+	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+	frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
         frame.setTitle("Victory Dispatcher");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g = frame.getContentPane().getGraphics();
@@ -157,8 +167,9 @@ public class VD extends JFrame implements KeyListener {
         public Room room;
         //DRAW LOOP
         public void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D)g;
-            currentRoom.draw(g2);
+	    Graphics2D g2 = (Graphics2D)g;
+	    g2.scale(VD.hScale, VD.vScale);
+	    currentRoom.draw(g2);
         }
     }
 
