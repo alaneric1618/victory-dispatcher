@@ -7,8 +7,40 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class VD extends JFrame implements KeyListener {
 
+    public enum OS {
+	WIN,
+	MAC,
+	UNIX,
+	UNKNOWN;
+
+	public String toString() {
+	    String s = "Unknown Operating System";
+	    switch (this) {
+	    case WIN: s = "Windows"; break;
+	    case MAC: s = "OSX"; break;
+	    case UNIX: s = "Unix Based"; break;
+	    }
+	    return s;
+	}
+    }
+    
     public static Thread gameThread;
     public static GamePanel runningGamePanel;
+    public static VD.OS os;
+
+    static {
+	String osString = System.getProperty("os.name");
+	if (osString.toUpperCase().indexOf("WIN") >= 0) {
+	    os = VD.OS.WIN;
+	} else if (osString.toUpperCase().indexOf("MAC") >= 0) {
+	    os = VD.OS.MAC;
+	} else if (osString.toUpperCase().indexOf("NIX") >= 0) {
+	    os = VD.OS.UNIX;
+	} else {
+	    os = VD.OS.UNKNOWN;
+	}
+    }
+
     
     public GamePanel gamePanel = new GamePanel();
     public Graphics g;
@@ -37,7 +69,11 @@ public class VD extends JFrame implements KeyListener {
         AudioPlayer.stopAll();
         running = true;
         JFrame frame = this;
-        frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
+	if (os == VD.OS.WIN) {
+	    frame.setMinimumSize(new Dimension(VD.WIDTH+18 , VD.HEIGHT+30));
+	} else {
+	    frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
+	}
         frame.setTitle("Victory Dispatcher");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g = frame.getContentPane().getGraphics();
