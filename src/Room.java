@@ -279,8 +279,10 @@ public class Room {
         if (VD.DEBUG) {
             
         }
-        for (Tank tank : tanks.values()) {
-            tank.draw(g);
+        synchronized (tanks) {
+            for (Tank tank : tanks.values()) {
+                tank.draw(g);
+            }
         }
         for (Bullet bullet : bullets) {
             bullet.draw(g);
@@ -426,20 +428,22 @@ public class Room {
 
     public HashSet<VisibleEntity> getVisibleEntities(Tank forTank, Polygon poly1, Polygon poly2) {
 	HashSet<VisibleEntity> ents = new HashSet<VisibleEntity>();
-	for (Tank tank : tanks.values()) {
-	    if (tank == forTank) continue;
-	    Rectangle box = tank.getBoundingBox();
-	    if (poly1.intersects(box) || poly2.intersects(box)) {
-		VisibleEntity.Type type = VisibleEntity.Type.TANK;
-		VisibleEntity.Side side = VisibleEntity.Side.BAD;
-		Rectangle rect = box;
-		double dir = tank.getDir();
-		double turretDir = tank.getTurretDir();
-		double speed = tank.getSpeed();
-		VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
-		ents.add(ent);
-	    }
-	}
+        synchronized (tanks) {
+            for (Tank tank : tanks.values()) {
+                if (tank == forTank) continue;
+                Rectangle box = tank.getBoundingBox();
+                if (poly1.intersects(box) || poly2.intersects(box)) {
+                    VisibleEntity.Type type = VisibleEntity.Type.TANK;
+                    VisibleEntity.Side side = VisibleEntity.Side.BAD;
+                    Rectangle rect = box;
+                    double dir = tank.getDir();
+                    double turretDir = tank.getTurretDir();
+                    double speed = tank.getSpeed();
+                    VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
+                    ents.add(ent);
+                }
+            }
+        }
 	for (Block block : blocks) {
 	    Rectangle box = block.getBoundingBox();
 	    if (poly1.intersects(box) || poly2.intersects(box)) {
