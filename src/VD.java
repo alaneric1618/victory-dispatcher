@@ -101,14 +101,14 @@ public class VD extends JFrame implements KeyListener {
         frame.pack();
         frame.setVisible(true);
 	toggleFullScreen();
-	new Thread(() -> {
-		try {
-		    Thread.sleep(3000);
-		} catch (Exception e) {
+	// new Thread(() -> {
+	// 	try {
+	// 	    Thread.sleep(3000);
+	// 	} catch (Exception e) {
 
-		}
-		toggleFullScreen();
-	}).start();
+	// 	}
+	// 	toggleFullScreen();
+	// }).start();
         while (running) {
             gameLoop();
         }

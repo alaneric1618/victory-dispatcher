@@ -232,7 +232,7 @@ public class Tank extends Entity implements TankInterface {
 
     @Override
     final public void draw(Graphics2D g) {
-	super.draw(g);
+        super.draw(g);
         //draw tracker
         Polygon poly = new Polygon();
         double rot = ((int)(time/6)%360);
@@ -251,37 +251,37 @@ public class Tank extends Entity implements TankInterface {
         g.fillPolygon(poly);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         //get index
-	int index = (int)(((tread+270+(3600))%360)/7.5);
+        int index = (int)(((tread+270+(3600))%360)/7.5);
         int turretIndex = (int)(((turret+270+(3600))%360)/7.5);
-	drawSprite(g, 64, index, 3, 5, 0);
+        drawSprite(g, 64, index, 3, 5, 0);
         this.spriteSize = turretSize;
         drawSprite(g, 64, turretIndex, 0, 
                    (int)(turretX-centerX)+5-(int)((turretSize-1)*32),
                    (int)(turretY-centerY)+12-(int)((turretSize-1)*32));
         this.spriteSize = 1.0f;
-	if (VD.DEBUG) {
-	    int cx1 = (int)x;
-	    int cy1 = (int)y;
-	    int xa = (int)(42*Math.cos(Math.toRadians(tread)));
-	    int ya = (int)(42*Math.sin(Math.toRadians(tread)));
-	    g.setColor(Color.green);
-	    g.drawLine(cx1+32, cy1+32, cx1+32+xa, cy1+32+ya);
-	    g.fillOval(cx1+32+xa-2, cy1+32+ya-2, 4, 4);
+        if (VD.DEBUG) {
+            int cx1 = (int)x;
+            int cy1 = (int)y;
+            int xa = (int)(42*Math.cos(Math.toRadians(tread)));
+            int ya = (int)(42*Math.sin(Math.toRadians(tread)));
+            g.setColor(Color.green);
+            g.drawLine(cx1+32, cy1+32, cx1+32+xa, cy1+32+ya);
+            g.fillOval(cx1+32+xa-2, cy1+32+ya-2, 4, 4);
 
-	    int cx2 = (int)turretX;
-	    int cy2 = (int)turretY;
-	    int xb = (int)cannonX;
-	    int yb = (int)cannonY;
-	    g.setColor(Color.blue);
-	    g.fillOval((int)cx2-2, (int)cy2-2, 4, 4);
-	    g.drawLine(cx2, cy2, xb, yb);
-	    g.fillOval(xb-2, yb-2, 4, 4);
-	    g.setColor(color);
-	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
-	    g.fillPolygon(treadSight);
-	    g.fillPolygon(turretSight);
-	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-	}
+            int cx2 = (int)turretX;
+            int cy2 = (int)turretY;
+            int xb = (int)cannonX;
+            int yb = (int)cannonY;
+            g.setColor(Color.blue);
+            g.fillOval((int)cx2-2, (int)cy2-2, 4, 4);
+            g.drawLine(cx2, cy2, xb, yb);
+            g.fillOval(xb-2, yb-2, 4, 4);
+            g.setColor(color);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
+            g.fillPolygon(treadSight);
+            g.fillPolygon(turretSight);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        }
         //draw laser
         int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
         int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));

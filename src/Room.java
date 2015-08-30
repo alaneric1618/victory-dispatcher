@@ -55,6 +55,10 @@ public class Room {
     double shownHP2 = 70.0;
     double shownHP3 = 70.0;
     double shownHP4 = 70.0;
+    boolean isWinner = false;
+    Tank.Player winner = null;
+    double winnerTime = 0.0;
+    Font font = new Font("SansSerif", Font.PLAIN, 1);
     // int x = 0;
     // int y = 0; //for debug
     //int frame = 0; //for debug
@@ -133,25 +137,49 @@ public class Room {
 		    }
 		}
                 //collision detect bullet w/ tanks
-                for (Tank tank : tanks.values()) {
-		    if (bullet.intersects(tank) && bullet.getPlayer() != tank.getPlayer()) {
-			toRemoveBullets.add(bullet);
-                        decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
-                        for (int i = 0; i < 20; i++) {
-                            int xr = (int)(10*Math.random())+11;
-                            int yr = (int)(10*Math.random())+11;
-                            decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
+                synchronized (tanks) {
+                    ArrayList<Tank.Player> playersToRemove = new ArrayList<Tank.Player>();
+                    for (Tank tank : tanks.values()) {
+                        if (bullet.intersects(tank) && bullet.getPlayer() != tank.getPlayer()) {
+                            toRemoveBullets.add(bullet);
+                            for (int i = 0; i < 20; i++) {
+                                int xr = (int)(10*Math.random())+11;
+                                int yr = (int)(10*Math.random())+11;
+                                decals.add(new Decal(Decal.Type.SMOKE, box.x-32+xr, box.y-32+yr, bullet.angle));
+                                if (i%6==0) {
+                                    decals.add(new Decal(Decal.Type.DEBRIS, box.x-32, box.y-32, bullet.angle));
+                                }
+                            }
+                            decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                            Tank.Player player = tank.getPlayer();
+                            double hp = (double)hps.get(player);
+                            //deduce health
+                            double newHP = hp-23.0;
+                            if (newHP < 0.0) newHP = -1.0;
+                            hps.put(player, new Double(newHP));
+                            if (newHP < 0.0) { //dead
+                                playersToRemove.add(player);
+                                for (int i = 0; i < 20; i++) {
+                                    decals.add(new Decal(Decal.Type.DEBRIS, box.x-32, box.y-32, bullet.angle));
+                                }
+                                decals.add(new Decal(Decal.Type.BLAST, box.x-32, box.y-32, bullet.angle));
+                            }
                         }
-                        Tank.Player player = tank.getPlayer();
-                        double hp = (double)hps.get(player);
-                        //deduce health
-                        double newHP = hp-20.0;
-                        if (newHP < 0.0) newHP = 0.0;
-                        hps.put(player, new Double(newHP));
-                        if (hp < 0.0) { //dead
-                            
+                        for (Tank.Player player : playersToRemove) {
+                            tanks.remove(player);
+                            //search winner;
+                            if (tanks.size() <= 1) {
+                                isWinner = true;
+                                Tank.Player winnerVar = null;
+                                for (Tank.Player p : tanks.keySet()) {
+                                    //winner found
+                                    winnerVar = p;
+                                }
+                                winner = winnerVar;
+                            }
                         }
-		    }
+                        
+                    }
 		}
             }
             for (Bullet bullet : toRemoveBullets) {
@@ -169,9 +197,11 @@ public class Room {
 		decals.remove(decal);
 	    }
 	}
-	for (Tank tank : tanks.values()) {
-	    tank.update(dt);
-	}
+        synchronized (tanks) {
+            for (Tank tank : tanks.values()) {
+                tank.update(dt);
+            }
+        }
     }
 
     public double getHP(Tank.Player player) {
@@ -249,9 +279,9 @@ public class Room {
         if (VD.DEBUG) {
             
         }
-	for (Tank tank : tanks.values()) {
-	    tank.draw(g);
-	}
+        for (Tank tank : tanks.values()) {
+            tank.draw(g);
+        }
         for (Bullet bullet : bullets) {
             bullet.draw(g);
         }
@@ -305,12 +335,34 @@ public class Room {
             if (img != null) {
                 int pixels = (int)(1.15*(shownHealth/2.0));
                 g.drawImage(hp, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
-                g.clipRect(i, 400, pixels+4, 64);
+                g.clipRect(i-1, 400, pixels+4, 64);
                 g.drawImage(img, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
                 //g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
 		g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
             }
         }
+        //VICTORY
+        if (isWinner) {
+            winnerTime+=1.0;
+            double prob = Math.random();
+            if (prob < 0.1) {
+                int xc = (int)(640*Math.random());
+                int yc = (int)(480*Math.random());
+                decals.add(new Decal(Decal.Type.BLAST, xc-32, yc-32, 0.0));
+            }
+        }
+        double fontSize = winnerTime;
+        if (winnerTime > 96.0) {
+            fontSize = 96.0;
+        }
+        if (winner != null) {
+            g.setColor(winner.getColor());
+        }
+        Font font = new Font("SansSerif", Font.PLAIN, (int)fontSize);
+        g.setFont(font);
+        int x = (int)(30*Math.cos(winnerTime/50.0));
+        int y = (int)(10*Math.cos(winnerTime/15.0));
+        g.drawString("WINNER", (int)(305-2*fontSize)+x, 235+y);
     }
     
     public Polygon getSight(Point p, double angle, double fov) {
