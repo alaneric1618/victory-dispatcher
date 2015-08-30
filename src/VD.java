@@ -148,7 +148,11 @@ public class VD extends JFrame implements KeyListener {
 
     //UPDATE LOOP
     public void update(long dt) {
-        currentRoom.update(dt);
+        try {
+            currentRoom.update(dt);
+        } catch (ConcurrentModificationException e) {
+            //e.printStackTrace();
+        }
     }
 
     @Override
