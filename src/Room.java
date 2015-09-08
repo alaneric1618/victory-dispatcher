@@ -43,8 +43,6 @@ public class Room {
         }
     }
 
-    public boolean paused = false;
-
     ArrayList<Entity> scene = new ArrayList<Entity>();
     HashMap<Tank.Player, Tank> tanks = new HashMap<Tank.Player, Tank>();
     HashMap<Tank.Player, Double> hps = new HashMap<Tank.Player, Double>();
@@ -266,7 +264,7 @@ public class Room {
             block.draw(g);
         }
         //draw pause
-        if (paused) {
+        if (VD.paused) {
             Symbols pauseSymbols = new Symbols("paused", 130, 20);
             pauseSymbols.alignment = Symbols.Alignment.LEFT_JUSTIFIED;
             pauseSymbols.draw(g);

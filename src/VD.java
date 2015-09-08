@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class VD extends JFrame implements KeyListener {
+public class VD extends JFrame {
 
     public enum OS {
 	WIN,
@@ -48,7 +48,6 @@ public class VD extends JFrame implements KeyListener {
     public GamePanel gamePanel = new GamePanel();
     public Graphics g;
     public boolean running;
-    public boolean paused = false;
     public long dt = 0L;
     public long timePreviousFrame = System.currentTimeMillis();
     public long timeCurrentFrame  = System.currentTimeMillis();
@@ -58,6 +57,7 @@ public class VD extends JFrame implements KeyListener {
     
     int currentButton = 0;
 
+    public static boolean paused = false;
     public static final int WIDTH = 640;
     public static final int HEIGHT= 480;
     public static boolean DEBUG = false;
@@ -67,7 +67,9 @@ public class VD extends JFrame implements KeyListener {
     public static int hOffset = 0;
     public static int vOffset = 0;
     public static boolean isFullScreen = false;
-
+    public static KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    public static boolean[] keys = new boolean[256];
+    public static long settingsKeyTimer = 0L;
 
     public VD() {
         this.initGame();
@@ -97,18 +99,23 @@ public class VD extends JFrame implements KeyListener {
         runningGamePanel = gamePanel;
         currentRoom = new Room();
         gamePanel.room = currentRoom;
-        frame.addKeyListener(this);
         frame.pack();
         frame.setVisible(true);
-	toggleFullScreen();
-	// new Thread(() -> {
-	// 	try {
-	// 	    Thread.sleep(3000);
-	// 	} catch (Exception e) {
-
-	// 	}
-	// 	toggleFullScreen();
-	// }).start();
+	//KEYBOARD
+	manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+		public boolean dispatchKeyEvent(KeyEvent e) {
+		    int code = e.getKeyCode();
+		    if (code < 256) {
+			if (KeyEvent.KEY_PRESSED == e.getID()) {
+			    keys[code] = true;
+			}
+			if (KeyEvent.KEY_RELEASED == e.getID()) {
+			    keys[code] = false;
+			}
+		    }
+		    return true;
+		}
+        });
         while (running) {
             gameLoop();
         }
@@ -121,15 +128,16 @@ public class VD extends JFrame implements KeyListener {
         this.timePreviousFrame = this.timeCurrentFrame;
         long timeComputationStart = System.currentTimeMillis();
         //UPDATE AND DRAW
-        if (!paused) this.update(dt);
+	handleUserControl(); settingsKeyTimer++;
+        if (!paused) {
+	    this.update(dt);
+	}
         this.repaint();
-        //this.paintComponent(g);
         //SLEEP IF NEEDED
         try {
             long timeComputationEnd = System.currentTimeMillis();
             long timeComputationTaken = timeComputationEnd - timeComputationStart;
             long timeToSleep = this.timeInterval - timeComputationTaken;
-	    //System.out.println("Time taken:" + dt + "  ");
             if (timeToSleep >= 0) {
                 Thread.sleep(timeToSleep);
             } else {
@@ -155,33 +163,24 @@ public class VD extends JFrame implements KeyListener {
         }
     }
 
-    @Override
-    public void keyTyped(KeyEvent keyEvent) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent keyEvent) {
-        if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
-            if (paused) {
-                paused = false;
-                currentRoom.paused = false;
-            }
-            else if (!paused) {
-                paused = true;
-                currentRoom.paused = true;
-            }
-        }
-	if (keyEvent.getKeyCode() == KeyEvent.VK_H) {
-	    VD.DEBUG = !VD.DEBUG;
+    final private void handleUserControl() {
+	//TOGGLE KEYS
+	if (settingsKeyTimer > 5) {
+	    if (keys[KeyEvent.VK_F]) {
+		toggleFullScreen();
+		settingsKeyTimer = 0L;
+	    }
+	    if (keys[KeyEvent.VK_P]) {
+		paused = !paused;
+		settingsKeyTimer = 0L;
+	    }
+	    if (keys[KeyEvent.VK_H]) {
+		VD.DEBUG = !VD.DEBUG;
+		settingsKeyTimer = 0L;
+	    }
 	}
     }
-
-    @Override
-    public void keyReleased(KeyEvent keyEvent) {
-
-    }
-
+    
     public class GamePanel extends JPanel {
         public Room room;
 
@@ -243,6 +242,13 @@ public class VD extends JFrame implements KeyListener {
 		frame.setBounds(0, 0, screen.width, screen.height);
 		frame.addNotify();
 	    }
+	    // Since the focus is frozen all keys will also be frozen.
+	    // REMOVE FROZEN KEYS
+	    for (int i = 0; i < 256; i++) {
+		keys[i] = false;
+	    }
+	    //REQUEST FOCUS
+	    frame.requestFocus();
 	}
     }
     

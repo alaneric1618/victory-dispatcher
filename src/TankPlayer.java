@@ -12,27 +12,13 @@ public class TankPlayer extends Tank implements TankInterface {
     private boolean[] keys = new boolean[256];
     
     public void onCreation() {
-	KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-	manager.addKeyEventDispatcher(new KeyEventDispatcher() {
-		public boolean dispatchKeyEvent(KeyEvent e) {
-		    int code = e.getKeyCode();
-		    if (code < 256) {
-			if (KeyEvent.KEY_PRESSED == e.getID()) {
-			    keys[code] = true;
-			}
-			if (KeyEvent.KEY_RELEASED == e.getID()) {
-			    keys[code] = false;
-			}
-		    }
-		    return true;
-		}
-        });
-
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
                 public void eventDispatched(AWTEvent event) {
                     Point o = VD.getOriginOnScreen();
                     Point s = MouseInfo.getPointerInfo().getLocation();
-                    Point p = new Point(s.x-o.x, s.y-o.y);
+		    int x = (int)(((s.x-o.x)-VD.hOffset)/VD.hScale);
+		    int y = (int)(((s.y-o.y)-VD.vOffset)/VD.vScale);
+                    Point p = new Point(x, y);
                     turnTurretTo(p.x, p.y);
                 }
         }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
@@ -53,11 +39,11 @@ public class TankPlayer extends Tank implements TankInterface {
 	//     System.out.print(String.format("[SIDE:%4s TYPE:%4s  X:%4s Y:%4s]  ", ent.side, ent.type, ent.rect.x, ent.rect.y));
 	// }
 	// System.out.println();
-
 	handleUserControl();
     }
 
     final private void handleUserControl() {
+	boolean[] keys = VD.keys;
 	if (keys[KeyEvent.VK_A]) {
 	    turnTread(-5.0, false);
 	}
@@ -78,12 +64,6 @@ public class TankPlayer extends Tank implements TankInterface {
 	}
         if (keys[KeyEvent.VK_SPACE]) {
             fire();
-        }
-        if (keys[KeyEvent.VK_1]) {
-            VD.DEBUG = false;
-        }
-        if (keys[KeyEvent.VK_2]) {
-            VD.DEBUG = true;
         }
         if (keys[KeyEvent.VK_L]) {
             lockTurret();
