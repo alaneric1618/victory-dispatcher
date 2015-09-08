@@ -70,6 +70,8 @@ public class VD extends JFrame {
     public static KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
     public static boolean[] keys = new boolean[256];
     public static long settingsKeyTimer = 0L;
+    public static ArrayList<Entity> openingScreens = new ArrayList<Entity>();
+    public static long screenTime = 0L;
 
     public VD() {
         this.initGame();
@@ -98,7 +100,15 @@ public class VD extends JFrame {
         frame.getContentPane().add(gamePanel);
         runningGamePanel = gamePanel;
         currentRoom = new Room();
-        gamePanel.room = currentRoom;
+	openingScreens.add(new Entity() {
+		public void update(float dt) {
+		    
+		}
+		public void draw(Graphics2D g) {
+		    g.setColor(new Color(128, 128, 128));
+		    g.fillRect(0, 0, 1000, 1000);
+		}
+	});
         frame.pack();
         frame.setVisible(true);
 	//KEYBOARD
@@ -154,15 +164,6 @@ public class VD extends JFrame {
 
     }
 
-    //UPDATE LOOP
-    public void update(long dt) {
-        try {
-            currentRoom.update(dt);
-        } catch (ConcurrentModificationException e) {
-            //e.printStackTrace();
-        }
-    }
-
     final private void handleUserControl() {
 	if (keys[KeyEvent.VK_ESCAPE]) {
 	    System.exit(0);
@@ -184,17 +185,49 @@ public class VD extends JFrame {
 	}
     }
     
+    //UPDATE LOOP
+    public void update(long dt) {
+        try {
+	    if (openingScreens != null) {
+		if (!openingScreens.isEmpty()) {
+		    openingScreens.get(0).update(dt);
+		    screenTime++;
+		    if (screenTime > 100L) {
+			openingScreens.remove(0);
+			screenTime = 0L;
+		    }
+		} else {
+		    openingScreens = null;
+		}
+	    } else {
+		if (currentRoom != null) {
+		    currentRoom.update(dt);
+		}
+	    }
+        } catch (ConcurrentModificationException e) {
+            //e.printStackTrace();
+        }
+    }
+    
     public class GamePanel extends JPanel {
-        public Room room;
-
         //DRAW LOOP
         public void paintComponent(Graphics g) {
 	    Graphics2D g2 = (Graphics2D)g;
 	    g2.translate(hOffset, vOffset);
 	    g2.scale(VD.hScale, VD.vScale);
-	    currentRoom.draw(g2);
+	    if (openingScreens != null) {
+		if (!openingScreens.isEmpty()) {
+		    Entity screen = openingScreens.get(0);
+		    if (screen != null) {
+			screen.draw(g2);
+		    }
+		}
+	    } else {
+		if (currentRoom != null) {
+		    currentRoom.draw(g2);
+		}
+	    }
 	    g2.setColor(Color.black);
-	    //g2.fillRect(100, 100, 1000, 100);
         }
     }
 
