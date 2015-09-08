@@ -43,6 +43,8 @@ public class Room {
         }
     }
 
+    boolean isLoading = true;
+    double loadingTime = 0;
     ArrayList<Entity> scene = new ArrayList<Entity>();
     HashMap<Tank.Player, Tank> tanks = new HashMap<Tank.Player, Tank>();
     HashMap<Tank.Player, Double> hps = new HashMap<Tank.Player, Double>();
@@ -57,15 +59,6 @@ public class Room {
     Tank.Player winner = null;
     double winnerTime = 0.0;
     Font font = new Font("SansSerif", Font.PLAIN, 1);
-    // int x = 0;
-    // int y = 0; //for debug
-    //int frame = 0; //for debug
-    //int globalCount = 0;
-    //int dotTimer = 0;
-    //boolean isGlobal = false;
-    //public int xcoor;
-    //public int ycoor;
-    //public boolean buttonPress;
     public Rectangle roomRect = new Rectangle(0, 0, VD.WIDTH-32, VD.HEIGHT-64);
 
     public Room() {
@@ -102,6 +95,13 @@ public class Room {
     }
 
     public void update(float dt) {
+	if (isLoading) {
+	    if (loadingTime > 1.0) {
+		isLoading = false;
+	    }
+	    loadingTime += 0.04;
+	    return;
+	}
         synchronized (bullets) {
 	    ArrayList<Bullet> toRemoveBullets = new ArrayList<Bullet>();
             for (Bullet bullet : bullets) {
@@ -254,6 +254,23 @@ public class Room {
     }
 
     public void draw(Graphics2D g) {
+	if (isLoading) {
+	    g.setColor(Color.black);
+	    g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
+	    int x = 120;
+	    int y = 300;
+	    int w = 400;
+	    int h = 35;
+	    int i = (int)(w*(loadingTime));
+	    g.setColor(new Color(128, 128, 255));
+	    g.drawRect(x, y, w, h);
+	    g.setColor(new Color(50, 50, 180));
+	    g.fillRect(x+1, y+1, i-2, h-2);
+	    Font font = new Font("SansSerif", Font.PLAIN, (int)48);
+	    g.setFont(font);
+	    g.drawString("loading", 240, 250);
+	    return;
+	}
         //Draw background
         g.setColor(Color.black);
 	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));

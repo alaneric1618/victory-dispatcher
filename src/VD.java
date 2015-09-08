@@ -164,6 +164,9 @@ public class VD extends JFrame {
     }
 
     final private void handleUserControl() {
+	if (keys[KeyEvent.VK_ESCAPE]) {
+	    System.exit(0);
+	}
 	//TOGGLE KEYS
 	if (settingsKeyTimer > 5) {
 	    if (keys[KeyEvent.VK_F]) {
