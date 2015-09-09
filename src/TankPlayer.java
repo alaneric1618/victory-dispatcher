@@ -16,15 +16,17 @@ public class TankPlayer extends Tank implements TankInterface {
                 public void eventDispatched(AWTEvent event) {
                     Point o = VD.getOriginOnScreen();
                     Point s = MouseInfo.getPointerInfo().getLocation();
-		    int x = (int)(((s.x-o.x)-VD.hOffset)/VD.hScale);
-		    int y = (int)(((s.y-o.y)-VD.vOffset)/VD.vScale);
+                    int x = (int)(((s.x-o.x)-VD.hOffset)/VD.hScale);
+                    int y = (int)(((s.y-o.y)-VD.vOffset)/VD.vScale);
                     Point p = new Point(x, y);
                     turnTurretTo(p.x, p.y);
                 }
         }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
                 public void eventDispatched(AWTEvent event) {
-                    fire();
+                    if (event.getID() == MouseEvent.MOUSE_CLICKED) {
+                        fire();
+                    }
                 }
         }, AWTEvent.MOUSE_EVENT_MASK);
     }

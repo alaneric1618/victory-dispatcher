@@ -69,7 +69,6 @@ public class VD extends JFrame {
     public static boolean isFullScreen = false;
     public static KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
     public static boolean[] keys = new boolean[256];
-    public static long settingsKeyTimer = 0L;
     public static ArrayList<Entity> openingScreens = new ArrayList<Entity>();
     public static long screenTime = 0L;
 
@@ -105,7 +104,7 @@ public class VD extends JFrame {
 		    
 		}
 		public void draw(Graphics2D g) {
-		    g.setColor(new Color(128, 128, 128));
+		    g.setColor(Color.black);
 		    g.fillRect(0, 0, 1000, 1000);
 		}
 	});
@@ -138,7 +137,7 @@ public class VD extends JFrame {
         this.timePreviousFrame = this.timeCurrentFrame;
         long timeComputationStart = System.currentTimeMillis();
         //UPDATE AND DRAW
-	handleUserControl(); settingsKeyTimer++;
+	handleUserControl();
         if (!paused) {
 	    this.update(dt);
 	}
@@ -165,24 +164,22 @@ public class VD extends JFrame {
     }
 
     final private void handleUserControl() {
-	if (keys[KeyEvent.VK_ESCAPE]) {
-	    System.exit(0);
-	}
-	//TOGGLE KEYS
-	if (settingsKeyTimer > 5) {
-	    if (keys[KeyEvent.VK_F]) {
-		toggleFullScreen();
-		settingsKeyTimer = 0L;
-	    }
-	    if (keys[KeyEvent.VK_P]) {
-		paused = !paused;
-		settingsKeyTimer = 0L;
-	    }
-	    if (keys[KeyEvent.VK_H]) {
-		VD.DEBUG = !VD.DEBUG;
-		settingsKeyTimer = 0L;
-	    }
-	}
+        if (keys[KeyEvent.VK_ESCAPE]) {
+            System.exit(0);
+        }
+        //TOGGLE KEYS
+        if (keys[KeyEvent.VK_F]) {
+            toggleFullScreen();
+            keys[KeyEvent.VK_F] = false;
+        }
+        if (keys[KeyEvent.VK_P]) {
+            paused = !paused;
+            keys[KeyEvent.VK_P] = false;
+        }
+        if (keys[KeyEvent.VK_H]) {
+            VD.DEBUG = !VD.DEBUG;
+            keys[KeyEvent.VK_H] = false;
+        }
     }
     
     //UPDATE LOOP
