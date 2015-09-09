@@ -83,8 +83,6 @@ public class Tank extends Entity implements TankInterface {
 	player = room.getNewPlayerEnum();
 	switch (player) {
 	case P1:
-	    // x = 10; y = 10;
-	    // desiredTread = 45.0; desiredTurret = desiredTread;
 	    x = 10; y = 10;
 	    desiredTread = 0.0; desiredTurret = desiredTread;
 	    color = Color.cyan;
@@ -116,6 +114,7 @@ public class Tank extends Entity implements TankInterface {
         
     @Override
     final public void update(float dt) {
+        super.update(dt);
 	if (room != null) {
 	    loop(dt);
 	    time += dt;

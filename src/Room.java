@@ -282,9 +282,7 @@ public class Room {
         }
         //draw pause
         if (VD.paused) {
-            Symbols pauseSymbols = new Symbols("paused", 130, 20);
-            pauseSymbols.alignment = Symbols.Alignment.LEFT_JUSTIFIED;
-            pauseSymbols.draw(g);
+            
         }
 	g.setColor(new Color(55, 55, 55));
         g.drawLine(0, VD.HEIGHT-64, VD.WIDTH, VD.HEIGHT-64);
@@ -359,7 +357,7 @@ public class Room {
             }
         }
         //VICTORY
-        if (isWinner) {
+        if (isWinner && !VD.paused) {
             winnerTime+=1.0;
             double prob = Math.random();
             if (prob < 0.1) {

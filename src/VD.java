@@ -10,20 +10,20 @@ import java.util.*;
 public class VD extends JFrame {
 
     public enum OS {
-	WIN,
-	MAC,
-	UNIX,
-	UNKNOWN;
+        WIN,
+        MAC,
+        UNIX,
+        UNKNOWN;
 
-	public String toString() {
-	    String s = "Unknown Operating System";
-	    switch (this) {
-	    case WIN: s = "Windows"; break;
-	    case MAC: s = "OSX"; break;
-	    case UNIX: s = "Unix Based"; break;
-	    }
-	    return s;
-	}
+        public String toString() {
+            String s = "Unknown Operating System";
+            switch (this) {
+            case WIN: s = "Windows"; break;
+            case MAC: s = "OSX"; break;
+            case UNIX: s = "Unix Based"; break;
+            }
+            return s;
+        }
     }
     
     public static Thread gameThread;
@@ -32,16 +32,16 @@ public class VD extends JFrame {
     public static VD.OS os;
 
     static {
-	String osString = System.getProperty("os.name");
-	if (osString.toUpperCase().indexOf("WIN") >= 0) {
-	    os = VD.OS.WIN;
-	} else if (osString.toUpperCase().indexOf("MAC") >= 0) {
-	    os = VD.OS.MAC;
-	} else if (osString.toUpperCase().indexOf("NIX") >= 0) {
-	    os = VD.OS.UNIX;
-	} else {
-	    os = VD.OS.UNKNOWN;
-	}
+        String osString = System.getProperty("os.name");
+        if (osString.toUpperCase().indexOf("WIN") >= 0) {
+            os = VD.OS.WIN;
+        } else if (osString.toUpperCase().indexOf("MAC") >= 0) {
+            os = VD.OS.MAC;
+        } else if (osString.toUpperCase().indexOf("NIX") >= 0) {
+            os = VD.OS.UNIX;
+        } else {
+            os = VD.OS.UNKNOWN;
+        }
     }
 
     
@@ -69,8 +69,7 @@ public class VD extends JFrame {
     public static boolean isFullScreen = false;
     public static KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
     public static boolean[] keys = new boolean[256];
-    public static ArrayList<Entity> openingScreens = new ArrayList<Entity>();
-    public static long screenTime = 0L;
+    public static ArrayList<Entity> openingScreens = Menus.getMenus();
 
     public VD() {
         this.initGame();
@@ -78,52 +77,41 @@ public class VD extends JFrame {
 
     //Game Initialization - Place something here if you only want it to happen globally when the game is started.
     public void initGame() {
-	AudioPlayer.init();
+        AudioPlayer.init();
         AudioPlayer.stopAll();
         running = true;
         JFrame frame = this;
-	this.frame = this;
-	if (os == VD.OS.WIN) {
-	    frame.setMinimumSize(new Dimension(VD.WIDTH+18 , VD.HEIGHT+30));
-	    //frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
-	    //frame.setUndecorated(true);
-	} else {
-	    frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
-	}
-	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-	frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
-	frame.setBackground(Color.black);
+        this.frame = this;
+        if (os == VD.OS.WIN) {
+            frame.setMinimumSize(new Dimension(VD.WIDTH+18 , VD.HEIGHT+30));
+        } else {
+            frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
+        }
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
+        frame.setBackground(Color.black);
         frame.setTitle("Victory Dispatcher");
-	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         g = frame.getContentPane().getGraphics();
         frame.getContentPane().add(gamePanel);
         runningGamePanel = gamePanel;
         currentRoom = new Room();
-	openingScreens.add(new Entity() {
-		public void update(float dt) {
-		    
-		}
-		public void draw(Graphics2D g) {
-		    g.setColor(Color.black);
-		    g.fillRect(0, 0, 1000, 1000);
-		}
-	});
         frame.pack();
         frame.setVisible(true);
-	//KEYBOARD
-	manager.addKeyEventDispatcher(new KeyEventDispatcher() {
-		public boolean dispatchKeyEvent(KeyEvent e) {
-		    int code = e.getKeyCode();
-		    if (code < 256) {
-			if (KeyEvent.KEY_PRESSED == e.getID()) {
-			    keys[code] = true;
-			}
-			if (KeyEvent.KEY_RELEASED == e.getID()) {
-			    keys[code] = false;
-			}
-		    }
-		    return true;
-		}
+        //KEYBOARD
+        manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+                public boolean dispatchKeyEvent(KeyEvent e) {
+                    int code = e.getKeyCode();
+                    if (code < 256) {
+                        if (KeyEvent.KEY_PRESSED == e.getID()) {
+                            keys[code] = true;
+                        }
+                        if (KeyEvent.KEY_RELEASED == e.getID()) {
+                            keys[code] = false;
+                        }
+                    }
+                    return true;
+                }
         });
         while (running) {
             gameLoop();
@@ -137,10 +125,10 @@ public class VD extends JFrame {
         this.timePreviousFrame = this.timeCurrentFrame;
         long timeComputationStart = System.currentTimeMillis();
         //UPDATE AND DRAW
-	handleUserControl();
+        handleUserControl();
         if (!paused) {
-	    this.update(dt);
-	}
+            this.update(dt);
+        }
         this.repaint();
         //SLEEP IF NEEDED
         try {
@@ -164,7 +152,7 @@ public class VD extends JFrame {
     }
 
     final private void handleUserControl() {
-        if (keys[KeyEvent.VK_ESCAPE]) {
+        if (keys[KeyEvent.VK_ESCAPE] || keys[KeyEvent.VK_Q]) {
             System.exit(0);
         }
         //TOGGLE KEYS
@@ -185,22 +173,23 @@ public class VD extends JFrame {
     //UPDATE LOOP
     public void update(long dt) {
         try {
-	    if (openingScreens != null) {
-		if (!openingScreens.isEmpty()) {
-		    openingScreens.get(0).update(dt);
-		    screenTime++;
-		    if (screenTime > 100L) {
-			openingScreens.remove(0);
-			screenTime = 0L;
-		    }
-		} else {
-		    openingScreens = null;
-		}
-	    } else {
-		if (currentRoom != null) {
-		    currentRoom.update(dt);
-		}
-	    }
+            if (openingScreens != null) {
+                if (!openingScreens.isEmpty()) {
+                    Entity screen = openingScreens.get(0);
+                    screen.update(dt);
+                    if (screen.isOld() || keys[KeyEvent.VK_SPACE] || keys[KeyEvent.VK_ENTER]) {
+                        keys[KeyEvent.VK_SPACE] = false;
+                        keys[KeyEvent.VK_ENTER] = false;
+                        openingScreens.remove(0);
+                    }
+                } else {
+                    openingScreens = null;
+                }
+            } else {
+                if (currentRoom != null) {
+                    currentRoom.update(dt);
+                }
+            }
         } catch (ConcurrentModificationException e) {
             //e.printStackTrace();
         }
@@ -209,22 +198,22 @@ public class VD extends JFrame {
     public class GamePanel extends JPanel {
         //DRAW LOOP
         public void paintComponent(Graphics g) {
-	    Graphics2D g2 = (Graphics2D)g;
-	    g2.translate(hOffset, vOffset);
-	    g2.scale(VD.hScale, VD.vScale);
-	    if (openingScreens != null) {
-		if (!openingScreens.isEmpty()) {
-		    Entity screen = openingScreens.get(0);
-		    if (screen != null) {
-			screen.draw(g2);
-		    }
-		}
-	    } else {
-		if (currentRoom != null) {
-		    currentRoom.draw(g2);
-		}
-	    }
-	    g2.setColor(Color.black);
+            Graphics2D g2 = (Graphics2D)g;
+            g2.translate(hOffset, vOffset);
+            g2.scale(VD.hScale, VD.vScale);
+            if (openingScreens != null) {
+                if (!openingScreens.isEmpty()) {
+                    Entity screen = openingScreens.get(0);
+                    if (screen != null) {
+                        screen.draw(g2);
+                    }
+                }
+            } else {
+                if (currentRoom != null) {
+                    currentRoom.draw(g2);
+                }
+            }
+            g2.setColor(Color.black);
         }
     }
 
@@ -237,62 +226,62 @@ public class VD extends JFrame {
     }
 
     public static void toggleFullScreen() {
-	if (frame != null) {
-	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();	    
-	    if (isFullScreen) {
-		isFullScreen = !isFullScreen;
-		frame.removeNotify();
-		hScale = 1.0;
-		vScale = 1.0;
-		hOffset = 0;
-		vOffset = 0;
-		if (os == VD.OS.WIN) {
-		    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH+18, VD.HEIGHT+30);
-		} else {
-		    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
-		}
-		frame.setUndecorated(false);
-		frame.addNotify();
-	    } else {
-		isFullScreen = !isFullScreen;
-		double hRatio = (double)VD.WIDTH/screen.width;
-		double vRatio = (double)VD.HEIGHT/screen.height;
-		double windowRatio = (double)VD.WIDTH/VD.HEIGHT;
-		double screenRatio = (double)screen.width/screen.height;
-		if (windowRatio > screenRatio) { //restrict width
-		    hScale = hScale/hRatio;
-		    vScale = vScale/hRatio;
-		    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
-		    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
-		} else { //restrict height
-		    hScale = hScale/vRatio;
-		    vScale = vScale/vRatio;
-		    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
-		    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
-		}
-		frame.removeNotify();
-		frame.setUndecorated(true);
-		frame.setBounds(0, 0, screen.width, screen.height);
-		frame.addNotify();
-	    }
-	    // Since the focus is frozen all keys will also be frozen.
-	    // REMOVE FROZEN KEYS
-	    for (int i = 0; i < 256; i++) {
-		keys[i] = false;
-	    }
-	    //REQUEST FOCUS
-	    frame.requestFocus();
-	}
+        if (frame != null) {
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();         
+            if (isFullScreen) {
+                isFullScreen = !isFullScreen;
+                frame.removeNotify();
+                hScale = 1.0;
+                vScale = 1.0;
+                hOffset = 0;
+                vOffset = 0;
+                if (os == VD.OS.WIN) {
+                    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH+18, VD.HEIGHT+30);
+                } else {
+                    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
+                }
+                frame.setUndecorated(false);
+                frame.addNotify();
+            } else {
+                isFullScreen = !isFullScreen;
+                double hRatio = (double)VD.WIDTH/screen.width;
+                double vRatio = (double)VD.HEIGHT/screen.height;
+                double windowRatio = (double)VD.WIDTH/VD.HEIGHT;
+                double screenRatio = (double)screen.width/screen.height;
+                if (windowRatio > screenRatio) { //restrict width
+                    hScale = hScale/hRatio;
+                    vScale = vScale/hRatio;
+                    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
+                    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
+                } else { //restrict height
+                    hScale = hScale/vRatio;
+                    vScale = vScale/vRatio;
+                    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
+                    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
+                }
+                frame.removeNotify();
+                frame.setUndecorated(true);
+                frame.setBounds(0, 0, screen.width, screen.height);
+                frame.addNotify();
+            }
+            // Since the focus is frozen all keys will also be frozen.
+            // REMOVE FROZEN KEYS
+            for (int i = 0; i < 256; i++) {
+                keys[i] = false;
+            }
+            //REQUEST FOCUS
+            frame.requestFocus();
+        }
     }
     
 
     public static void main(String[] args) {
-	gameThread = new Thread(new Runnable() {
-	 	public void run() {
-		    VD game = new VD();
-	 	}
-	});
-	gameThread.start();
+        gameThread = new Thread(new Runnable() {
+                public void run() {
+                    VD game = new VD();
+                }
+        });
+        gameThread.start();
     }
 
 }

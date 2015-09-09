@@ -25,6 +25,7 @@ public class Bullet extends Entity {
     }
 
     public void update(float dt) {
+        super.update(dt);
         time += dt;
         x += 9.0*Math.cos(Math.toRadians(angle));
         y += 9.0*Math.sin(Math.toRadians(angle));

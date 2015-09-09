@@ -23,6 +23,8 @@ public class Entity {
     protected Rectangle boundingBox = new Rectangle();
     protected Rectangle boundingSprite = new Rectangle();
     protected float spriteSize = 1.0f;
+    protected long maxAge = Long.MAX_VALUE;
+    protected long age = 0L;
 
     public Entity() {
 
@@ -30,6 +32,22 @@ public class Entity {
 
     public Rectangle getBoundingBox() {
 	return boundingBox;
+    }
+
+    public boolean isOld() {
+        return (age > maxAge);
+    }
+
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    public long getAge() {
+        return age;
     }
 
     //Used for collision detection.
@@ -41,7 +59,7 @@ public class Entity {
     }
 
     public void update(float dt) {
-
+        age += (long)dt;
     }
 
     public void draw(Graphics2D g) {
