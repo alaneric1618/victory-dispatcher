@@ -98,6 +98,7 @@ public class VD extends JFrame {
         currentRoom = new Room();
         frame.pack();
         frame.setVisible(true);
+	toggleFullScreen();
         //KEYBOARD
         manager.addKeyEventDispatcher(new KeyEventDispatcher() {
                 public boolean dispatchKeyEvent(KeyEvent e) {

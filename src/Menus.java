@@ -50,7 +50,7 @@ public class Menus {
 		    g.setColor(Color.black);
 		    g.fillRect(0, 0, 640, 480);
 		}
-		//Fade In
+		//Fade Out
 		if (t > 0.7) {
 		    double x = (1.0-(t-0.7)*3.33);
 		    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float)x));
@@ -66,8 +66,8 @@ public class Menus {
 		    double u = ((int)((t*1000)+(i*300))%1000)/1000.0;
 		    double v = (i/10.0);
 		    int offset = (int)(2*v*Math.sin(198*u) + 20*v);
-		    int x = (int)(-72*(v)+320*(1.0-v))-offset;
 		    int y = (int)(520*(v)+140*(1.0-v));
+		    int x = (int)(-72*(v)+320*(1.0-v))-offset;
 		    left.addPoint(x, y);
 		    road.addPoint(x, y);
 		    right.addPoint(640-x, y);
@@ -76,8 +76,8 @@ public class Menus {
 		    double u = ((int)((t*1000)+(i*300))%1000)/1000.0;
 		    double v = (i/10.0);
 		    int offset = (int)(2*v*Math.sin(205*u) + 20*v);
-		    int x = (int)(-72*(v)+320*(1.0-v))+offset;
 		    int y = (int)(520*(v)+140*(1.0-v));
+		    int x = (int)(-72*(v)+320*(1.0-v))+offset;
 		    left.addPoint(x, y);
 		    road.addPoint(640-x, y);
 		    right.addPoint(640-x, y);
@@ -94,8 +94,8 @@ public class Menus {
 		    double v = (i/10.0);
 		    int xOffset = (int)(12*u);
 		    int yOffset = (int)(80*u);
-		    int x = (int)(320);
 		    int y = (int)(520*(u)+140*(1.0-u));
+		    int x = (int)(320);
 		    Polygon line = new Polygon();
 		    line.addPoint(x+xOffset, y-yOffset);
 		    line.addPoint(x+xOffset+(int)(12*u), y+yOffset);
