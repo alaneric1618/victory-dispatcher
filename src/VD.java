@@ -95,10 +95,11 @@ public class VD extends JFrame {
         g = frame.getContentPane().getGraphics();
         frame.getContentPane().add(gamePanel);
         runningGamePanel = gamePanel;
-        currentRoom = new Room();
+        currentRoom = new Room(new TankPlayer(), new TankMajorTom(), new TankMajorTom(), new TankMajorTom());
         frame.pack();
         frame.setVisible(true);
-	toggleFullScreen();
+	//toggleFullScreen();
+	AudioPlayer.OPENER.play();
         //KEYBOARD
         manager.addKeyEventDispatcher(new KeyEventDispatcher() {
                 public boolean dispatchKeyEvent(KeyEvent e) {
@@ -182,6 +183,9 @@ public class VD extends JFrame {
                         keys[KeyEvent.VK_SPACE] = false;
                         keys[KeyEvent.VK_ENTER] = false;
                         openingScreens.remove(0);
+			if (openingScreens.isEmpty()) {
+			    AudioPlayer.OPENER.stop();
+			}
                     }
                 } else {
                     openingScreens = null;

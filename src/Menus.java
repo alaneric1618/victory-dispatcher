@@ -15,6 +15,7 @@ public class Menus {
 	    e.printStackTrace();
 	}
     }
+    public static Text presented = new Text("Presented By", 0.5);
 
     public static ArrayList<Entity> getMenus() {
         ArrayList<Entity> menus = new ArrayList<Entity>();
@@ -26,7 +27,7 @@ public class Menus {
     }
 
     private static Entity black = new Entity() {
-            {this.setMaxAge(1000L);}
+            {this.setMaxAge(800L);}
             public void update(float dt) {
                 super.update(dt);
             }
@@ -84,7 +85,7 @@ public class Menus {
 		}
 		g.setColor(new Color(30, 30, 30));
 		g.fillPolygon(road);
-		g.setColor(new Color(160, 160, 160));
+		g.setColor(new Color(120, 120, 120));
 		g.fillPolygon(left);
 		g.fillPolygon(right);
 		g.setColor(Color.yellow);
@@ -105,7 +106,9 @@ public class Menus {
 		}
 		g.setColor(Color.black);
 		g.fillRect(0, 0, 640, 160);
-		g.drawImage(logo, 110, -18, null);
+		//g.drawImage(logo, 110, -18, null);
+		g.drawImage(logo, new AffineTransform(0.7f, 0f , 0f , 0.7f, 180, 100), null);
+		presented.draw(g, 150, 130);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             }
     };

@@ -37,7 +37,7 @@ public class Room {
                     hp1.setRGB(x, y, Color.cyan.getRGB());
                     hp2.setRGB(x, y, Color.magenta.getRGB());
                     hp3.setRGB(x, y, Color.yellow.getRGB());
-                    hp4.setRGB(x, y, Color.black.getRGB());
+                    hp4.setRGB(x, y, Color.white.getRGB());
                 }
             }
         }
@@ -61,9 +61,10 @@ public class Room {
     Font font = new Font("SansSerif", Font.PLAIN, 1);
     public Rectangle roomRect = new Rectangle(0, 0, VD.WIDTH-32, VD.HEIGHT-64);
 
-    public Room() {
-        add(new TankPlayer());
-	add(new TankMajorTom());
+    public Room(Tank... tanks) {
+	for (Tank tank : tanks) {
+	    add(tank);
+	}
 	for (int i = 2; i < 9; i++) {
 	    if (i != 5) {
 		Block block = new Block(Block.Type.H, 4+i, 6);

@@ -10,15 +10,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class TankMajorTom extends Tank implements TankInterface {
+    
+    double time = 0.0;
+    
     public void onCreation() {
-
+	
     }
     public void onHit() {
-
+	
     }
     
     public void loop(float dt) {
+	time += (double)dt;
 	HashSet<VisibleEntity> ents = getVisibleEntities();
 	turnTurret(1.0, false);
+	if (time > 1000) {
+	    fire();
+	    time = 0.0;
+	}
     }
 }

@@ -31,7 +31,7 @@ public class Tank extends Entity implements TankInterface {
                 color = Color.yellow;
                 break;
             case P4:
-                color = Color.black;
+                color = Color.white;
                 break;
             }
             return color;
@@ -85,22 +85,22 @@ public class Tank extends Entity implements TankInterface {
 	case P1:
 	    x = 10; y = 10;
 	    desiredTread = 0.0; desiredTurret = desiredTread;
-	    color = Color.cyan;
+	    color = Player.P1.getColor();
 	    break;
 	case P2:
 	    x = 510; y = 350;
 	    desiredTread = 225.0; desiredTurret = desiredTread;
-	    color = Color.magenta;
+	    color = Player.P2.getColor();
 	    break;
 	case P3:
 	    x = 10; y = 350;
 	    desiredTread = 315.0; desiredTurret = desiredTread;
-	    color = Color.yellow;
+	    color = Player.P3.getColor();
 	    break;
 	case P4:
 	    x = 510; y = 10;
 	    desiredTread = 135.0; desiredTurret = desiredTread;
-	    color = Color.black;
+	    color = Player.P4.getColor();
 	    break;
 	default:
 	    x = 225; y = 175;
