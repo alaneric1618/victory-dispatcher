@@ -114,7 +114,7 @@ public class Menus {
     };
 
     private static Entity opener = new Entity() {
-            {this.setMaxAge(3000L);}
+            {this.setMaxAge(6500L);}
             public void update(float dt) {
                 super.update(dt);
             }
