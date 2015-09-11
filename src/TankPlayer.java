@@ -9,17 +9,26 @@ import java.awt.geom.*;
 import java.awt.event.*;
 
 public class TankPlayer extends Tank implements TankInterface {
+    {
+        name = "Player";
+	try {
+	    icon = ImageIO.read(new File("./media/player.png")); //Frames to animate
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
     private boolean[] keys = new boolean[256];
     
     public void onCreation() {
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
                 public void eventDispatched(AWTEvent event) {
-                    Point o = VD.getOriginOnScreen();
-                    Point s = MouseInfo.getPointerInfo().getLocation();
-                    int x = (int)(((s.x-o.x)-VD.hOffset)/VD.hScale);
-                    int y = (int)(((s.y-o.y)-VD.vOffset)/VD.vScale);
-                    Point p = new Point(x, y);
-                    turnTurretTo(p.x, p.y);
+                    // Point o = VD.getOriginOnScreen();
+                    // Point s = MouseInfo.getPointerInfo().getLocation();
+                    // int x = (int)(((s.x-o.x)-VD.hOffset)/VD.hScale);
+                    // int y = (int)(((s.y-o.y)-VD.vOffset)/VD.vScale);
+                    // Point p = new Point(x, y);
+                    // turnTurretTo(p.x, p.y);
                 }
         }, AWTEvent.MOUSE_MOTION_EVENT_MASK);
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {

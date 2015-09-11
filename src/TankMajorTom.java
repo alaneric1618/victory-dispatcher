@@ -11,6 +11,15 @@ import java.awt.event.KeyListener;
 
 public class TankMajorTom extends Tank implements TankInterface {
     
+    {
+        name = "Major Tom";
+	try {
+	    icon = ImageIO.read(new File("./media/tom.png")); //Frames to animate
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
     double time = 0.0;
     
     public void onCreation() {

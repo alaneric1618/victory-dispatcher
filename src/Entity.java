@@ -50,6 +50,10 @@ public class Entity {
         return age;
     }
 
+    public void setAge(long age) {
+        this.age = age;
+    }
+
     //Used for collision detection.
     //Note the polymorphic ability of a child of the Entity.
     public boolean intersects(Entity other) {

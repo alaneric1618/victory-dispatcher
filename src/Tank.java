@@ -38,6 +38,17 @@ public class Tank extends Entity implements TankInterface {
         }
     }
 
+    protected String name = null;
+    protected BufferedImage icon;
+    {
+	try {
+	    icon = ImageIO.read(new File("./media/unknown.png")); //Frames to animate
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
+
     private Tank.Player player;
     private Room room;
     private Color color = Color.white;
@@ -73,6 +84,14 @@ public class Tank extends Entity implements TankInterface {
 	turretSight = new Polygon();
 	float cannonCooldown = -1;
 	onCreation();
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    public final void setName(String n) {
+        name = n;
     }
 
     public Tank.Player getPlayer() {
@@ -304,17 +323,23 @@ public class Tank extends Entity implements TankInterface {
 
     //implementable start
     public void onCreation() {
-
+        
     }
     public void onHit() {
-
+        
     }
     public void loop(float dt) {
-
+        
+    }
+    public BufferedImage getIcon() {
+        return icon;
     }
     //implementable end
 
     //callable start
+    final void talk(String phrase) {
+        
+    }
     final protected double getSpeed() {
 	return lastSpeed;
     }

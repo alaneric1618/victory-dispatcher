@@ -4,7 +4,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
-import java.io.File;
+import java.io.*;
+import java.lang.*;
+import java.awt.event.*;
 
 public class Menus {
     public static BufferedImage logo;
@@ -125,21 +127,52 @@ public class Menus {
     };
 
     private static Entity mainMenu = new Entity() {
-            {this.setMaxAge(3000L);}
+            int i1 = 0;
+            int i2 = 0;
+            int i3 = 0;
+            int i4 = 0;
+            Tank t1;
+            Tank t2;
+            Tank t3;
+            Tank t4;
+            ArrayList<Tank> tanks = new Loader().getTanks();
+
+            final private void handleUserControl() {
+                if (VD.keys[KeyEvent.VK_UP]) {
+                    i1++;
+                    i1 = i1 % (tanks.size());
+                    VD.keys[KeyEvent.VK_UP] = false;
+                }
+                if (VD.keys[KeyEvent.VK_DOWN]) {
+                    i1--;
+                    if (i1 < 0) {
+                        i1 = tanks.size()-1;
+                    }
+                    VD.keys[KeyEvent.VK_DOWN] = false;
+                }
+                if (i1 >= 0 && (i1 < tanks.size())) {
+                    t1 = tanks.get(i1);
+                }
+
+            }
             public void update(float dt) {
                 super.update(dt);
+                handleUserControl();
             }
             public void draw(Graphics2D g) {
-                g.setColor(Color.red);
-                g.fillRect(0, 0, 640, 480);
+                g.setColor(Color.white);
+                //g.fillRect(100, 200, 92, 92);
+                g.fillRect(213, 200, 92, 92);
+                g.fillRect(326, 200, 92, 92);
+                g.fillRect(440, 200, 92, 92);
+                if (t1 != null) {
+                    g.drawImage(t1.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, 201), null);
+                    Text text = new Text(t1.getName(), 0.2);
+                    text.draw(g, 80, 300);
+                }
             }
+
+
     };
-
-    
-
-
-
-
-
 }
 

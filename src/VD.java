@@ -69,6 +69,9 @@ public class VD extends JFrame {
     public static boolean isFullScreen = false;
     public static KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
     public static boolean[] keys = new boolean[256];
+
+
+    //loader and opening screen static loading order is important
     public static ArrayList<Entity> openingScreens = Menus.getMenus();
 
     public VD() {
