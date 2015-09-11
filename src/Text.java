@@ -10,6 +10,12 @@ import java.util.*;
 
 public class Text extends Entity {
 
+    public enum Align {
+	LEFT,
+	RIGHT,
+	CENTER;
+    }
+    
     public static BufferedImage textImage;
     public static BufferedImage textImageSelected;
     static {
@@ -40,9 +46,9 @@ public class Text extends Entity {
 		lum = ((lum>>16)&0xff)+((lum>>8)&0xff)+((lum>>0)&0xff);
                 if (alpha != 0) {
 		    if (lum > 255) {
-			textImageSelected.setRGB(x, y, 0xff008080);
-		    } else {
 			textImageSelected.setRGB(x, y, 0xff00ffff);
+		    } else {
+			textImageSelected.setRGB(x, y, 0xff002020);
 		    }
                 }
             }
@@ -50,6 +56,9 @@ public class Text extends Entity {
     }
 
     private final String text;
+    private final Text.Align align;
+    private final int width;
+    private final boolean selected;
     int[][] ijs;
 
     public Text(final String text) {
@@ -57,10 +66,25 @@ public class Text extends Entity {
     }
     
     public Text(final String text, double size) {
+	this(text, size, Text.Align.LEFT);
+    }
+
+    public Text(final String text, double size, Text.Align align) {
+	this(text, size, Text.Align.LEFT, false);
+    }
+
+    public Text(final String text, double size, Text.Align align, boolean selected) {
 	super();
 	this.text = text;
+	this.align = align;
+	this.selected = selected;
 	spriteSize = (float)size;
 	initIJS();
+	int w = 0;
+	for (int i = 0; i < ijs.length; i++) {
+	    w += ijs[i][2];
+	}
+	width = (int)(spriteSize*w);
     }
 
     private void initIJS() {
@@ -143,7 +167,17 @@ public class Text extends Entity {
 
     public void draw(Graphics2D g, int x, int y) {
 	super.draw(g);
-	this.boundingSprite = new Rectangle(x, y, 70, 70);
+	switch (align) {
+	case LEFT:
+	    this.boundingSprite = new Rectangle(x, y, 70, 70);
+	    break;
+	case RIGHT:
+	    this.boundingSprite = new Rectangle(x-(width), y, 70, 70);
+	    break;
+	case CENTER:
+	    this.boundingSprite = new Rectangle(x-(width/2), y, 70, 70);
+	    break;
+	}
 	for (int i = 0; i < ijs.length; i++) {
 	    Rectangle r = boundingSprite;
 	    drawSprite(g, ijs[i][0], ijs[i][1], ijs[i][2], ijs[i][3]);
@@ -158,7 +192,11 @@ public class Text extends Entity {
 	double x = boundingSprite.getX();
 	double y = boundingSprite.getY();
 	g.clipRect((int)x, (int)y, (int)(w*spriteSize), (int)(h*spriteSize));
-	g.drawImage(textImage, new AffineTransform(spriteSize, 0f , 0f , spriteSize, (x-(i*spriteSize)), (y-(j*spriteSize))), null);
+	if (selected) {
+	    g.drawImage(textImageSelected, new AffineTransform(spriteSize, 0f , 0f , spriteSize, (x-(i*spriteSize)), (y-(j*spriteSize))), null);
+	} else {
+	    g.drawImage(textImage, new AffineTransform(spriteSize, 0f , 0f , spriteSize, (x-(i*spriteSize)), (y-(j*spriteSize))), null);
+	}
 	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
     }
 

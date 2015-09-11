@@ -17,6 +17,14 @@ public class Menus {
 	    e.printStackTrace();
 	}
     }
+    public static BufferedImage nope;
+    static {
+	try {
+	    nope = ImageIO.read(new File("./media/nope.png")); //Frames to animate
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
     public static Text presented = new Text("Presented By", 0.5);
 
     public static ArrayList<Entity> getMenus() {
@@ -127,6 +135,7 @@ public class Menus {
     };
 
     private static Entity mainMenu = new Entity() {
+	    int selector = 1;
             int i1 = 0;
             int i2 = 0;
             int i3 = 0;
@@ -136,23 +145,62 @@ public class Menus {
             Tank t3;
             Tank t4;
             ArrayList<Tank> tanks = new Loader().getTanks();
+	    {
+		tanks.add(0, null);
+	    }
 
             final private void handleUserControl() {
                 if (VD.keys[KeyEvent.VK_UP]) {
-                    i1++;
-                    i1 = i1 % (tanks.size());
+		    if (selector == 1) {
+			i1++; i1 = i1 % (tanks.size());
+		    }
+		    if (selector == 2) {
+			i2++; i2 = i2 % (tanks.size());
+		    }
+		    if (selector == 3) {
+			i3++; i3 = i3 % (tanks.size());
+		    }
+		    if (selector == 4) {
+			i4++; i4 = i4 % (tanks.size());
+		    }
                     VD.keys[KeyEvent.VK_UP] = false;
                 }
                 if (VD.keys[KeyEvent.VK_DOWN]) {
-                    i1--;
-                    if (i1 < 0) {
-                        i1 = tanks.size()-1;
-                    }
+		    if (selector == 1) {
+			i1--; if (i1 < 0) {i1 = tanks.size()-1;}
+		    }
+		    if (selector == 2) {
+			i2--; if (i2 < 0) {i2 = tanks.size()-1;}
+		    }
+		    if (selector == 3) {
+			i3--; if (i3 < 0) {i3 = tanks.size()-1;}
+		    }
+		    if (selector == 4) {
+			i4--; if (i4 < 0) {i4 = tanks.size()-1;}
+		    }
                     VD.keys[KeyEvent.VK_DOWN] = false;
                 }
-                if (i1 >= 0 && (i1 < tanks.size())) {
-                    t1 = tanks.get(i1);
-                }
+		if (VD.keys[KeyEvent.VK_LEFT]) {
+		    selector--; if (selector < 1) {selector = 4;}
+		    VD.keys[KeyEvent.VK_LEFT] = false;
+		}
+		if (VD.keys[KeyEvent.VK_RIGHT]) {
+		    selector++; selector = (selector % 5);
+		    if (selector == 0) selector++;
+		    VD.keys[KeyEvent.VK_RIGHT] = false;
+		}
+		if (selector == 1) {
+		    if (i1 >= 0 && (i1 < tanks.size())) t1 = tanks.get(i1);
+		}
+		if (selector == 2) {
+		    if (i2 >= 0 && (i2 < tanks.size())) t2 = tanks.get(i2);
+		}
+		if (selector == 3) {
+		    if (i3 >= 0 && (i3 < tanks.size())) t3 = tanks.get(i3);
+		}
+		if (selector == 4) {
+		    if (i4 >= 0 && (i4 < tanks.size())) t4 = tanks.get(i4);
+		}
 
             }
             public void update(float dt) {
@@ -162,14 +210,49 @@ public class Menus {
             public void draw(Graphics2D g) {
                 g.setColor(Color.white);
                 //g.fillRect(100, 200, 92, 92);
-                g.fillRect(213, 200, 92, 92);
-                g.fillRect(326, 200, 92, 92);
-                g.fillRect(440, 200, 92, 92);
+                //g.fillRect(213, 200, 92, 92);
+		//g.fillRect(326, 200, 92, 92);
+                //g.fillRect(440, 200, 92, 92);
+		//PLAYER 1
                 if (t1 != null) {
                     g.drawImage(t1.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, 201), null);
-                    Text text = new Text(t1.getName(), 0.2);
-                    text.draw(g, 80, 300);
-                }
+                    Text text = new Text(i1+". "+t1.getName(), 0.2, Text.Align.CENTER, (selector==1));
+                    text.draw(g, 146, 300);
+                } else {
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, 201), null);
+                    Text text = new Text(i1+". "+"None", 0.2, Text.Align.CENTER, (selector==1));
+                    text.draw(g, 146, 300);
+		}
+		//PLAYER 2
+                if (t2 != null) {
+                    g.drawImage(t2.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, 201), null);
+                    Text text = new Text(i2+". "+t2.getName(), 0.2, Text.Align.CENTER, (selector==2));
+                    text.draw(g, 259, 300+20);
+                } else {
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, 201), null);
+                    Text text = new Text(i2+". "+"None", 0.2, Text.Align.CENTER, (selector==2));
+                    text.draw(g, 259, 300+20);
+		}
+		//PLAYER 3
+                if (t3 != null) {
+                    g.drawImage(t3.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, 201), null);
+                    Text text = new Text(i3+". "+t3.getName(), 0.2, Text.Align.CENTER, (selector==3));
+                    text.draw(g, 372, 300);
+                } else {
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, 201), null);
+                    Text text = new Text(i3+". "+"None", 0.2, Text.Align.CENTER, (selector==3));
+                    text.draw(g, 372, 300);
+		}
+		//PLAYER 4
+                if (t4 != null) {
+                    g.drawImage(t4.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, 201), null);
+                    Text text = new Text(i4+". "+t4.getName(), 0.2, Text.Align.CENTER, (selector==4));
+                    text.draw(g, 486, 300+20);
+                } else {
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, 201), null);
+                    Text text = new Text(i4+". "+"None", 0.2, Text.Align.CENTER, (selector==4));
+                    text.draw(g, 486, 300+20);
+		}
             }
 
 
