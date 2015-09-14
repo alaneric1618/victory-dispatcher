@@ -139,6 +139,7 @@ public class Room {
                 synchronized (tanks) {
                     ArrayList<Tank.Player> playersToRemove = new ArrayList<Tank.Player>();
                     for (Tank tank : tanks.values()) {
+			if (tank == null) continue;
                         if (bullet.intersects(tank) && bullet.getPlayer() != tank.getPlayer()) {
                             toRemoveBullets.add(bullet);
                             for (int i = 0; i < 20; i++) {
@@ -198,6 +199,7 @@ public class Room {
 	}
         synchronized (tanks) {
             for (Tank tank : tanks.values()) {
+		if (tank == null) continue;
                 tank.update(dt);
             }
         }
@@ -218,10 +220,12 @@ public class Room {
     }
 
     public void add(Tank tank) {
-        tank.setRoom(this);
         Tank.Player player = getNewPlayerEnum();
+	if (tank != null) {
+	    tank.setRoom(this);
+	    hps.put(player, new Double(100));
+	}
 	tanks.put(player, tank);
-        hps.put(player, new Double(100));
     }
 
     public void add(Bullet bullet) {
@@ -295,7 +299,8 @@ public class Room {
         }
         synchronized (tanks) {
             for (Tank tank : tanks.values()) {
-                tank.draw(g);
+		if (tank == null) continue;
+		tank.draw(g);
             }
         }
         for (Bullet bullet : bullets) {
@@ -444,6 +449,7 @@ public class Room {
 	HashSet<VisibleEntity> ents = new HashSet<VisibleEntity>();
         synchronized (tanks) {
             for (Tank tank : tanks.values()) {
+		if (tank == null) break;
                 if (tank == forTank) continue;
                 Rectangle box = tank.getBoundingBox();
                 if (poly1.intersects(box) || poly2.intersects(box)) {

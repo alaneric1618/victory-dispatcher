@@ -103,7 +103,7 @@ public class Tank extends Entity implements TankInterface {
 	switch (player) {
 	case P1:
 	    x = 10; y = 10;
-	    desiredTread = 0.0; desiredTurret = desiredTread;
+	    desiredTread = 45.0; desiredTurret = desiredTread;
 	    color = Player.P1.getColor();
 	    break;
 	case P2:
@@ -304,6 +304,9 @@ public class Tank extends Entity implements TankInterface {
         int losX = ((int)turretX+(int)(700*Math.cos(Math.toRadians(turret))));
         int losY = ((int)turretY+(int)(700*Math.sin(Math.toRadians(turret))));
         g.setColor(color);
+	if (color == Color.magenta) {
+	    g.setColor(color.brighter().brighter());
+	}
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         Polygon laser = room.getSight(new Point((int)cannonX, (int)cannonY), turret, 1.0);
         if (laser.npoints == 2) {

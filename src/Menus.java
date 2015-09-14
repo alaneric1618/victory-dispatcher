@@ -9,6 +9,12 @@ import java.lang.*;
 import java.awt.event.*;
 
 public class Menus {
+
+    public static Tank t1;
+    public static Tank t2;
+    public static Tank t3;
+    public static Tank t4;
+
     public static BufferedImage logo;
     static {
 	try {
@@ -148,43 +154,45 @@ public class Menus {
             int i2 = 0;
             int i3 = 0;
             int i4 = 0;
-            Tank t1;
-            Tank t2;
-            Tank t3;
-            Tank t4;
-            ArrayList<Tank> tanks = new Loader().getTanks();
+            ArrayList<Tank> tanks1 = new Loader().getTanks();
+            ArrayList<Tank> tanks2 = new Loader().getTanks();
+            ArrayList<Tank> tanks3 = new Loader().getTanks();
+            ArrayList<Tank> tanks4 = new Loader().getTanks();
 	    {
-		tanks.add(0, null);
+		tanks1.add(0, null);
+		tanks2.add(0, null);
+		tanks3.add(0, null);
+		tanks4.add(0, null);
 	    }
 
             final private void handleUserControl() {
                 if (VD.keys[KeyEvent.VK_UP]) {
 		    if (selector == 1) {
-			i1++; i1 = i1 % (tanks.size());
+			i1++; i1 = i1 % (tanks1.size());
 		    }
 		    if (selector == 2) {
-			i2++; i2 = i2 % (tanks.size());
+			i2++; i2 = i2 % (tanks2.size());
 		    }
 		    if (selector == 3) {
-			i3++; i3 = i3 % (tanks.size());
+			i3++; i3 = i3 % (tanks3.size());
 		    }
 		    if (selector == 4) {
-			i4++; i4 = i4 % (tanks.size());
+			i4++; i4 = i4 % (tanks4.size());
 		    }
                     VD.keys[KeyEvent.VK_UP] = false;
                 }
                 if (VD.keys[KeyEvent.VK_DOWN]) {
 		    if (selector == 1) {
-			i1--; if (i1 < 0) {i1 = tanks.size()-1;}
+			i1--; if (i1 < 0) {i1 = tanks1.size()-1;}
 		    }
 		    if (selector == 2) {
-			i2--; if (i2 < 0) {i2 = tanks.size()-1;}
+			i2--; if (i2 < 0) {i2 = tanks2.size()-1;}
 		    }
 		    if (selector == 3) {
-			i3--; if (i3 < 0) {i3 = tanks.size()-1;}
+			i3--; if (i3 < 0) {i3 = tanks3.size()-1;}
 		    }
 		    if (selector == 4) {
-			i4--; if (i4 < 0) {i4 = tanks.size()-1;}
+			i4--; if (i4 < 0) {i4 = tanks4.size()-1;}
 		    }
                     VD.keys[KeyEvent.VK_DOWN] = false;
                 }
@@ -198,16 +206,16 @@ public class Menus {
 		    VD.keys[KeyEvent.VK_RIGHT] = false;
 		}
 		if (selector == 1) {
-		    if (i1 >= 0 && (i1 < tanks.size())) t1 = tanks.get(i1);
+		    if (i1 >= 0 && (i1 < tanks1.size())) t1 = tanks1.get(i1);
 		}
 		if (selector == 2) {
-		    if (i2 >= 0 && (i2 < tanks.size())) t2 = tanks.get(i2);
+		    if (i2 >= 0 && (i2 < tanks2.size())) t2 = tanks2.get(i2);
 		}
 		if (selector == 3) {
-		    if (i3 >= 0 && (i3 < tanks.size())) t3 = tanks.get(i3);
+		    if (i3 >= 0 && (i3 < tanks3.size())) t3 = tanks3.get(i3);
 		}
 		if (selector == 4) {
-		    if (i4 >= 0 && (i4 < tanks.size())) t4 = tanks.get(i4);
+		    if (i4 >= 0 && (i4 < tanks4.size())) t4 = tanks4.get(i4);
 		}
 
             }

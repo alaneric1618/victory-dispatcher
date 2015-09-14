@@ -43,7 +43,6 @@ public class VD extends JFrame {
             os = VD.OS.UNKNOWN;
         }
     }
-
     
     public GamePanel gamePanel = new GamePanel();
     public Graphics g;
@@ -98,7 +97,7 @@ public class VD extends JFrame {
         g = frame.getContentPane().getGraphics();
         frame.getContentPane().add(gamePanel);
         runningGamePanel = gamePanel;
-        currentRoom = new Room(new TankPlayer(), new TankMajorTom(), new TankMajorTom(), new TankMajorTom());
+        //currentRoom = new Room(new TankPlayer(), new TankMajorTom(), new TankMajorTom(), new TankMajorTom());
         frame.pack();
         frame.setVisible(true);
 	//toggleFullScreen();
@@ -188,6 +187,7 @@ public class VD extends JFrame {
                         openingScreens.remove(0);
 			if (openingScreens.isEmpty()) {
 			    AudioPlayer.OPENER.stop();
+			    currentRoom = new Room(Menus.t1, Menus.t2, Menus.t3, Menus.t4);
 			}
                     }
                 } else {
@@ -201,6 +201,10 @@ public class VD extends JFrame {
         } catch (ConcurrentModificationException e) {
             //e.printStackTrace();
         }
+    }
+
+    public void setCurrentRoom(Room room) {
+	currentRoom = room;
     }
     
     public class GamePanel extends JPanel {
