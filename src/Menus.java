@@ -12,7 +12,15 @@ public class Menus {
     public static BufferedImage logo;
     static {
 	try {
-	    logo = ImageIO.read(new File("./media/mcleod_logo.png")); //Frames to animate
+	    logo = ImageIO.read(new File("./media/mcleod_logo.png"));
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+    public static BufferedImage title;
+    static {
+	try {
+	    title = ImageIO.read(new File("./media/title.png"));
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
@@ -20,7 +28,7 @@ public class Menus {
     public static BufferedImage nope;
     static {
 	try {
-	    nope = ImageIO.read(new File("./media/nope.png")); //Frames to animate
+	    nope = ImageIO.read(new File("./media/nope.png"));
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
@@ -213,6 +221,8 @@ public class Menus {
                 //g.fillRect(213, 200, 92, 92);
 		//g.fillRect(326, 200, 92, 92);
                 //g.fillRect(440, 200, 92, 92);
+		//DRAW TITLE
+		g.drawImage(title, new AffineTransform(1.0f, 0f , 0f , 1.0f, 160, 0), null);
 		//PLAYER 1
                 if (t1 != null) {
                     g.drawImage(t1.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, 201), null);
