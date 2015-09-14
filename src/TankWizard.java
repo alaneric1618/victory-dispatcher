@@ -9,12 +9,12 @@ import java.awt.geom.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class TankWizzard extends Tank implements TankInterface {
+public class TankWizard extends Tank implements TankInterface {
     
     {
-        name = "The Wizzard of ECS";
+        name = "The Wizard of ECS";
 	try {
-	    icon = ImageIO.read(new File("./media/wizzard.png")); //Frames to animate
+	    icon = ImageIO.read(new File("./media/wizard.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
