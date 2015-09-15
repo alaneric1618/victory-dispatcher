@@ -60,6 +60,7 @@ public class Text extends Entity {
     private final int width;
     private final boolean selected;
     int[][] ijs;
+    private int h = 0;
 
     public Text(final String text) {
 	this(text, 1.0);
@@ -70,7 +71,7 @@ public class Text extends Entity {
     }
 
     public Text(final String text, double size, Text.Align align) {
-	this(text, size, Text.Align.LEFT, false);
+	this(text, size, align, false);
     }
 
     public Text(final String text, double size, Text.Align align, boolean selected) {
@@ -98,6 +99,7 @@ public class Text extends Entity {
     private int[] getIJFromChar(final char c) {
 	int[] ij = new int[4];
 	switch (c) {
+	case '\n':ij[0] = 1;   ij[1] = 1;       ij[2] = 1;  ij[3] = 1;  break;
 	case ' ': ij[0] = 700; ij[1] = 2*70+0;  ij[2] = 40; ij[3] = 70; break;
 	case 'A': ij[0] = 0;   ij[1] = 3*70+0;  ij[2] = 62; ij[3] = 70; break;
 	case 'B': ij[0] = 68;  ij[1] = 3*70+0;  ij[2] = 60; ij[3] = 70; break;
@@ -180,8 +182,8 @@ public class Text extends Entity {
 	}
 	for (int i = 0; i < ijs.length; i++) {
 	    Rectangle r = boundingSprite;
-	    drawSprite(g, ijs[i][0], ijs[i][1], ijs[i][2], ijs[i][3]);
 	    int dx = (int)(spriteSize*ijs[i][2]);
+	    drawSprite(g, ijs[i][0], ijs[i][1], ijs[i][2], ijs[i][3]);
 	    this.boundingSprite = new Rectangle(r.x+dx, r.y, r.width, r.height);
 	}
     }

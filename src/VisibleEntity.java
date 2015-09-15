@@ -37,7 +37,4 @@ public class VisibleEntity {
 	this.turretDir = turretDir;
 	this.speed = speed;
     }
-    
 }
-
-

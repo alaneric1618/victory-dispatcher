@@ -23,10 +23,18 @@ public class Menus {
 	    e.printStackTrace();
 	}
     }
-    public static BufferedImage title;
+    public static BufferedImage titleFront;
+    public static BufferedImage titleBack;
     static {
 	try {
-	    title = ImageIO.read(new File("./media/title.png"));
+	    titleFront = ImageIO.read(new File("./media/title_front.png"));
+	} catch(Exception e) {
+	    e.printStackTrace();
+	}
+    }
+    static {
+	try {
+	    titleBack = ImageIO.read(new File("./media/title_back.png"));
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
@@ -150,19 +158,39 @@ public class Menus {
 
     private static Entity mainMenu = new Entity() {
 	    int selector = 1;
-            int i1 = 0;
-            int i2 = 0;
-            int i3 = 0;
-            int i4 = 0;
+            int i1;
+            int i2;
+            int i3;
+	    int i4;
             ArrayList<Tank> tanks1 = new Loader().getTanks();
             ArrayList<Tank> tanks2 = new Loader().getTanks();
             ArrayList<Tank> tanks3 = new Loader().getTanks();
             ArrayList<Tank> tanks4 = new Loader().getTanks();
+	    String phrase = "";
+	    String[] phrases = new String[] {
+		"Now in technicolor.",
+		"Dispatching victory since 2015.",
+		"Available in TRANSACT MODE.",
+		"Did you check in LogicTransferToSettlement?",
+		"Here comes the BOOM.",
+		"A handful of people in a leaky reefer to save the world.",
+	    };
+	    ArrayList<Particle> particles = new ArrayList<Particle>();
 	    {
-		tanks1.add(0, null);
-		tanks2.add(0, null);
-		tanks3.add(0, null);
+		int firstOpponent = (int)((tanks1.size()-1)*Math.random()+2);
+		tanks1.add(0, null); 
+		tanks2.add(0, null); 
+		tanks3.add(0, null); 
 		tanks4.add(0, null);
+		i1 = 1;
+		i2 = firstOpponent;
+		i3 = 0;
+		i4 = 0;
+		t1 = tanks1.get(i1);
+		t2 = tanks1.get(i2);
+		t3 = tanks1.get(i3);
+		t4 = tanks1.get(i4);
+		phrase = phrases[(int)(phrases.length*Math.random())];
 	    }
 
             final private void handleUserControl() {
@@ -224,56 +252,96 @@ public class Menus {
                 handleUserControl();
             }
             public void draw(Graphics2D g) {
+		int characterY = 320;
+		int characterTitleY = 420;
                 g.setColor(Color.white);
-                //g.fillRect(100, 200, 92, 92);
-                //g.fillRect(213, 200, 92, 92);
-		//g.fillRect(326, 200, 92, 92);
-                //g.fillRect(440, 200, 92, 92);
+		//Particles
+		particles.add(new Particle());
+		for (int i = 0; i < particles.size(); i++) {
+		    Particle p = particles.get(i);
+		    if (p.age > 4000) {
+			particles.remove(i--);
+		    }
+		}
+		for (Particle p : particles) {
+		    p.updateDraw(g);
+		}
 		//DRAW TITLE
-		g.drawImage(title, new AffineTransform(1.0f, 0f , 0f , 1.0f, 160, 0), null);
+		g.drawImage(titleBack, new AffineTransform(1.0f, 0f , 0f , 1.0f, 0, 0), null);
+		g.drawImage(titleFront, new AffineTransform(1.0f, 0f , 0f , 1.0f, 0, 0), null);
 		//PLAYER 1
                 if (t1 != null) {
-                    g.drawImage(t1.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, 201), null);
+                    g.drawImage(t1.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, characterY), null);
                     Text text = new Text(i1+". "+t1.getName(), 0.2, Text.Align.CENTER, (selector==1));
-                    text.draw(g, 146, 300);
+                    text.draw(g, 146, characterTitleY);
                 } else {
-                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, 201), null);
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, characterY), null);
                     Text text = new Text(i1+". "+"None", 0.2, Text.Align.CENTER, (selector==1));
-                    text.draw(g, 146, 300);
+                    text.draw(g, 146, characterTitleY);
 		}
 		//PLAYER 2
                 if (t2 != null) {
-                    g.drawImage(t2.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, 201), null);
+                    g.drawImage(t2.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, characterY), null);
                     Text text = new Text(i2+". "+t2.getName(), 0.2, Text.Align.CENTER, (selector==2));
-                    text.draw(g, 259, 300+20);
+                    text.draw(g, 259, characterTitleY+20);
                 } else {
-                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, 201), null);
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, characterY), null);
                     Text text = new Text(i2+". "+"None", 0.2, Text.Align.CENTER, (selector==2));
-                    text.draw(g, 259, 300+20);
+                    text.draw(g, 259, characterTitleY+20);
 		}
 		//PLAYER 3
                 if (t3 != null) {
-                    g.drawImage(t3.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, 201), null);
+                    g.drawImage(t3.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, characterY), null);
                     Text text = new Text(i3+". "+t3.getName(), 0.2, Text.Align.CENTER, (selector==3));
-                    text.draw(g, 372, 300);
+                    text.draw(g, 372, characterTitleY);
                 } else {
-                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, 201), null);
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, characterY), null);
                     Text text = new Text(i3+". "+"None", 0.2, Text.Align.CENTER, (selector==3));
-                    text.draw(g, 372, 300);
+                    text.draw(g, 372, characterTitleY);
 		}
 		//PLAYER 4
                 if (t4 != null) {
-                    g.drawImage(t4.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, 201), null);
+                    g.drawImage(t4.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, characterY), null);
                     Text text = new Text(i4+". "+t4.getName(), 0.2, Text.Align.CENTER, (selector==4));
-                    text.draw(g, 486, 300+20);
+                    text.draw(g, 486, characterTitleY+20);
                 } else {
-                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, 201), null);
+                    g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, characterY), null);
                     Text text = new Text(i4+". "+"None", 0.2, Text.Align.CENTER, (selector==4));
-                    text.draw(g, 486, 300+20);
+                    text.draw(g, 486, characterTitleY+20);
+		}
+		//Phrase
+		Text phraseText = new Text(phrase, 0.2, Text.Align.CENTER);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+		phraseText.draw(g, 320, 200);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		//Draw Insert Coin
+		if ( ((int)this.getAge())%1000 < 500 ) {
+		    Text text = new Text("Insert Coin", 0.3, Text.Align.CENTER);
+		    text.draw(g, 320, 250);
 		}
             }
-
-
     };
 }
 
+class Particle {
+    public double x = 150.0+150.0*Math.random();
+    public double y = 50.0+100.0*Math.random();
+    public double u = 3-9*Math.random();
+    public double v = 0.0;
+    public double a = 0.05+Math.random()/10.0;
+    public int age = 0;
+    public void updateDraw(Graphics g) {
+	//age
+	age++;
+	//vel
+	u = u;
+	v -= a;
+	//dis
+	x += u;
+	y += v;
+	//draw
+	g.setColor(new Color(200, 160-((18*age)%160), 10));
+	g.fillRect((int)x, (int)y, 2, 2);
+	g.fillRect(640-(int)x, (int)y, 2, 2);
+    }
+}

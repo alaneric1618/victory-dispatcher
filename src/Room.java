@@ -168,12 +168,15 @@ public class Room {
                         for (Tank.Player player : playersToRemove) {
                             tanks.remove(player);
                             //search winner;
-                            if (tanks.size() <= 1) {
+                            if (getPlayerCount() <= 1) {
                                 isWinner = true;
                                 Tank.Player winnerVar = null;
                                 for (Tank.Player p : tanks.keySet()) {
-                                    //winner found
-                                    winnerVar = p;
+				    Tank potentialTank = tanks.get(p);
+				    if (potentialTank != null) {
+					//winner found
+					winnerVar = p;
+				    }
                                 }
                                 winner = winnerVar;
                             }
@@ -239,11 +242,17 @@ public class Room {
     }
 
     public int getPlayerCount() {
-	return tanks.size();
+	int count = 0;
+	for (Tank tank : tanks.values()) {
+	    if (tank != null) {
+		count++;
+	    }
+	}
+	return count;
     }
 
     public Tank.Player getNewPlayerEnum() {
-        final int nplayers = getPlayerCount();
+        final int nplayers = tanks.size();
         switch (nplayers) {
         case 0:
             return Tank.Player.P1;

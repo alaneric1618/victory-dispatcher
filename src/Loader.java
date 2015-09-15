@@ -22,7 +22,11 @@ public class Loader extends ClassLoader {
                     name = className;
                 }
                 t.setName(name);
-                tanks.add(t);
+		if ("Player".compareTo(name) == 0) {
+		    tanks.add(0, t);
+		} else {
+		    tanks.add(t);
+		}
             } catch (Throwable t) {
                 System.out.println(t);
             }
