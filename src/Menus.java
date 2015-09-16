@@ -195,6 +195,13 @@ public class Menus {
 
             final private void handleUserControl() {
                 if (VD.keys[KeyEvent.VK_UP]) {
+                    if (AudioPlayer.SELECT_LOW1.isPlaying()) {
+                        AudioPlayer.SELECT_LOW1.stop();
+                        AudioPlayer.SELECT_LOW2.play();
+                    } else {
+                        AudioPlayer.SELECT_LOW2.stop();
+                        AudioPlayer.SELECT_LOW1.play();
+                    }
 		    if (selector == 1) {
 			i1++; i1 = i1 % (tanks1.size());
 		    }
@@ -210,6 +217,13 @@ public class Menus {
                     VD.keys[KeyEvent.VK_UP] = false;
                 }
                 if (VD.keys[KeyEvent.VK_DOWN]) {
+                    if (AudioPlayer.SELECT_LOW1.isPlaying()) {
+                        AudioPlayer.SELECT_LOW1.stop();
+                        AudioPlayer.SELECT_LOW2.play();
+                    } else {
+                        AudioPlayer.SELECT_LOW2.stop();
+                        AudioPlayer.SELECT_LOW1.play();
+                    }
 		    if (selector == 1) {
 			i1--; if (i1 < 0) {i1 = tanks1.size()-1;}
 		    }
@@ -225,10 +239,24 @@ public class Menus {
                     VD.keys[KeyEvent.VK_DOWN] = false;
                 }
 		if (VD.keys[KeyEvent.VK_LEFT]) {
+                    if (AudioPlayer.SELECT_HI1.isPlaying()) {
+                        AudioPlayer.SELECT_HI1.stop();
+                        AudioPlayer.SELECT_HI2.play();
+                    } else {
+                        AudioPlayer.SELECT_HI2.stop();
+                        AudioPlayer.SELECT_HI1.play();
+                    }
 		    selector--; if (selector < 1) {selector = 4;}
 		    VD.keys[KeyEvent.VK_LEFT] = false;
 		}
 		if (VD.keys[KeyEvent.VK_RIGHT]) {
+                    if (AudioPlayer.SELECT_HI1.isPlaying()) {
+                        AudioPlayer.SELECT_HI1.stop();
+                        AudioPlayer.SELECT_HI2.play();
+                    } else {
+                        AudioPlayer.SELECT_HI2.stop();
+                        AudioPlayer.SELECT_HI1.play();
+                    }
 		    selector++; selector = (selector % 5);
 		    if (selector == 0) selector++;
 		    VD.keys[KeyEvent.VK_RIGHT] = false;

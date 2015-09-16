@@ -406,6 +406,7 @@ public class Tank extends Entity implements TankInterface {
 
     final protected void fire() {
         if (bulletTime > bulletWait) {
+            AudioPlayer.FIRE.play();
             bulletTime = 0.0;
             Bullet bullet = new Bullet(player, cannonX-8, cannonY-8, turret);
             turretSize = 1.2f;

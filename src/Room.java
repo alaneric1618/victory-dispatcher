@@ -116,6 +116,7 @@ public class Room {
 		    || box.y < 0 || box.y > VD.HEIGHT-72) {
 		    toRemoveBullets.add(bullet);
 		    decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                    AudioPlayer.EXPLOSION.play();
                     for (int i = 0; i < 20; i++) {
                         int xr = (int)(10*Math.random())+11;
                         int yr = (int)(10*Math.random())+11;
@@ -128,6 +129,7 @@ public class Room {
 			toRemoveBullets.add(bullet);
 			block.destroy();
                         decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
+                        AudioPlayer.EXPLOSION.play();
                         for (int i = 0; i < 20; i++) {
                             int xr = (int)(10*Math.random())+11;
                             int yr = (int)(10*Math.random())+11;
@@ -150,6 +152,7 @@ public class Room {
                                     decals.add(new Decal(Decal.Type.DEBRIS, box.x-32, box.y-32, bullet.angle));
                                 }
                             }
+                            AudioPlayer.EXPLOSION.play();
                             decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
                             Tank.Player player = tank.getPlayer();
                             double hp = (double)hps.get(player);

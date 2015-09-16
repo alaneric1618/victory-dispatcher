@@ -7,7 +7,13 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 
 public enum AudioPlayer {
-    OPENER("opener.wav");
+    OPENER("opener.wav"),
+    SELECT_HI1("select_hi.wav"),
+    SELECT_HI2("select_hi.wav"),
+    SELECT_LOW1("select_low.wav"),
+    SELECT_LOW2("select_low.wav"),
+    FIRE("fire.wav"),
+    EXPLOSION("explode.wav");
 
     private Clip clip;
 
@@ -27,9 +33,13 @@ public enum AudioPlayer {
         Clip c = clip;
         if (c.isRunning()) {
             c.stop();
+            c.setFramePosition(0);
+            c.start();
+        } else {
+            c.setFramePosition(0);
+            c.start();
         }
-        c.setFramePosition(0);
-        c.start();
+
     }
 
     public boolean isPlaying() {
