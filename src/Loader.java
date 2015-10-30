@@ -1,3 +1,4 @@
+
 import java.lang.*;
 import java.io.*;
 import java.util.*;
@@ -54,29 +55,29 @@ public class Loader extends ClassLoader {
 	String classpath = System.getProperty("java.class.path");
 	String[] classpathEntries = classpath.split(File.pathSeparator);
 	for (String cp : classpathEntries) {
-	    System.out.println("CP: "+cp);
-	    File dir = new File(cp);
-	    File[] files = dir.listFiles();
-	    for (File file : files) {
-		if (file.isFile()) {
-		    if (file.getName().endsWith(".class")) {
-			FileInputStream fileInputStream=null;
-			byte[] bytes = new byte[(int) file.length()];
-			try {
-			    fileInputStream = new FileInputStream(file);
-			    fileInputStream.read(bytes);
-			    fileInputStream.close();
-			    Class c = this.getClass(bytes);
-			    if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
-				this.resolveClass(c);
-				classes.add(c);
-				System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
-			    }
-			} catch (Exception e) {
-			    System.out.println(e);
-			}
+		try {
+		    File dir = new File(cp);
+		    File[] files = dir.listFiles();
+		    for (File file : files) {
+		    	if (file.isFile()) {
+		    		if (file.getName().endsWith(".class")) {
+		    			FileInputStream fileInputStream=null;
+		    			byte[] bytes = new byte[(int) file.length()];
+		    			fileInputStream = new FileInputStream(file);
+					    fileInputStream.read(bytes);
+					    fileInputStream.close();
+					    Class c = this.getClass(bytes);
+					    if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
+					    	this.resolveClass(c);
+					    	classes.add(c);
+					    	System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
+					    }
+					    
+		    		}
+		    	}
 		    }
-		}
+	    } catch (Exception e) {
+	    	System.out.println("Could not load files in classpath: "+cp);
 	    }
 	}
     }
