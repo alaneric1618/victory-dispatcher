@@ -202,6 +202,7 @@ public class Menu {
 		    			String className = tank.getClass().getName();
 			    		if (tank1Name.compareTo(className)==0) {
 			    			menu.t1 = tank;
+			    			i1 = tanks1.indexOf(tank);
 			    		}
 		    		}
 		    	}
@@ -210,6 +211,7 @@ public class Menu {
 		    			String className = tank.getClass().getName();
 			    		if (tank2Name.compareTo(className)==0) {
 			    			menu.t2 = tank;
+			    			i2 = tanks2.indexOf(tank);
 			    		}
 		    		}
 		    	}

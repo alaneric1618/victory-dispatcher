@@ -349,6 +349,7 @@ public class Editor extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				String recentFilename = Util.getProperty("recent-save-filename");
+				Util.setProperty("startup-tank1-name", "TankPlayer");
 				Util.setProperty("startup-tank2-name", recentFilename);
 				Util.setProperty("startup-mode", "test");
 				Util.restartApplication();
