@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
 
@@ -28,7 +27,7 @@ public class Entity {
     protected long age = 0L;
 
     public Entity() {
-
+    	
     }
 
     public Rectangle getBoundingBox() {

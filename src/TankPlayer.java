@@ -1,12 +1,8 @@
 
-import java.awt.Color;
 import javax.imageio.ImageIO;
-import java.awt.geom.*;
 import java.io.File;
-import java.awt.image.BufferedImage;
 import java.util.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.event.*;
 
 public class TankPlayer extends Tank implements TankInterface {
@@ -55,7 +51,7 @@ public class TankPlayer extends Tank implements TankInterface {
     }
 
     final private void handleUserControl() {
-	boolean[] keys = VD.keys;
+	boolean[] keys = Keyboard.keys;
 	if (keys[KeyEvent.VK_A]) {
 	    turnTread(-5.0, false);
 	}

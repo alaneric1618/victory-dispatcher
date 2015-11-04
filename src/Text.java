@@ -1,13 +1,10 @@
 
-import java.awt.Color;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
-import java.util.*;
 
 public class Text extends Entity {
 

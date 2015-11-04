@@ -1,5 +1,3 @@
-
-import java.awt.event.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
@@ -44,6 +42,7 @@ public class Room {
         }
     }
 
+    VD vd;
     boolean isLoading = true;
     double loadingTime = 0;
     ArrayList<Entity> scene = new ArrayList<Entity>();
@@ -60,9 +59,10 @@ public class Room {
     Tank.Player winner = null;
     double winnerTime = 0.0;
     Font font = new Font("SansSerif", Font.PLAIN, 1);
-    public Rectangle roomRect = new Rectangle(0, 0, VD.WIDTH-32, VD.HEIGHT-64);
+    public Rectangle roomRect = new Rectangle(0, 0, vd.WIDTH-32, vd.HEIGHT-64);
 
-    public Room(Tank... tanks) {
+    public Room(VD vd, Tank... tanks) {
+    	this.vd = vd;
 	for (Tank tank : tanks) {
 	    add(tank);
 	}
@@ -113,8 +113,8 @@ public class Room {
                 }
                 bullet.update(dt);
                 //collision detect bullet with screen
-		if (box.x < 8 || box.x > VD.WIDTH-10
-		    || box.y < 0 || box.y > VD.HEIGHT-72) {
+		if (box.x < 8 || box.x > vd.WIDTH-10
+		    || box.y < 0 || box.y > vd.HEIGHT-72) {
 		    toRemoveBullets.add(bullet);
 		    decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
                     AudioPlayer.EXPLOSION.play();
@@ -274,7 +274,7 @@ public class Room {
     public void draw(Graphics2D g) {
 	if (isLoading) {
 	    g.setColor(Color.black);
-	    g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
+	    g.setClip(new Rectangle(0, 0, vd.WIDTH, vd.HEIGHT));
 	    int x = 120;
 	    int y = 300;
 	    int w = 400;
@@ -291,7 +291,7 @@ public class Room {
 	}
         //Draw background
         g.setColor(Color.black);
-	g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
+	g.setClip(new Rectangle(0, 0, vd.WIDTH, vd.HEIGHT));
         //System.out.println(spriteMap);
 	g.drawImage(spriteMap, new AffineTransform(0.615f, 0f , 0f , 0.42f, -250.0, -180.0), null);
         //Draw blocks
@@ -299,15 +299,15 @@ public class Room {
             block.draw(g);
         }
         //draw pause
-        if (VD.paused) {
+        if (vd.paused) {
             
         }
 	g.setColor(new Color(55, 55, 55));
-        g.drawLine(0, VD.HEIGHT-64, VD.WIDTH, VD.HEIGHT-64);
+        g.drawLine(0, vd.HEIGHT-64, vd.WIDTH, vd.HEIGHT-64);
         g.setColor(new Color(125, 125, 125));
-        g.fillRect(0, VD.HEIGHT-64, VD.WIDTH, 128);
+        g.fillRect(0, vd.HEIGHT-64, vd.WIDTH, 128);
         //DEBUG
-        if (VD.DEBUG) {
+        if (vd.DEBUG) {
             
         }
         synchronized (tanks) {
@@ -371,12 +371,12 @@ public class Room {
                 g.drawImage(hp, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
                 g.clipRect(i-1, 400, pixels+4, 64);
                 g.drawImage(img, new AffineTransform(1f, 0f , 0f , 1f, i, 400), null);
-                //g.setClip(new Rectangle(-VD.WIDTH, -VD.HEIGHT, VD.WIDTH*2, VD.HEIGHT*2));
-		g.setClip(new Rectangle(0, 0, VD.WIDTH, VD.HEIGHT));
+                //g.setClip(new Rectangle(-vd.WIDTH, -vd.HEIGHT, vd.WIDTH*2, vd.HEIGHT*2));
+		g.setClip(new Rectangle(0, 0, vd.WIDTH, vd.HEIGHT));
             }
         }
         //VICTORY
-        if (isWinner && !VD.paused) {
+        if (isWinner && !vd.paused) {
             winnerTime+=1.0;
             double prob = Math.random();
             if (prob < 0.1) {

@@ -1,9 +1,7 @@
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.*;
 import java.awt.image.*;
-import java.awt.geom.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -26,13 +24,20 @@ public class VD extends JFrame {
             return s;
         }
     }
-    
-    public static Thread gameThread;
-    public static GamePanel runningGamePanel;
-    public static VD frame;
-    public static VD.OS os;
 
-    static {
+    public Thread gameThread;
+    public GamePanel runningGamePanel;
+    public VD frame;
+    public VD.OS os;
+
+    {
+    	//ADD TO CLASSPATH
+    	String classpath = System.getProperty("java.class.path");
+		//classpath += ";"+Editor.getAIDirectory().getAbsolutePath()+"/";
+    	classpath = Util.getAIDirectory().getAbsolutePath()+";"+classpath;
+		System.setProperty("java.class.path", classpath);
+		System.out.println("CP:"+classpath);
+		//OS
         String osString = System.getProperty("os.name");
         if (osString.toUpperCase().indexOf("WIN") >= 0) {
             os = VD.OS.WIN;
@@ -57,25 +62,45 @@ public class VD extends JFrame {
     
     int currentButton = 0;
 
-    public static boolean paused = false;
     public static final int WIDTH = 640;
     public static final int HEIGHT= 480;
     public static boolean DEBUG = false;
-    public static BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    public static double hScale = 1.0f;
-    public static double vScale = 1.0f;
-    public static int hOffset = 0;
-    public static int vOffset = 0;
-    public static boolean isFullScreen = false;
-    public static KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-    public static boolean[] keys = new boolean[256];
-
+    public static boolean paused = false;
+    
+    public BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    public double hScale = 1.0f;
+    public double vScale = 1.0f;
+    public int hOffset = 0;
+    public int vOffset = 0;
+    public boolean isFullScreen = false;
+    public KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    KeyEventDispatcher dispatcher = new KeyEventDispatcher() {
+    	public boolean dispatchKeyEvent(KeyEvent e) {
+                int code = e.getKeyCode();
+                if (code < 256) {
+                    if (KeyEvent.KEY_PRESSED == e.getID()) {
+                        Keyboard.keys[code] = true;
+                    }
+                    if (KeyEvent.KEY_RELEASED == e.getID()) {
+                        Keyboard.keys[code] = false;
+                    }
+                }
+                return true;
+            }
+    };
 
     //loader and opening screen static loading order is important
-    public static ArrayList<Entity> openingScreens = Menus.getMenus();
+    public Menu menu = new Menu();
+    public ArrayList<Entity> openingScreens = menu.getMenus();
 
     public VD() {
-        this.initGame();
+    	VD vd = this;
+    	new Thread(new Runnable() {
+    		@Override
+    		public void run() {
+    			vd.initGame();
+    		}
+    	}).start();
     }
 
     //Game Initialization - Place something here if you only want it to happen globally when the game is started.
@@ -86,41 +111,32 @@ public class VD extends JFrame {
         JFrame frame = this;
         this.frame = this;
         if (os == VD.OS.WIN) {
-            frame.setMinimumSize(new Dimension(VD.WIDTH+18 , VD.HEIGHT+30));
+            frame.setMinimumSize(new Dimension(WIDTH+18 , HEIGHT+30));
         } else {
-            frame.setMinimumSize(new Dimension(VD.WIDTH , VD.HEIGHT));
+            frame.setMinimumSize(new Dimension(WIDTH , HEIGHT));
         }
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
+        frame.setBounds((screen.width/2)-(WIDTH/2), (screen.height/2)-(HEIGHT/2), WIDTH, HEIGHT);
         frame.setBackground(Color.black);
         frame.setTitle("Victory Dispatcher");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        WindowManager.registerWindow(this);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         g = frame.getContentPane().getGraphics();
         frame.getContentPane().add(gamePanel);
         runningGamePanel = gamePanel;
-        //currentRoom = new Room(new TankPlayer(), new TankMajorTom(), new TankMajorTom(), new TankMajorTom());
         frame.pack();
         frame.setVisible(true);
-	//toggleFullScreen();
-	AudioPlayer.OPENER.play();
+        //toggleFullScreen();
+        AudioPlayer.OPENER.play();
         //KEYBOARD
-        manager.addKeyEventDispatcher(new KeyEventDispatcher() {
-                public boolean dispatchKeyEvent(KeyEvent e) {
-                    int code = e.getKeyCode();
-                    if (code < 256) {
-                        if (KeyEvent.KEY_PRESSED == e.getID()) {
-                            keys[code] = true;
-                        }
-                        if (KeyEvent.KEY_RELEASED == e.getID()) {
-                            keys[code] = false;
-                        }
-                    }
-                    return true;
-                }
-        });
+        manager.addKeyEventDispatcher(dispatcher);
         while (running) {
             gameLoop();
         }
+    }
+    
+    public void destroyGame() {
+    	manager.removeKeyEventDispatcher(dispatcher);
     }
 
     public void gameLoop() {
@@ -157,21 +173,21 @@ public class VD extends JFrame {
     }
 
     final private void handleUserControl() {
-        if (keys[KeyEvent.VK_ESCAPE] || keys[KeyEvent.VK_Q]) {
+        if (Keyboard.keys[KeyEvent.VK_ESCAPE] || Keyboard.keys[KeyEvent.VK_Q]) {
             System.exit(0);
         }
         //TOGGLE KEYS
-        if (keys[KeyEvent.VK_F]) {
+        if (Keyboard.keys[KeyEvent.VK_F]) {
             toggleFullScreen();
-            keys[KeyEvent.VK_F] = false;
+            Keyboard.keys[KeyEvent.VK_F] = false;
         }
-        if (keys[KeyEvent.VK_P]) {
+        if (Keyboard.keys[KeyEvent.VK_P]) {
             paused = !paused;
-            keys[KeyEvent.VK_P] = false;
+            Keyboard.keys[KeyEvent.VK_P] = false;
         }
-        if (keys[KeyEvent.VK_H]) {
-            VD.DEBUG = !VD.DEBUG;
-            keys[KeyEvent.VK_H] = false;
+        if (Keyboard.keys[KeyEvent.VK_H]) {
+            DEBUG = !DEBUG;
+            Keyboard.keys[KeyEvent.VK_H] = false;
         }
     }
     
@@ -182,14 +198,14 @@ public class VD extends JFrame {
                 if (!openingScreens.isEmpty()) {
                     Entity screen = openingScreens.get(0);
                     screen.update(dt);
-                    if (screen.isOld() || keys[KeyEvent.VK_SPACE] || keys[KeyEvent.VK_ENTER]) {
-                        keys[KeyEvent.VK_SPACE] = false;
-                        keys[KeyEvent.VK_ENTER] = false;
+                    if (screen.isOld() || Keyboard.keys[KeyEvent.VK_SPACE] || Keyboard.keys[KeyEvent.VK_ENTER]) {
+                        Keyboard.keys[KeyEvent.VK_SPACE] = false;
+                        Keyboard.keys[KeyEvent.VK_ENTER] = false;
                         openingScreens.remove(0);
-			if (openingScreens.isEmpty()) {
-			    AudioPlayer.OPENER.stop();
-			    currentRoom = new Room(Menus.t1, Menus.t2, Menus.t3, Menus.t4);
-			}
+						if (openingScreens.isEmpty()) {
+						    AudioPlayer.OPENER.stop();
+						    currentRoom = new Room(this, menu.t1, menu.t2, menu.t3, menu.t4);
+						}
                     }
                 } else {
                     openingScreens = null;
@@ -213,7 +229,7 @@ public class VD extends JFrame {
         public void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D)g;
             g2.translate(hOffset, vOffset);
-            g2.scale(VD.hScale, VD.vScale);
+            g2.scale(hScale, vScale);
             if (openingScreens != null) {
                 if (!openingScreens.isEmpty()) {
                     Entity screen = openingScreens.get(0);
@@ -230,7 +246,7 @@ public class VD extends JFrame {
         }
     }
 
-    static public Point getOriginOnScreen() {
+    public Point getOriginOnScreen() {
         if (runningGamePanel != null) {
             return runningGamePanel.getLocationOnScreen();
         } else {
@@ -238,7 +254,7 @@ public class VD extends JFrame {
         }
     }
 
-    public static void toggleFullScreen() {
+    public void toggleFullScreen() {
         if (frame != null) {
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();         
             if (isFullScreen) {
@@ -249,28 +265,28 @@ public class VD extends JFrame {
                 hOffset = 0;
                 vOffset = 0;
                 if (os == VD.OS.WIN) {
-                    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH+18, VD.HEIGHT+30);
+                    frame.setBounds((screen.width/2)-(WIDTH/2), (screen.height/2)-(HEIGHT/2), WIDTH+18, HEIGHT+30);
                 } else {
-                    frame.setBounds((screen.width/2)-(VD.WIDTH/2), (screen.height/2)-(VD.HEIGHT/2), VD.WIDTH, VD.HEIGHT);
+                    frame.setBounds((screen.width/2)-(WIDTH/2), (screen.height/2)-(HEIGHT/2), WIDTH, HEIGHT);
                 }
                 frame.setUndecorated(false);
                 frame.addNotify();
             } else {
                 isFullScreen = !isFullScreen;
-                double hRatio = (double)VD.WIDTH/screen.width;
-                double vRatio = (double)VD.HEIGHT/screen.height;
-                double windowRatio = (double)VD.WIDTH/VD.HEIGHT;
+                double hRatio = (double)WIDTH/screen.width;
+                double vRatio = (double)HEIGHT/screen.height;
+                double windowRatio = (double)WIDTH/HEIGHT;
                 double screenRatio = (double)screen.width/screen.height;
                 if (windowRatio > screenRatio) { //restrict width
                     hScale = hScale/hRatio;
                     vScale = vScale/hRatio;
-                    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
-                    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
+                    hOffset = (int)((screen.width - (hScale*WIDTH))/2.0);
+                    vOffset = (int)((screen.height - (vScale*HEIGHT))/2.0);
                 } else { //restrict height
                     hScale = hScale/vRatio;
                     vScale = vScale/vRatio;
-                    hOffset = (int)((screen.width - (hScale*VD.WIDTH))/2.0);
-                    vOffset = (int)((screen.height - (vScale*VD.HEIGHT))/2.0);
+                    hOffset = (int)((screen.width - (hScale*WIDTH))/2.0);
+                    vOffset = (int)((screen.height - (vScale*HEIGHT))/2.0);
                 }
                 frame.removeNotify();
                 frame.setUndecorated(true);
@@ -280,7 +296,7 @@ public class VD extends JFrame {
             // Since the focus is frozen all keys will also be frozen.
             // REMOVE FROZEN KEYS
             for (int i = 0; i < 256; i++) {
-                keys[i] = false;
+                Keyboard.keys[i] = false;
             }
             //REQUEST FOCUS
             frame.requestFocus();
@@ -289,12 +305,7 @@ public class VD extends JFrame {
     
 
     public static void main(String[] args) {
-        gameThread = new Thread(new Runnable() {
-                public void run() {
-                    VD game = new VD();
-                }
-        });
-        gameThread.start();
+    	VD game = new VD();
     }
 
 }
