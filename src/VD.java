@@ -1,4 +1,3 @@
-
 import java.awt.event.KeyEvent;
 import java.awt.*;
 import java.awt.image.*;
@@ -177,7 +176,7 @@ public class VD extends JFrame {
 
     final private void handleUserControl() {
         if (Keyboard.keys[KeyEvent.VK_ESCAPE] || Keyboard.keys[KeyEvent.VK_Q]) {
-            System.exit(0);
+            this.dispose();
         }
         //TOGGLE KEYS
         if (Keyboard.keys[KeyEvent.VK_F]) {
