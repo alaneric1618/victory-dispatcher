@@ -7,6 +7,44 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 public class Util {
+
+    public enum OS {
+        WIN,
+        MAC,
+        UNIX,
+        UNKNOWN;
+
+        public String toString() {
+            String s = "Unknown Operating System";
+            switch (this) {
+            case WIN: s = "Windows"; break;
+            case MAC: s = "OSX"; break;
+            case UNIX: s = "Unix Based"; break;
+            }
+            return s;
+        }
+    }
+
+
+    private static Util.OS os = Util.OS.UNKNOWN;
+    {
+        //OS
+        String osString = System.getProperty("os.name");
+        if (osString.toUpperCase().indexOf("WIN") >= 0) {
+            os = Util.OS.WIN;
+        } else if (osString.toUpperCase().indexOf("MAC") >= 0) {
+            os = Util.OS.MAC;
+        } else if (osString.toUpperCase().indexOf("NIX") >= 0) {
+            os = Util.OS.UNIX;
+        } else {
+            os = Util.OS.UNKNOWN;
+        }
+    }
+
+    public static Util.OS getOS() {
+        return os;
+    }
+
 	private static Properties properties = null;
 	static {
 		Util.loadProperties();

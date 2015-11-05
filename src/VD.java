@@ -7,27 +7,9 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class VD extends JFrame {
 
-    public enum OS {
-        WIN,
-        MAC,
-        UNIX,
-        UNKNOWN;
-
-        public String toString() {
-            String s = "Unknown Operating System";
-            switch (this) {
-            case WIN: s = "Windows"; break;
-            case MAC: s = "OSX"; break;
-            case UNIX: s = "Unix Based"; break;
-            }
-            return s;
-        }
-    }
-
     public Thread gameThread;
     public GamePanel runningGamePanel;
     public VD frame;
-    public VD.OS os;
 
     {
     	//ADD TO CLASSPATH
@@ -36,17 +18,6 @@ public class VD extends JFrame {
     	classpath = Util.getAIDirectory().getAbsolutePath()+";"+classpath;
 		System.setProperty("java.class.path", classpath);
 		System.out.println("CP:"+classpath);
-		//OS
-        String osString = System.getProperty("os.name");
-        if (osString.toUpperCase().indexOf("WIN") >= 0) {
-            os = VD.OS.WIN;
-        } else if (osString.toUpperCase().indexOf("MAC") >= 0) {
-            os = VD.OS.MAC;
-        } else if (osString.toUpperCase().indexOf("NIX") >= 0) {
-            os = VD.OS.UNIX;
-        } else {
-            os = VD.OS.UNKNOWN;
-        }
     }
     
     public GamePanel gamePanel = new GamePanel();
@@ -109,7 +80,7 @@ public class VD extends JFrame {
         running = true;
         JFrame frame = this;
         this.frame = this;
-        if (os == VD.OS.WIN) {
+        if (Util.getOS() == Util.OS.WIN) {
             frame.setMinimumSize(new Dimension(WIDTH+18 , HEIGHT+30));
         } else {
             frame.setMinimumSize(new Dimension(WIDTH , HEIGHT));
@@ -267,7 +238,7 @@ public class VD extends JFrame {
                 vScale = 1.0;
                 hOffset = 0;
                 vOffset = 0;
-                if (os == VD.OS.WIN) {
+                if (Util.getOS() == Util.OS.WIN) {
                     frame.setBounds((screen.width/2)-(WIDTH/2), (screen.height/2)-(HEIGHT/2), WIDTH+18, HEIGHT+30);
                 } else {
                     frame.setBounds((screen.width/2)-(WIDTH/2), (screen.height/2)-(HEIGHT/2), WIDTH, HEIGHT);
