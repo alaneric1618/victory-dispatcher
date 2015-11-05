@@ -12,12 +12,16 @@ public class VD extends JFrame {
     public VD frame;
 
     {
-    	//ADD TO CLASSPATH
-    	String classpath = System.getProperty("java.class.path");
-		//classpath += ";"+Editor.getAIDirectory().getAbsolutePath()+"/";
-    	classpath = Util.getAIDirectory().getAbsolutePath()+";"+classpath;
-		System.setProperty("java.class.path", classpath);
-		System.out.println("CP:"+classpath);
+        //ADD TO CLASSPATH
+        String classpath = System.getProperty("java.class.path");
+        if (Util.getOS() == Util.OS.WIN) {
+            classpath = Util.getAIDirectory().getAbsolutePath()+";"+classpath;
+        } else {
+            classpath = classpath.replace(":", ";");
+            classpath = Util.getAIDirectory().getAbsolutePath()+";"+classpath;
+        }
+        System.setProperty("java.class.path", classpath);
+        System.out.println("CP:"+classpath);
     }
     
     public GamePanel gamePanel = new GamePanel();
@@ -109,7 +113,8 @@ public class VD extends JFrame {
     }
     
     public void destroyGame() {
-    	manager.removeKeyEventDispatcher(dispatcher);
+        manager.removeKeyEventDispatcher(dispatcher);
+        AudioPlayer.OPENER.stop();
     }
 
     public void gameLoop() {

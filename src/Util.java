@@ -116,46 +116,57 @@ public class Util {
 		}
 	}
 	
-	private static void saveProperties() {
-		OutputStream output = null;
-		try {
-			output = new FileOutputStream("ai\\editor.properties");
-			setupDefaults();			
-			properties.store(output, null);
-		} catch (IOException io) {
-			io.printStackTrace();
-		} finally {
-			if (output != null) {
-				try {
-					output.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	private static void loadProperties() {
-		File aiDirectory = Util.getAIDirectory();
-		File file = new File(aiDirectory.getAbsolutePath()+"\\editor.properties");
-		if(!file.exists() && !file.isDirectory()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		Properties props = new Properties();
-		try {
-			props.load(new FileInputStream(file));
-			properties = props;
-			setupDefaults();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    private static void saveProperties() {
+        OutputStream output = null;
+        try {
+            if (Util.getOS() == Util.OS.WIN) {
+                output = new FileOutputStream("ai\\editor.properties");
+                setupDefaults();			
+                properties.store(output, null);
+            } else {
+                output = new FileOutputStream("./ai/editor.properties");
+                setupDefaults();			
+                properties.store(output, null);
+            }
+        } catch (IOException io) {
+            io.printStackTrace();
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static void loadProperties() {
+        File aiDirectory = Util.getAIDirectory();
+        File file;
+        if (Util.getOS() == Util.OS.WIN) {
+            file = new File(aiDirectory.getAbsolutePath()+"\\editor.properties");
+        } else {
+            file = new File(aiDirectory.getAbsolutePath()+"/editor.properties");
+        }
+        if(!file.exists() && !file.isDirectory()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream(file));
+            properties = props;
+            setupDefaults();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	
 }

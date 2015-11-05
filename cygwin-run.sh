@@ -9,4 +9,4 @@ for file in `ls ./src`; do
     fi
 done
 javac -cp ./bin/ -cp rsyntaxtextarea-2.5.8.jar -sourcepath rsyntaxtextarea-2.5.8.jar -sourcepath autocomplete-2.5.8.jar -d ./bin $files
-java  -cp ./bin/ VD
+java -cp ./bin/ VD

@@ -52,36 +52,72 @@ public class Loader extends ClassLoader {
     }
 
     private void findClasses() {
-		classes = new ArrayList<Class>();
-		String classpath = System.getProperty("java.class.path");
-		String[] classpathEntries = classpath.split(File.pathSeparator);
-		for (String cp : classpathEntries) {
-			if (cp.endsWith(".jar")) break;
-			try {
-			    File dir = new File(cp);
-			    File[] files = dir.listFiles();
-			    for (File file : files) {
-			    	if (file.isFile()) {
-			    		if (file.getName().endsWith(".class") && !isExcluded(file)) {
-			    			FileInputStream fileInputStream=null;
-			    			byte[] bytes = new byte[(int) file.length()];
-			    			fileInputStream = new FileInputStream(file);
-						    fileInputStream.read(bytes);
-						    fileInputStream.close();
-						    Class c = this.getClass(bytes);
-						    if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
-						    	this.resolveClass(c);
-						    	classes.add(c);
-						    	System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
-						    }
-			    		}
-			    	}
-			    }
-		    } catch (Exception e) {
-		    	e.printStackTrace();
-		    	System.out.println("Could not load files in classpath: "+cp);
-		    }
-		}
+        if (Util.getOS() == Util.OS.WIN) {
+            classes = new ArrayList<Class>();
+            String classpath = System.getProperty("java.class.path");
+            String[] classpathEntries = classpath.split(File.pathSeparator);
+            for (String cp : classpathEntries) {
+                if (cp.endsWith(".jar")) break;
+                try {
+                    File dir = new File(cp);
+                    File[] files = dir.listFiles();
+                    for (File file : files) {
+                        if (file.isFile()) {
+                            if (file.getName().endsWith(".class") && !isExcluded(file)) {
+                                FileInputStream fileInputStream=null;
+                                byte[] bytes = new byte[(int) file.length()];
+                                fileInputStream = new FileInputStream(file);
+                                fileInputStream.read(bytes);
+                                fileInputStream.close();
+                                Class c = this.getClass(bytes);
+                                if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
+                                    this.resolveClass(c);
+                                    classes.add(c);
+                                    System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Could not load files in classpath: "+cp);
+                }
+            }
+        } else {
+            classes = new ArrayList<Class>();
+            String classpath = System.getProperty("java.class.path");
+            String[] classpathEntries = classpath.split(";");
+            for (String cp : classpathEntries) {
+                System.out.println("         CP:"+cp);
+                if (cp.endsWith(".jar")) {
+                    continue;
+                }
+                try {
+                    File dir = new File(cp);
+                    File[] files = dir.listFiles();
+                    for (File file : files) {
+                        if (file.isFile()) {
+                            if (file.getName().endsWith(".class") && !isExcluded(file)) {
+                                FileInputStream fileInputStream=null;
+                                byte[] bytes = new byte[(int) file.length()];
+                                fileInputStream = new FileInputStream(file);
+                                fileInputStream.read(bytes);
+                                fileInputStream.close();
+                                Class c = this.getClass(bytes);
+                                if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
+                                    this.resolveClass(c);
+                                    classes.add(c);
+                                    System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Could not load files in classpath: "+cp);
+                }
+            }
+        }
     }
     
     private boolean isExcluded(File file) {
