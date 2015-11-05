@@ -99,6 +99,11 @@ public class Editor extends JFrame {
     RunAction runAction = new RunAction();
     UploadAction uploadAction = new UploadAction();
     ChooseAction chooseAction = new ChooseAction();
+
+    static {
+	String classpath = System.getProperty("java.class.path");
+	System.out.println("CP:"+classpath);
+    }
     
     public Editor() {
         SwingUtilities.invokeLater(new Runnable() {

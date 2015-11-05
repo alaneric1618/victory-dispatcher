@@ -27,7 +27,7 @@ public class Util {
 
 
     private static Util.OS os = Util.OS.UNKNOWN;
-    {
+    static {
         //OS
         String osString = System.getProperty("os.name");
         if (osString.toUpperCase().indexOf("WIN") >= 0) {

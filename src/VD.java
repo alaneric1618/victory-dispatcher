@@ -87,6 +87,7 @@ public class VD extends JFrame {
         if (Util.getOS() == Util.OS.WIN) {
             frame.setMinimumSize(new Dimension(WIDTH+18 , HEIGHT+30));
         } else {
+	    System.out.println("Mac");
             frame.setMinimumSize(new Dimension(WIDTH , HEIGHT));
         }
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
