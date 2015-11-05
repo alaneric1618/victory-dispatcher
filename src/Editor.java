@@ -7,8 +7,6 @@ import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -103,44 +101,13 @@ public class Editor extends JFrame {
 	ChooseAction chooseAction = new ChooseAction();
 	
 	public Editor() {
-		init();
-		this.addWindowListener(new WindowListener() {
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
-			public void windowOpened(WindowEvent e) {
-				
+			public void run() {
+				init();
 			}
-
-			@Override
-			public void windowClosing(WindowEvent e) {
-				
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e) {
-				
-			}
-
-			@Override
-			public void windowIconified(WindowEvent e) {
-				
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {
-				
-			}
-
-			@Override
-			public void windowActivated(WindowEvent e) {
-				
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				
-			}
-			
 		});
+
 	}
 	
 	public void init() {
@@ -434,12 +401,7 @@ public class Editor extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new Editor();
-			}
-		});
+		new Editor();
 	}	
 }
 

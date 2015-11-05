@@ -54,6 +54,9 @@ public class Util {
 	}
 	
 	private static void setupDefaults() {
+		if (!properties.containsKey("is-fullscreen")) {
+			properties.put("is-fullscreen", "no");
+		}
 		if (!properties.containsKey("upload-key")) {
 			properties.put("upload-key", "Not Set");
 		}

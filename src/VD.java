@@ -90,7 +90,7 @@ public class VD extends JFrame {
     };
 
     //loader and opening screen static loading order is important
-    public Menu menu = new Menu();
+    public Menu menu = new Menu(this);
     public ArrayList<Entity> openingScreens = menu.getMenus();
 
     public VD() {
@@ -126,7 +126,10 @@ public class VD extends JFrame {
         runningGamePanel = gamePanel;
         frame.pack();
         frame.setVisible(true);
-        //toggleFullScreen();
+        String fullscreenString = Util.getProperty("is-fullscreen");
+        if ("yes".compareTo(fullscreenString)==0) {
+        	toggleFullScreen();
+        }
         AudioPlayer.OPENER.play();
         //KEYBOARD
         manager.addKeyEventDispatcher(dispatcher);
@@ -256,9 +259,10 @@ public class VD extends JFrame {
 
     public void toggleFullScreen() {
         if (frame != null) {
-            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();         
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             if (isFullScreen) {
                 isFullScreen = !isFullScreen;
+                Util.setProperty("is-fullscreen", "no");
                 frame.removeNotify();
                 hScale = 1.0;
                 vScale = 1.0;
@@ -273,6 +277,7 @@ public class VD extends JFrame {
                 frame.addNotify();
             } else {
                 isFullScreen = !isFullScreen;
+                Util.setProperty("is-fullscreen", "yes");
                 double hRatio = (double)WIDTH/screen.width;
                 double vRatio = (double)HEIGHT/screen.height;
                 double windowRatio = (double)WIDTH/HEIGHT;

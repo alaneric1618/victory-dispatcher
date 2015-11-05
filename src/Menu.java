@@ -52,6 +52,12 @@ public class Menu {
     }
     public static Text presented = new Text("Presented By", 0.5);
 
+    
+    public VD vd;
+    public Menu(VD vd) {
+    	this.vd = vd;
+    }
+    
     public ArrayList<Entity> getMenus() {
         ArrayList<Entity> menus = new ArrayList<Entity>();
         String startupMode = Util.getProperty("startup-mode");
@@ -308,6 +314,11 @@ public class Menu {
 	    if (selector == 0) selector++;
 	    Keyboard.keys[KeyEvent.VK_RIGHT] = false;
 	}
+	if (Keyboard.keys[KeyEvent.VK_F2]) {
+		new Editor();
+		menu.vd.dispose();
+		
+	}
 	if (selector == 1) {
 	    if (i1 >= 0 && (i1 < tanks1.size())) menu.t1 = tanks1.get(i1);
 	}
@@ -389,10 +400,14 @@ public class Menu {
 	g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
 	phraseText.draw(g, 320, 200);
 	g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-	//Draw Insert Coin
+	//Periodic drawing
 	if ( ((int)this.getAge())%1000 < 500 ) {
+		//Draw Insert Coin
 	    Text text = new Text("Insert Coin", 0.3, Text.Align.CENTER);
 	    text.draw(g, 320, 250);
+	    //Draw Edit
+	    Text f2 = new Text("F2 - Editor", 0.3, Text.Align.CENTER);
+	    f2.draw(g, 320, 275);
 	}
         }
     };
