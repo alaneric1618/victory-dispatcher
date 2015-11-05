@@ -99,7 +99,7 @@ public class Editor extends JFrame {
     RunAction runAction = new RunAction();
     UploadAction uploadAction = new UploadAction();
     ChooseAction chooseAction = new ChooseAction();
-	
+    
     public Editor() {
         SwingUtilities.invokeLater(new Runnable() {
                 @Override

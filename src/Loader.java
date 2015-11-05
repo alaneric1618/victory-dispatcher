@@ -57,7 +57,9 @@ public class Loader extends ClassLoader {
             String classpath = System.getProperty("java.class.path");
             String[] classpathEntries = classpath.split(File.pathSeparator);
             for (String cp : classpathEntries) {
-                if (cp.endsWith(".jar")) break;
+		if (cp.endsWith(".jar")) {
+                    continue;
+                }
                 try {
                     File dir = new File(cp);
                     File[] files = dir.listFiles();
@@ -88,7 +90,6 @@ public class Loader extends ClassLoader {
             String classpath = System.getProperty("java.class.path");
             String[] classpathEntries = classpath.split(";");
             for (String cp : classpathEntries) {
-                System.out.println("         CP:"+cp);
                 if (cp.endsWith(".jar")) {
                     continue;
                 }
