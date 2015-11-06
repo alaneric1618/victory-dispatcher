@@ -116,9 +116,7 @@ public class Editor extends JFrame {
     }
 	
     public void init() {
-		
         UIManager.put("OptionPane.messageFont", new FontUIResource(new Font("Monospaced", Font.PLAIN, 14)));
-		
         JPanel contentPane = new JPanel(new BorderLayout());
 		
         JPanel controlPanel = new JPanel();

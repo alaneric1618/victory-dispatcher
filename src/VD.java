@@ -63,7 +63,7 @@ public class VD extends JFrame {
             }
     };
 
-    //loader and opening screen static loading order is important
+    //loader and opening screen static loading order is important (Why?)
     public Menu menu = new Menu(this);
     public ArrayList<Entity> openingScreens = menu.getMenus();
 
@@ -114,8 +114,11 @@ public class VD extends JFrame {
     }
     
     public void destroyGame() {
+    	running = false;
         manager.removeKeyEventDispatcher(dispatcher);
         AudioPlayer.OPENER.stop();
+        System.gc();
+        Keyboard.resetKeyboard();
     }
 
     public void gameLoop() {
@@ -276,9 +279,7 @@ public class VD extends JFrame {
             }
             // Since the focus is frozen all keys will also be frozen.
             // REMOVE FROZEN KEYS
-            for (int i = 0; i < 256; i++) {
-                Keyboard.keys[i] = false;
-            }
+            Keyboard.resetKeyboard();
             //REQUEST FOCUS
             frame.requestFocus();
         }

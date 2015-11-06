@@ -1,3 +1,4 @@
+import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -5,10 +6,8 @@ import javax.swing.JFrame;
 
 public class WindowManager implements WindowListener {
 	
-	private static int windowCount = 0;
 	public static void registerWindow(JFrame frame) {
 		frame.addWindowListener(new WindowManager(frame));
-		windowCount++;
 	}
 	
 	public JFrame window;
@@ -28,11 +27,10 @@ public class WindowManager implements WindowListener {
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		windowCount--;
 		if (window instanceof VD) {
 			((VD)window).destroyGame();
 		}
-		if (windowCount <= 0) {
+		if (Frame.getFrames().length <= 0) {
 			System.exit(0);
 		}
 	}

@@ -182,7 +182,7 @@ public class Menu {
             }
     };
 
-    static class MainMenu extends Entity {
+    class MainMenu extends Entity {
     	private Menu menu;
     	MainMenu(Menu menu) {
     		this.menu = menu;
@@ -247,92 +247,92 @@ public class Menu {
 	    ArrayList<Particle> particles = new ArrayList<Particle>();
 	    
 	    final private void handleUserControl() {
-	    	if (Keyboard.keys[KeyEvent.VK_UP]) {
+		    if (Keyboard.keys[KeyEvent.VK_UP]) {
 	    		if (AudioPlayer.SELECT_LOW1.isPlaying()) {
 	    			AudioPlayer.SELECT_LOW1.stop();
 	    			AudioPlayer.SELECT_LOW2.play();
 	    		} else {
-                    AudioPlayer.SELECT_LOW2.stop();
-                    AudioPlayer.SELECT_LOW1.play();
-                }
-	    if (selector == 1) {
-		i1++; i1 = i1 % (tanks1.size());
-	    }
-	    if (selector == 2) {
-		i2++; i2 = i2 % (tanks2.size());
-	    }
-	    if (selector == 3) {
-		i3++; i3 = i3 % (tanks3.size());
-	    }
-	    if (selector == 4) {
-		i4++; i4 = i4 % (tanks4.size());
-	    }
-	    Keyboard.keys[KeyEvent.VK_UP] = false;
-            }
-            if (Keyboard.keys[KeyEvent.VK_DOWN]) {
-                if (AudioPlayer.SELECT_LOW1.isPlaying()) {
-                    AudioPlayer.SELECT_LOW1.stop();
-                    AudioPlayer.SELECT_LOW2.play();
-                } else {
-                    AudioPlayer.SELECT_LOW2.stop();
-                    AudioPlayer.SELECT_LOW1.play();
-                }
-	    if (selector == 1) {
-		i1--; if (i1 < 0) {i1 = tanks1.size()-1;}
-	    }
-	    if (selector == 2) {
-		i2--; if (i2 < 0) {i2 = tanks2.size()-1;}
-	    }
-	    if (selector == 3) {
-		i3--; if (i3 < 0) {i3 = tanks3.size()-1;}
-	    }
-	    if (selector == 4) {
-		i4--; if (i4 < 0) {i4 = tanks4.size()-1;}
-	    }
-	    Keyboard.keys[KeyEvent.VK_DOWN] = false;
-            }
-	if (Keyboard.keys[KeyEvent.VK_LEFT]) {
-                if (AudioPlayer.SELECT_HI1.isPlaying()) {
-                    AudioPlayer.SELECT_HI1.stop();
-                    AudioPlayer.SELECT_HI2.play();
-                } else {
-                    AudioPlayer.SELECT_HI2.stop();
-                    AudioPlayer.SELECT_HI1.play();
-                }
-	    selector--; if (selector < 1) {selector = 4;}
-	    Keyboard.keys[KeyEvent.VK_LEFT] = false;
-	}
-	if (Keyboard.keys[KeyEvent.VK_RIGHT]) {
-                if (AudioPlayer.SELECT_HI1.isPlaying()) {
-                    AudioPlayer.SELECT_HI1.stop();
-                    AudioPlayer.SELECT_HI2.play();
-                } else {
-                    AudioPlayer.SELECT_HI2.stop();
-                    AudioPlayer.SELECT_HI1.play();
-                }
-	    selector++; selector = (selector % 5);
-	    if (selector == 0) selector++;
-	    Keyboard.keys[KeyEvent.VK_RIGHT] = false;
-	}
-	if (Keyboard.keys[KeyEvent.VK_F2]) {
-		new Editor();
-		menu.vd.dispose();
-		
-	}
-	if (selector == 1) {
-	    if (i1 >= 0 && (i1 < tanks1.size())) menu.t1 = tanks1.get(i1);
-	}
-	if (selector == 2) {
-	    if (i2 >= 0 && (i2 < tanks2.size())) menu.t2 = tanks2.get(i2);
-	}
-	if (selector == 3) {
-	    if (i3 >= 0 && (i3 < tanks3.size())) menu.t3 = tanks3.get(i3);
-	}
-	if (selector == 4) {
-	    if (i4 >= 0 && (i4 < tanks4.size())) menu.t4 = tanks4.get(i4);
-	}
-
-        }
+	                AudioPlayer.SELECT_LOW2.stop();
+	                AudioPlayer.SELECT_LOW1.play();
+	    		}
+			    if (selector == 1) {
+			    	i1++; i1 = i1 % (tanks1.size());
+			    }
+			    if (selector == 2) {
+			    	i2++; i2 = i2 % (tanks2.size());
+			    }
+			    if (selector == 3) {
+			    	i3++; i3 = i3 % (tanks3.size());
+			    }
+			    if (selector == 4) {
+			    	i4++; i4 = i4 % (tanks4.size());
+			    }
+			    Keyboard.keys[KeyEvent.VK_UP] = false;
+	    	}
+	    	if (Keyboard.keys[KeyEvent.VK_DOWN]) {
+	            if (AudioPlayer.SELECT_LOW1.isPlaying()) {
+	                AudioPlayer.SELECT_LOW1.stop();
+	                AudioPlayer.SELECT_LOW2.play();
+	            } else {
+	                AudioPlayer.SELECT_LOW2.stop();
+	                AudioPlayer.SELECT_LOW1.play();
+	            }
+			    if (selector == 1) {
+			    	i1--; if (i1 < 0) {i1 = tanks1.size()-1;}
+			    }
+			    if (selector == 2) {
+			    	i2--; if (i2 < 0) {i2 = tanks2.size()-1;}
+			    }
+			    if (selector == 3) {
+			    	i3--; if (i3 < 0) {i3 = tanks3.size()-1;}
+			    }
+			    if (selector == 4) {
+			    	i4--; if (i4 < 0) {i4 = tanks4.size()-1;}
+			    }
+			    Keyboard.keys[KeyEvent.VK_DOWN] = false;
+	    	}
+	    	if (Keyboard.keys[KeyEvent.VK_LEFT]) {
+	            if (AudioPlayer.SELECT_HI1.isPlaying()) {
+	                AudioPlayer.SELECT_HI1.stop();
+	                AudioPlayer.SELECT_HI2.play();
+	            } else {
+	                AudioPlayer.SELECT_HI2.stop();
+	                AudioPlayer.SELECT_HI1.play();
+	            }
+			    selector--; if (selector < 1) {selector = 4;}
+			    Keyboard.keys[KeyEvent.VK_LEFT] = false;
+	    	}
+	    	if (Keyboard.keys[KeyEvent.VK_RIGHT]) {
+	            if (AudioPlayer.SELECT_HI1.isPlaying()) {
+	                AudioPlayer.SELECT_HI1.stop();
+	                AudioPlayer.SELECT_HI2.play();
+	            } else {
+	                AudioPlayer.SELECT_HI2.stop();
+	                AudioPlayer.SELECT_HI1.play();
+	            }
+			    selector++; selector = (selector % 5);
+			    if (selector == 0) selector++;
+			    Keyboard.keys[KeyEvent.VK_RIGHT] = false;
+	    	}
+	    	if (Keyboard.keys[KeyEvent.VK_F2]) {
+	    		new Editor();
+	    		menu.vd.dispose();
+	    		Keyboard.keys[KeyEvent.VK_F2] = false;
+	    	}
+			if (selector == 1) {
+			    if (i1 >= 0 && (i1 < tanks1.size())) menu.t1 = tanks1.get(i1);
+			}
+			if (selector == 2) {
+			    if (i2 >= 0 && (i2 < tanks2.size())) menu.t2 = tanks2.get(i2);
+			}
+			if (selector == 3) {
+			    if (i3 >= 0 && (i3 < tanks3.size())) menu.t3 = tanks3.get(i3);
+			}
+			if (selector == 4) {
+			    if (i4 >= 0 && (i4 < tanks4.size())) menu.t4 = tanks4.get(i4);
+			}
+		}
+	    
         public void update(float dt) {
             super.update(dt);
             handleUserControl();
