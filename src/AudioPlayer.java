@@ -3,9 +3,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
 import java.io.File;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
-import javax.sound.sampled.LineUnavailableException;
 
 public enum AudioPlayer {
     OPENER("opener.wav"),
@@ -65,10 +62,15 @@ public enum AudioPlayer {
             sound.stop();
         }
     }
+    
+    static boolean isInitialized = false;
 
     static void init() {
         //Construct All Enums
-        values();
+    	if (!isInitialized) {
+    		isInitialized = true;
+    		values();
+    	}
     }
 }
 

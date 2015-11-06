@@ -405,10 +405,10 @@ public class Menu {
 		//Draw Insert Coin
 	    Text text = new Text("Insert Coin", 0.3, Text.Align.CENTER);
 	    text.draw(g, 320, 250);
-	    //Draw Edit
-	    Text f2 = new Text("F2 - Editor", 0.3, Text.Align.CENTER);
-	    f2.draw(g, 320, 275);
 	}
+	//Draw Edit
+	Text f2 = new Text("Press F2 for Tank Editor", 0.18, Text.Align.CENTER);
+	f2.draw(g, 320, 275);
         }
     };
 }
