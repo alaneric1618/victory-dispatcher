@@ -30,7 +30,14 @@ public class WindowManager implements WindowListener {
 		if (window instanceof VD) {
 			((VD)window).destroyGame();
 		}
-		if (Frame.getFrames().length <= 0) {
+		Frame[] frames = Frame.getFrames();
+		int frameCount = 0;
+		for (Frame frame : frames) {
+			if (frame.isActive()) {
+				frameCount++;
+			}
+		}
+		if (frameCount <= 0) {
 			System.exit(0);
 		}
 	}

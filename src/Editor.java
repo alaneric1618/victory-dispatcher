@@ -14,7 +14,8 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -24,12 +25,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
+import org.fife.ui.autocomplete.*;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -46,7 +52,7 @@ public class Editor extends JFrame {
         + "\t{" + "\n"
         + "\t\tname = \"<INSERT-YOUT-NAME>\";" + "\n"
         + "\t\ttry {" + "\n"
-        + "\t\t\ticon = ImageIO.read(new File(\"<INSERT-YOUR-FILENAME>\"));" + "\n"
+        + "\t\t\ticon = ImageIO.read(new File(\"./ai/<INSERT-YOUR-FILENAME>\"));" + "\n"
         + "\t\t} catch(Exception e) {" + "\n"
         + "\t\t\t" + "\n"
         + "\t\t}" + "\n"
@@ -89,9 +95,8 @@ public class Editor extends JFrame {
     JTextField javacField = new JTextField();
     JButton javacButton = new JButton("Choose");
 	
-    JLabel statusLabel = new JLabel(" ");
+    JLabel statusLabel = new JLabel(" TEST ");
     JPanel statusBar = new JPanel();
-    ArrayList<String> queuedStatuses = new ArrayList<String>();
 	
     SaveAction saveAction = new SaveAction();
     OpenAction openAction = new OpenAction();
@@ -99,6 +104,13 @@ public class Editor extends JFrame {
     RunAction runAction = new RunAction();
     UploadAction uploadAction = new UploadAction();
     ChooseAction chooseAction = new ChooseAction();
+    
+    TimerTask clearStatusTask = new TimerTask() {
+		@Override
+		public void run() {
+			statusLabel.setText(" ");
+		}
+    };
 
     static {
 	String classpath = System.getProperty("java.class.path");
@@ -112,7 +124,6 @@ public class Editor extends JFrame {
                     init();
                 }
             });
-
     }
 	
     public void init() {
@@ -149,10 +160,54 @@ public class Editor extends JFrame {
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
         textArea.setCodeFoldingEnabled(false);
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
+
+	// Complete Provider
+	DefaultCompletionProvider provider = new DefaultCompletionProvider() {
+		public boolean isAutoActivateOkay(JTextComponent tc) {
+			Document doc = tc.getDocument();
+			char ch = 0;
+			try {
+				String s = doc.getText(tc.getCaretPosition()-4, 5);
+				if (s.contains("this.")) return true;
+			} catch (BadLocationException ble) { // Never happens
+				ble.printStackTrace();
+			}
+			return false;
+		}
+	};
+	FunctionCompletion fun = new FunctionCompletion(provider, "talk(String phrase)", "void");
+	provider.addCompletion(fun);
+	provider.addCompletion(new FunctionCompletion(provider, "getSpeed()", "double"));
+	provider.addCompletion(new FunctionCompletion(provider, "getDir()", "double"));
+	provider.addCompletion(new FunctionCompletion(provider, "getTurretDir()", "double"));
+	provider.addCompletion(new FunctionCompletion(provider, "getVisibleEntities()", "HashSet<VisibleEntities>"));
+	provider.addCompletion(new FunctionCompletion(provider, "forward()", "void"));
+	provider.addCompletion(new FunctionCompletion(provider, "backward()", "void"));
+	provider.addCompletion(new FunctionCompletion(provider, "turnTread(double deg, boolean isAbsolute)", "void"));
+	provider.addCompletion(new FunctionCompletion(provider, "lockTurret()", "void"));
+	provider.addCompletion(new FunctionCompletion(provider, "turnTurretTo(double x, double y)", "void"));
+	provider.addCompletion(new FunctionCompletion(provider, "turnTurret(double deg, boolean isAbsolute)", "void"));
+	provider.addCompletion(new FunctionCompletion(provider, "isFireAllowed()", "boolean"));
+	provider.addCompletion(new FunctionCompletion(provider, "fire()", "void"));
+	provider.setAutoActivationRules(false, "this.");
+	LanguageAwareCompletionProvider laprovider = new LanguageAwareCompletionProvider(provider);
+	laprovider.setAutoActivationRules(false, "this.");
+	AutoCompletion ac = new AutoCompletion(laprovider);
+	//ac.setParameterAssistanceEnabled(true);
+	//ac.setAutoCompleteEnabled(true);
+	ac.setAutoActivationEnabled(true);
+	ac.install(textArea);
 		
-        statusBar.setMinimumSize(new Dimension(640, 24));
-        statusBar.setBounds(0, 0, 640, 25);
-        statusBar.add(statusLabel);
+        JPanel temp = new JPanel();
+        temp.setBackground(Color.red);
+        temp.setMinimumSize(new Dimension(640, 30));
+        temp.setBounds(0, 0, 640, 30);
+        statusLabel.setBounds(0, 0, 640, 25);
+        statusBar.setMinimumSize(new Dimension(640, 30));
+        statusBar.setBounds(0, 0, 640, 30);
+        statusBar.add(temp);
+        temp.setLayout(null);
+        //temp.add(statusLabel);
         contentPane.add(controlPanel, BorderLayout.NORTH);
         contentPane.add(scrollPane, BorderLayout.CENTER);
         contentPane.add(statusBar, BorderLayout.SOUTH);
@@ -208,7 +263,39 @@ public class Editor extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
         this.setMinimumSize(new Dimension(1050, 480));
-        this.setLocationRelativeTo(null);	
+        this.setLocationRelativeTo(null);
+        
+        new Thread(new Runnable() {
+        	int i = 0;
+			@Override
+			public void run() {
+				System.out.println("STATUS LABEL: "+statusLabel);
+				while (statusLabel != null) {
+					if (statusLabel.getText().length() > 1) {
+						i++;
+						try {
+							Thread.sleep(66);
+						} catch (Exception e) {
+							
+						}
+						String text = statusLabel.getText();
+						text = " " + text;
+						statusLabel.setText(text);
+					}
+				}
+				System.out.println("CODE STOPPED");
+			}
+        	
+        }).start();
+    }
+    
+    public void setStatus(String status) {
+    	statusLabel.setText(status);
+    	try {
+    		new Timer().schedule(clearStatusTask, 3000);
+    	} catch (Exception e) {
+    		; //ignore timers already set
+    	}
     }
 	
     class SaveAction extends AbstractAction {
@@ -325,7 +412,7 @@ public class Editor extends JFrame {
                 directorySeperator = "/";
             }
             String cmd = javacString + outputDirectory + classPathString + " " + aiPath + directorySeperator + name + ".java";
-            String output = Editor.executeCmd(cmd);
+            String output = executeCmd(cmd);
             System.out.println(cmd);
             System.out.println(output);
         }
@@ -372,7 +459,7 @@ public class Editor extends JFrame {
         }
     }
 	
-    public static String executeCmd(String cmd) {
+    public String executeCmd(String cmd) {
         StringBuilder sb = new StringBuilder();
         try {
             Process p;
@@ -388,7 +475,7 @@ public class Editor extends JFrame {
                 sb.append(line + "\n");
             }
             if (p.exitValue() == 0) {
-                JOptionPane.showMessageDialog(null, "Compilation Success", "Success", JOptionPane.PLAIN_MESSAGE);
+                setStatus(" Compilation Success");
                 return sb.toString();
             } else {
                 JOptionPane.showMessageDialog(null, "Compilation Failed\n"+sb.toString(), "Error", JOptionPane.ERROR_MESSAGE);

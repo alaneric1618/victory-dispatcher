@@ -358,41 +358,41 @@ public class Menu {
 	//PLAYER 1
             if (menu.t1 != null) {
                 g.drawImage(menu.t1.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, characterY), null);
-                Text text = new Text(i1+". "+menu.t1.getName(), 0.2, Text.Align.CENTER, (selector==1));
+                Text text = new Text(menu.t1.getName(), 0.2, Text.Align.CENTER, (selector==1));
                 text.draw(g, 146, characterTitleY);
             } else {
                 g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 101, characterY), null);
-                Text text = new Text(i1+". "+"None", 0.2, Text.Align.CENTER, (selector==1));
+                Text text = new Text("None", 0.2, Text.Align.CENTER, (selector==1));
                 text.draw(g, 146, characterTitleY);
 	}
 	//PLAYER 2
             if (menu.t2 != null) {
                 g.drawImage(menu.t2.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, characterY), null);
-                Text text = new Text(i2+". "+menu.t2.getName(), 0.2, Text.Align.CENTER, (selector==2));
+                Text text = new Text(menu.t2.getName(), 0.2, Text.Align.CENTER, (selector==2));
                 text.draw(g, 259, characterTitleY+20);
             } else {
                 g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 214, characterY), null);
-                Text text = new Text(i2+". "+"None", 0.2, Text.Align.CENTER, (selector==2));
+                Text text = new Text("None", 0.2, Text.Align.CENTER, (selector==2));
                 text.draw(g, 259, characterTitleY+20);
 	}
 	//PLAYER 3
             if (menu.t3 != null) {
                 g.drawImage(menu.t3.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, characterY), null);
-                Text text = new Text(i3+". "+menu.t3.getName(), 0.2, Text.Align.CENTER, (selector==3));
+                Text text = new Text(menu.t3.getName(), 0.2, Text.Align.CENTER, (selector==3));
                 text.draw(g, 372, characterTitleY);
             } else {
                 g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 327, characterY), null);
-                Text text = new Text(i3+". "+"None", 0.2, Text.Align.CENTER, (selector==3));
+                Text text = new Text("None", 0.2, Text.Align.CENTER, (selector==3));
                 text.draw(g, 372, characterTitleY);
 	}
 	//PLAYER 4
             if (menu.t4 != null) {
                 g.drawImage(menu.t4.getIcon(), new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, characterY), null);
-                Text text = new Text(i4+". "+menu.t4.getName(), 0.2, Text.Align.CENTER, (selector==4));
+                Text text = new Text(menu.t4.getName(), 0.2, Text.Align.CENTER, (selector==4));
                 text.draw(g, 486, characterTitleY+20);
             } else {
                 g.drawImage(nope, new AffineTransform(2.0f, 0f , 0f , 2.0f, 441, characterY), null);
-                Text text = new Text(i4+". "+"None", 0.2, Text.Align.CENTER, (selector==4));
+                Text text = new Text("None", 0.2, Text.Align.CENTER, (selector==4));
                 text.draw(g, 486, characterTitleY+20);
 	}
 	//Phrase

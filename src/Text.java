@@ -100,7 +100,7 @@ public class Text extends Entity {
 	case '\n':ij[0] = 1;   ij[1] = 1;       ij[2] = 1;  ij[3] = 1;  break;
 	case ' ': ij[0] = 700; ij[1] = 2*70+0;  ij[2] = 40; ij[3] = 70; break;
 	case '-': ij[0] = 729; ij[1] = 0*70+0;  ij[2] = 60; ij[3] = 70; break;
-	case '0': ij[0] = 0;   ij[1] = 1*700;  ij[2] = 60; ij[3] = 70; break;
+	case '0': ij[0] = 0;   ij[1] = 1*70-5;  ij[2] = 60; ij[3] = 70; break;
 	case '1': ij[0] = 70;  ij[1] = 1*70-5;  ij[2] = 30; ij[3] = 70; break;
 	case '2': ij[0] = 110; ij[1] = 1*70-5;  ij[2] = 60; ij[3] = 70; break;
 	case '3': ij[0] = 180; ij[1] = 1*70-5;  ij[2] = 60; ij[3] = 70; break;
