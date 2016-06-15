@@ -162,7 +162,7 @@ public class Editor extends JFrame {
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
 
 	// Complete Provider
-	DefaultCompletionProvider provider = new DefaultCompletionProvider() {
+	DefaultCompletionProvider provider1 = new DefaultCompletionProvider() {
 		public boolean isAutoActivateOkay(JTextComponent tc) {
 			Document doc = tc.getDocument();
 			char ch = 0;
@@ -175,28 +175,40 @@ public class Editor extends JFrame {
 			return false;
 		}
 	};
-	FunctionCompletion fun = new FunctionCompletion(provider, "talk(String phrase)", "void");
-	provider.addCompletion(fun);
-	provider.addCompletion(new FunctionCompletion(provider, "getSpeed()", "double"));
-	provider.addCompletion(new FunctionCompletion(provider, "getDir()", "double"));
-	provider.addCompletion(new FunctionCompletion(provider, "getTurretDir()", "double"));
-	provider.addCompletion(new FunctionCompletion(provider, "getVisibleEntities()", "HashSet<VisibleEntities>"));
-	provider.addCompletion(new FunctionCompletion(provider, "forward()", "void"));
-	provider.addCompletion(new FunctionCompletion(provider, "backward()", "void"));
-	provider.addCompletion(new FunctionCompletion(provider, "turnTread(double deg, boolean isAbsolute)", "void"));
-	provider.addCompletion(new FunctionCompletion(provider, "lockTurret()", "void"));
-	provider.addCompletion(new FunctionCompletion(provider, "turnTurretTo(double x, double y)", "void"));
-	provider.addCompletion(new FunctionCompletion(provider, "turnTurret(double deg, boolean isAbsolute)", "void"));
-	provider.addCompletion(new FunctionCompletion(provider, "isFireAllowed()", "boolean"));
-	provider.addCompletion(new FunctionCompletion(provider, "fire()", "void"));
-	provider.setAutoActivationRules(false, "this.");
-	LanguageAwareCompletionProvider laprovider = new LanguageAwareCompletionProvider(provider);
-	laprovider.setAutoActivationRules(false, "this.");
-	AutoCompletion ac = new AutoCompletion(laprovider);
-	//ac.setParameterAssistanceEnabled(true);
-	//ac.setAutoCompleteEnabled(true);
-	ac.setAutoActivationEnabled(true);
-	ac.install(textArea);
+	DefaultCompletionProvider provider2 = new DefaultCompletionProvider() {
+		public boolean isAutoActivateOkay(JTextComponent tc) {
+			Document doc = tc.getDocument();
+			char ch = 0;
+			try {
+				String s = doc.getText(tc.getCaretPosition()-4, 5);
+				if (s.contains("enum.")) return true;
+			} catch (BadLocationException ble) { // Never happens
+				ble.printStackTrace();
+			}
+			return false;
+		}
+	};
+	provider2.addCompletion(new FunctionCompletion(provider2, "works()", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "talk(String phrase)", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "getSpeed()", "double"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "getDir()", "double"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "getTurretDir()", "double"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "getVisibleEntities()", "HashSet<VisibleEntities>"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "forward()", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "backward()", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "turnTread(double deg, boolean isAbsolute)", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "lockTurret()", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "turnTurretTo(double x, double y)", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "turnTurret(double deg, boolean isAbsolute)", "void"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "isFireAllowed()", "boolean"));
+	provider1.addCompletion(new FunctionCompletion(provider1, "fire()", "void"));
+	LanguageAwareCompletionProvider laprovider = new LanguageAwareCompletionProvider(provider1);
+	AutoCompletion ac1 = new AutoCompletion(laprovider);
+	AutoCompletion ac2 = new AutoCompletion(provider2);
+	ac1.setAutoActivationEnabled(true);
+	ac2.setAutoActivationEnabled(true);
+	ac2.install(textArea);
+	ac1.install(textArea);
 		
         JPanel temp = new JPanel();
         temp.setBackground(Color.red);
