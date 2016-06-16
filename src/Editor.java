@@ -422,7 +422,10 @@ public class Editor extends JFrame {
 		fun=new FunctionCompletion(thisProvider,"turnTurretTo","void");                        list=new ArrayList<Parameter>();list.add(new Parameter("double","x", false)); list.add(new Parameter("double","y", true));  fun.setParams(list);            fun.setReturnValueDescription("");fun.setShortDescription("Allows your tank's turret to focus on a particular x/y coordinate."); thisProvider.addCompletion(fun);
 		fun=new FunctionCompletion(thisProvider,"isFireAllowed","boolean");                                                                                                                                                                                fun.setReturnValueDescription("");fun.setShortDescription("It takes your tanks cannon around 850 ms to reload. This will tell you if the cannon has reloaded."); thisProvider.addCompletion(fun);
 		fun=new FunctionCompletion(thisProvider,"fire","void");                                                                                                                                                                                            fun.setReturnValueDescription("Return value description");fun.setShortDescription("Fires a bullet if the cannon is reloaded."); thisProvider.addCompletion(fun);
-		thisProvider.addCompletion(new ShorthandCompletion(thisProvider, "for", "for (VisibleEntity ent : this.getVisibleEntities()) {", "Loop through visible items"));
+		ShorthandCompletion sh = new ShorthandCompletion(thisProvider, "for", "for (VisibleEntity ent : this.getVisibleEntities()) {", " - Code Template");
+		//sh.setShortDescription("Code Template - Loop through all the objects your tank can see at this moment in time.");
+		sh.setSummary("Loop through all the objects your tank can see at this moment in time.");
+		thisProvider.addCompletion(sh);
 		AutoCompletion ac1 = new AutoCompletion(thisProvider);
 		AutoCompletion ac2 = new AutoCompletion(entProvider);
 		AutoCompletion ac3 = new AutoCompletion(statProvider);
@@ -436,8 +439,8 @@ public class Editor extends JFrame {
 		thisProvider.setParameterizedCompletionParams('(', ", ", ')');
 		entProvider.setParameterizedCompletionParams('(', ", ", ')');
 		statProvider.setParameterizedCompletionParams('(', ", ", ')');
-		iconProvider.setParameterizedCompletionParams('(', ", ", ')');
-		gProvider.setParameterizedCompletionParams('(', ", ", ')');
+		//iconProvider.setParameterizedCompletionParams('', "", '');
+		//gProvider.setParameterizedCompletionParams('', "", '');
 		ac1.setParameterAssistanceEnabled(true);
 		ac2.setParameterAssistanceEnabled(true);
 		ac3.setParameterAssistanceEnabled(true);
