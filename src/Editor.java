@@ -3,10 +3,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +12,8 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,9 +22,13 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -35,6 +39,7 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 import org.fife.ui.autocomplete.*;
+import org.fife.ui.autocomplete.ParameterizedCompletion.Parameter;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -103,12 +108,17 @@ public class Editor extends JFrame {
     JLabel statusLabel = new JLabel(" TEST ");
     JPanel statusBar = new JPanel();
 	
+    NewAction newAction = new NewAction();
     SaveAction saveAction = new SaveAction();
     OpenAction openAction = new OpenAction();
     CompileAction compileAction = new CompileAction();
     RunAction runAction = new RunAction();
     UploadAction uploadAction = new UploadAction();
     ChooseAction chooseAction = new ChooseAction();
+    ZoomInAction zoomInAction = new ZoomInAction();
+    ZoomOutAction zoomOutAction = new ZoomOutAction();
+    
+    int fontSize = 14;
     
     TimerTask clearStatusTask = new TimerTask() {
 		@Override
@@ -148,6 +158,7 @@ public class Editor extends JFrame {
         javacField.setText(Util.getProperty("javac-path"));
         uploadField.setEditable(false);
         uploadField.setText(Util.getProperty("upload-key"));
+        
 		
         controlPanel.add(compileButton);
         controlPanel.add(runButton);
@@ -164,6 +175,7 @@ public class Editor extends JFrame {
         textArea.setCaretPosition(0);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
         textArea.setCodeFoldingEnabled(false);
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, fontSize));
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
 
         this.setupAutoComplete(textArea);
@@ -182,14 +194,15 @@ public class Editor extends JFrame {
         contentPane.add(scrollPane, BorderLayout.CENTER);
         contentPane.add(statusBar, BorderLayout.SOUTH);
 		
-        Menu fileMenu = new Menu("File");
-        MenuItem fileNew = new MenuItem("New");
-        MenuItem fileOpen = new MenuItem("Open");
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem fileNew = new JMenuItem("New");
+        fileNew.addActionListener(newAction);
+        JMenuItem fileOpen = new JMenuItem("Open");
         fileOpen.addActionListener(openAction);
-        MenuItem fileOpenRecent = new MenuItem("Open Recent");
-        MenuItem fileSave = new MenuItem("Save (managed)");
+        JMenuItem fileOpenRecent = new JMenuItem("Open Recent");
+        JMenuItem fileSave = new JMenuItem("Save (managed)");
         fileSave.addActionListener(saveAction);
-        MenuItem fileSaveAs = new MenuItem("Save As...");
+        JMenuItem fileSaveAs = new JMenuItem("Save As...");
         fileMenu.add(fileNew);
         fileMenu.addSeparator();
         fileMenu.add(fileOpen);
@@ -198,35 +211,57 @@ public class Editor extends JFrame {
         fileMenu.add(fileSave);
         //fileMenu.add(fileSaveAs);
 		
-        Menu editMenu = new Menu("Edit");
-        MenuItem editCopy = new MenuItem("Copy");
-        MenuItem editCut = new MenuItem("Cut");
-        MenuItem editPaste = new MenuItem("Paste");
-        MenuItem editClear = new MenuItem("Clear");
-        editMenu.add(editCopy);
-        editMenu.add(editCut);
-        editMenu.add(editPaste);
-        editMenu.add(editClear);
+//        JMenu editMenu = new JMenu("Edit");
+//        JMenuItem editCopy = new JMenuItem("Copy");
+//        JMenuItem editCut = new JMenuItem("Cut");
+//        JMenuItem editPaste = new JMenuItem("Paste");
+//        JMenuItem editClear = new JMenuItem("Clear");
+//        editMenu.add(editCopy);
+//        editMenu.add(editCut);
+//        editMenu.add(editPaste);
+//        editMenu.add(editClear);
+        
+        JMenu viewMenu = new JMenu("View");
+        JMenuItem zoomIn = new JMenuItem("Zoom In");
+        JMenuItem zoomOut = new JMenuItem("Zoom Out");
+        zoomIn.addActionListener(zoomInAction);
+        zoomOut.addActionListener(zoomOutAction);
+        viewMenu.add(zoomIn);
+        viewMenu.add(zoomOut);
 		
-        Menu javaMenu = new Menu("Java");
-        MenuItem javaCompile = new MenuItem("Compile");
-        MenuItem javaTest = new MenuItem("Run");
-        MenuItem javaUpload = new MenuItem("Upload");
+        JMenu javaMenu = new JMenu("Java");
+        JMenuItem javaCompile = new JMenuItem("Compile");
+        JMenuItem javaTest = new JMenuItem("Run");
+        JMenuItem javaUpload = new JMenuItem("Upload");
+        javaCompile.addActionListener(compileAction);
+        javaTest.addActionListener(runAction);
+        javaUpload.addActionListener(uploadAction);
         javaMenu.add(javaCompile);
         javaMenu.add(javaTest);
         javaMenu.add(javaUpload);
 		
-        Menu helpMenu = new Menu("Help");
-        MenuItem helpHelp = new MenuItem("Documentation");
-        helpMenu.add(helpHelp);
+//        JMenu helpMenu = new JMenu("Help");
+//        JMenuItem helpHelp = new JMenuItem("Documentation");
+//        helpMenu.add(helpHelp);
 		
-        MenuBar menuBar = new MenuBar();
+        JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
-        menuBar.add(editMenu);
+//      menuBar.add(editMenu);
         menuBar.add(javaMenu);
-        menuBar.add(helpMenu);
+        menuBar.add(viewMenu);
+//      menuBar.add(helpMenu);
+        
+        fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        fileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        fileNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        javaTest.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        javaUpload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK));
+        javaCompile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+        zoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, ActionEvent.ALT_MASK));
+        zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, ActionEvent.ALT_MASK));
+
 		
-        this.setMenuBar(menuBar);
+        this.setJMenuBar(menuBar);
         this.setContentPane(contentPane);
         this.setTitle("Victory Dispatcher - AI Creator");
         WindowManager.registerWindow(this);
@@ -306,38 +341,115 @@ public class Editor extends JFrame {
 				return false;
 			}
 		};
-		entProvider.addCompletion(new VariableCompletion(entProvider, "type", "VisibleEntity.Type"));
-		entProvider.addCompletion(new VariableCompletion(entProvider, "side", "VisibleEntity.Side"));
-		entProvider.addCompletion(new VariableCompletion(entProvider, "dir", "double"));
-		entProvider.addCompletion(new VariableCompletion(entProvider, "rect", "Rectangle"));
-		entProvider.addCompletion(new VariableCompletion(entProvider, "speed", "double"));
-		entProvider.addCompletion(new VariableCompletion(entProvider, "turretDir", "double"));
+		DefaultCompletionProvider iconProvider = new DefaultCompletionProvider() {
+			public boolean isAutoActivateOkay(JTextComponent tc) {
+				Document doc = tc.getDocument();
+				char ch = 0;
+				try {
+					String s1 = doc.getText(tc.getCaretPosition()-4, 5);
+					boolean is = false;
+					if (s1.contains("icon.")) is = true;
+					if (is) {
+						return true;
+					}
+				} catch (BadLocationException ble) { // Never happens
+					ble.printStackTrace();
+				}
+				return false;
+			}
+		};
+		DefaultCompletionProvider gProvider = new DefaultCompletionProvider() {
+			public boolean isAutoActivateOkay(JTextComponent tc) {
+				Document doc = tc.getDocument();
+				char ch = 0;
+				try {
+					String s1 = doc.getText(tc.getCaretPosition()-1, 2);
+					boolean is = false;
+					if (s1.contains("g.")) is = true;
+					if (is) {
+						return true;
+					}
+				} catch (BadLocationException ble) { // Never happens
+					ble.printStackTrace();
+				}
+				return false;
+			}
+		};
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "draw3DRect(x, y, w, h, raised?)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawArc(x, y, w, h, startAngle, arcAngle)", ""));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawLine(x1, y1, x2, y2)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawOval(x, y w, h)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolygon(int[] xs, int[] ys, n)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolyline(int[] xs, int[] ys, n)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawRect(x, y, w, h)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "drawRoundRect(x, y, w, h, arcW, arcH)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "fill3DRect(x, y, w, h, raised?)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "fillArc(x, y, w, h, startAngle, arcAngle)", ""));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "fillOval(x, y w, h)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "fillPolygon(int[] xs, int[] ys, n)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "fillRect(x, y, w, h)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "fillRoundRect(x, y, w, h, arcW, arcH)", "void"));
+		gProvider.addCompletion(new FunctionCompletion(gProvider, "setColor(new Color(r, g, b))", "void"));
+		iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getGraphics()", "Graphics"));
+		iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getWidth()", "int"));
+		iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getHeight()", "int"));
+		iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getRGB(x, y)", "int"));
+		iconProvider.addCompletion(new FunctionCompletion(iconProvider, ".setRGB(x, y, rgbInt)", "void"));
+		VariableCompletion var = null;
+		ArrayList<Parameter> list = null;
+		var=new VariableCompletion(entProvider, "type", "VisibleEntity.Type");var.setShortDescription("Can either be BLOCK, BULLET or TANK. Type \"vis\" to auto-complete full type names.");entProvider.addCompletion(var);
+		var=new VariableCompletion(entProvider, "side", "VisibleEntity.Side");var.setShortDescription("Can either be GOOD, BAD or NEUTRAL. Type \"vis\" to auto-complete full type names.");entProvider.addCompletion(var);
+		var=new VariableCompletion(entProvider, "dir", "double");             var.setShortDescription("The direction the object is traveling in degrees. The angle starts from the positive x-axis and continues clockwise.");entProvider.addCompletion(var);
+		var=new VariableCompletion(entProvider, "rect", "Rectangle");         var.setShortDescription("The bounding box of the object.");entProvider.addCompletion(var);
+		var=new VariableCompletion(entProvider, "speed", "double");           var.setShortDescription("The speed at which the object is traveling.");entProvider.addCompletion(var);
+		var=new VariableCompletion(entProvider, "turretDir", "double");       var.setShortDescription("Only applicable if type is TANK. The direction of the tanks turret. The angle starts from the positive x-axis and continues clockwise.");entProvider.addCompletion(var);
 		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.GOOD", "VisibleEntity.Side.GOOD", ""));
 		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.BAD", "VisibleEntity.Side.BAD", ""));
 		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.NEUTRAL", "VisibleEntity.Side.NEUTRAL", ""));
 		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.TANK", "VisibleEntity.Type.TANK"));
 		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BLOCK", "VisibleEntity.Type.BLOCK", ""));
 		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BULLET", "VisibleEntity.Type.BULLET", ""));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "talk(String phrase)", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getSpeed()", "double"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getDir()", "double"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getTurretDir()", "double"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getVisibleEntities()", "HashSet<VisibleEntities>"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "forward()", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "backward()", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "turnTread(double deg, boolean isAbsolute)", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "lockTurret()", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "turnTurretTo(double x, double y)", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "turnTurret(double deg, boolean isAbsolute)", "void"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "isFireAllowed()", "boolean"));
-		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "fire()", "void"));
+		FunctionCompletion fun = null;
+		fun=new FunctionCompletion(thisProvider,"talk","void");                                list=new ArrayList<Parameter>();list.add(new Parameter("String","phrase", true)); fun.setParams(list);                                                      fun.setReturnValueDescription("");fun.setShortDescription("Use this to print witty dialog above your tank for the next few seconds. Only on phrase will be spoken at a time. Each call overrides the last.");   thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"getDir","double");                                                                                                                                                                                        fun.setReturnValueDescription("Angle in degrees");fun.setShortDescription("Gets the current direction of your tank."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"getTurretDir","double");                                                                                                                                                                                  fun.setReturnValueDescription("Angle in degrees");fun.setShortDescription("Gets the current direction of your tank's turret."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"getVisibleEntities","HashSet<VisibleEntity>");                                                                                                                                                            fun.setReturnValueDescription("A HashSet of Visible Entities. Use the \"for-in\" construct to iterate through. Any variable with the name \"ent\" will auto-complete for VisibleEntity.");fun.setShortDescription("This provides a list of every object your tank can currently see in it's line of sight from all vision cones. Press 'h' in game to see vision cones."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"forward","void");                                                                                                                                                                                         fun.setReturnValueDescription("");fun.setShortDescription("Move your tank forward at a fixed speed."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"backward","void");                                                                                                                                                                                        fun.setReturnValueDescription("");fun.setShortDescription("Move your tank backward at a fixed speed. Tanks move backwards slower than forwards."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"turnTread","void");                           list=new ArrayList<Parameter>();list.add(new Parameter("double","deg", false)); list.add(new Parameter("boolean","isAbsolute", true)); fun.setParams(list); fun.setReturnValueDescription("");fun.setShortDescription("Turn your tank's treads to a set angle in degrees. Angles start at the positive x-axis and proceed clockwise. Set the absolute flag to false to make the movement relative to its current position."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"lockTurret","void");                                                                                                                                                                                      fun.setReturnValueDescription("");fun.setShortDescription("Anchors your turret's movement to a fixed position relative to your tank's treads. Moving the turret again anytime after this call will unlock the turret."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"turnTurret","void");                          list=new ArrayList<Parameter>();list.add(new Parameter("double","deg", true));  list.add(new Parameter("boolean","isAbsolute", true)); fun.setParams(list); fun.setReturnValueDescription("");fun.setShortDescription("Turn your tank's turret to a set angle in degrees. Angles start at the positive x-axis and proceed clockwise. Set the absolute flag to false to make the movement relative to its current position."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"turnTurretTo","void");                        list=new ArrayList<Parameter>();list.add(new Parameter("double","x", false)); list.add(new Parameter("double","y", true));  fun.setParams(list);            fun.setReturnValueDescription("");fun.setShortDescription("Allows your tank's turret to focus on a particular x/y coordinate."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"isFireAllowed","boolean");                                                                                                                                                                                fun.setReturnValueDescription("");fun.setShortDescription("It takes your tanks cannon around 850 ms to reload. This will tell you if the cannon has reloaded."); thisProvider.addCompletion(fun);
+		fun=new FunctionCompletion(thisProvider,"fire","void");                                                                                                                                                                                            fun.setReturnValueDescription("Return value description");fun.setShortDescription("Fires a bullet if the cannon is reloaded."); thisProvider.addCompletion(fun);
 		thisProvider.addCompletion(new ShorthandCompletion(thisProvider, "for", "for (VisibleEntity ent : this.getVisibleEntities()) {", "Loop through visible items"));
 		AutoCompletion ac1 = new AutoCompletion(thisProvider);
 		AutoCompletion ac2 = new AutoCompletion(entProvider);
 		AutoCompletion ac3 = new AutoCompletion(statProvider);
+		AutoCompletion ac4 = new AutoCompletion(iconProvider);
+		AutoCompletion ac5 = new AutoCompletion(gProvider);
+		ac1.setShowDescWindow(true);
+		ac2.setShowDescWindow(true);
+		ac3.setShowDescWindow(true);
+		ac4.setShowDescWindow(true);
+		ac5.setShowDescWindow(true);
+		thisProvider.setParameterizedCompletionParams('(', ", ", ')');
+		entProvider.setParameterizedCompletionParams('(', ", ", ')');
+		statProvider.setParameterizedCompletionParams('(', ", ", ')');
+		iconProvider.setParameterizedCompletionParams('(', ", ", ')');
+		gProvider.setParameterizedCompletionParams('(', ", ", ')');
+		ac1.setParameterAssistanceEnabled(true);
+		ac2.setParameterAssistanceEnabled(true);
+		ac3.setParameterAssistanceEnabled(true);
+		ac4.setParameterAssistanceEnabled(true);
+		ac5.setParameterAssistanceEnabled(true);
 		ac1.setAutoActivationEnabled(true);
 		ac2.setAutoActivationEnabled(true);
 		ac3.setAutoActivationEnabled(true);
+		ac4.setAutoActivationEnabled(true);
+		ac5.setAutoActivationEnabled(true);
+		ac5.install(textArea);
+		ac4.install(textArea);
 		ac3.install(textArea);
 		ac2.install(textArea);
 		ac1.install(textArea);
@@ -350,6 +462,17 @@ public class Editor extends JFrame {
     	} catch (Exception e) {
     		; //ignore timers already set
     	}
+    }
+    
+    class NewAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+        	int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to throw away your current work?", "Create New Template", JOptionPane.YES_NO_OPTION);
+        	if (result == JOptionPane.OK_OPTION) {
+        		textArea.setText(template);
+        		textArea.setCaretPosition(0);
+        	}
+        }
     }
 	
     class SaveAction extends AbstractAction {
@@ -563,6 +686,26 @@ public class Editor extends JFrame {
 	
     public static void main(String[] args) {
         new Editor();
-    }	
+    }
+    
+    class ZoomInAction extends AbstractAction {
+    	@Override
+        public void actionPerformed(ActionEvent e) {
+    		if (fontSize < 200) {
+	    		fontSize++;
+	    		textArea.setFont(new Font("Monospaced", Font.PLAIN, fontSize));
+    		}
+    	}
+    }
+    
+    class ZoomOutAction extends AbstractAction {
+    	@Override
+        public void actionPerformed(ActionEvent e) {
+    		if (fontSize > 2) {
+    			fontSize--;
+    			textArea.setFont(new Font("Monospaced", Font.PLAIN, fontSize));
+    		}
+    	}
+    }
 }
 
