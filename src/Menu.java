@@ -20,11 +20,11 @@ public class Menu {
 
     public static BufferedImage logo;
     static {
-	try {
-	    logo = ImageIO.read(new File("./media/mcleod_logo.png"));
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+		try {
+		    logo = ImageIO.read(new File("./media/mcleod_logo.png"));
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
     }
     public static BufferedImage titleFront;
     public static BufferedImage titleBack;
@@ -195,10 +195,10 @@ public class Menu {
 			i2 = firstOpponent;
 			i3 = 0;
 			i4 = 0;
-			menu.t1 = tanks1.get(i1);
-			menu.t2 = tanks1.get(i2);
-			menu.t3 = tanks1.get(i3);
-			menu.t4 = tanks1.get(i4);
+			if (tanks1.size() > i1) menu.t1 = tanks1.get(i1);
+			if (tanks2.size() > i2) menu.t2 = tanks1.get(i2);
+			if (tanks3.size() > i3) menu.t3 = tanks1.get(i3);
+			if (tanks4.size() > i4) menu.t4 = tanks1.get(i4);
 		    String startupMode = Util.getProperty("startup-mode");
 		    if ("test".compareTo(startupMode)==0) {
 		    	String tank1Name = Util.getProperty("startup-tank1-name");
@@ -231,10 +231,11 @@ public class Menu {
         int i2;
         int i3;
         int i4;
-        ArrayList<Tank> tanks1 = new Loader().getTanks();
-        ArrayList<Tank> tanks2 = new Loader().getTanks();
-        ArrayList<Tank> tanks3 = new Loader().getTanks();
-        ArrayList<Tank> tanks4 = new Loader().getTanks();
+        Loader loader = Util.loader;
+        ArrayList<Tank> tanks1 = loader.getTanks();
+        ArrayList<Tank> tanks2 = loader.getTanks();
+        ArrayList<Tank> tanks3 = loader.getTanks();
+        ArrayList<Tank> tanks4 = loader.getTanks();
 	    String phrase = "";
 	    String[] phrases = new String[] {
 	    		"Now in technicolor.",

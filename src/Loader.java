@@ -1,34 +1,68 @@
-
 import java.io.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 
-public class Loader extends ClassLoader {
+public class Loader extends URLClassLoader {
 
-    public ArrayList<Class> classes;
+	public ArrayList<Class> classes;
+	
+	public static URL[] urls;
+	static {
+		ArrayList<URL> urlsArray = new ArrayList<URL>();
+        String classpath = System.getProperty("java.class.path");
+        String[] classpathEntries = classpath.split(File.pathSeparator);
+        for (String cp : classpathEntries) {
+        	if (cp.endsWith(".jar")) {
+                continue;
+            }
+            try {
+                File dir = new File(cp);
+                urlsArray.add(dir.toURI().toURL());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Could not load URLS for URLClassLoader: "+cp);
+            }
+        }
+        urls = new URL[urlsArray.size()];
+        int i = 0;
+        for (URL u : urlsArray) {
+        	urls[i++] = u;
+        }
+	}
 
-    public Loader() {
-        findClasses();
-    }
-
+	public Loader() {
+		super(urls, Util.class.getClassLoader());
+		findClasses();
+		getTankClasses();
+	}
+	
     public ArrayList<Tank> getTanks() {
         ArrayList<Class> classes = this.getTankClasses();
         ArrayList<Tank> tanks = new ArrayList<Tank>();
         for (Class c : classes) {
             try {
                 String className = c.getName();
+                Object o = c.newInstance();// was null
                 Tank t = null;
+                if (o instanceof Tank) {
+                	t = (Tank)o;// was null
+                } else {
+                	System.out.println("Could not cast "+className+" to Tank.");
+                	continue;
+                }
                 String name = "";
-                t = (Tank)Class.forName(className).newInstance();
+                //t = (Tank)Class.forName(className).newInstance();                
                 name = t.getName();
                 if (name == null) {
                     name = className;
                 }
                 t.setName(name);
-		if ("Player".compareTo(name) == 0) {
-		    tanks.add(0, t);
-		} else {
-		    tanks.add(t);
-		}
+				if ("Player".compareTo(name) == 0) {
+				    tanks.add(0, t);
+				} else {
+				    tanks.add(t);
+				}
             } catch (Throwable t) {
                 System.out.println(t);
             }
@@ -57,7 +91,7 @@ public class Loader extends ClassLoader {
             String classpath = System.getProperty("java.class.path");
             String[] classpathEntries = classpath.split(File.pathSeparator);
             for (String cp : classpathEntries) {
-		if (cp.endsWith(".jar")) {
+            	if (cp.endsWith(".jar")) {
                     continue;
                 }
                 try {
@@ -65,13 +99,14 @@ public class Loader extends ClassLoader {
                     File[] files = dir.listFiles();
                     for (File file : files) {
                         if (file.isFile()) {
-                            if (file.getName().endsWith(".class") && !isExcluded(file)) {
+                        	if (file.getName().endsWith(".class") && !isExcluded(file)) {
                                 FileInputStream fileInputStream=null;
                                 byte[] bytes = new byte[(int) file.length()];
                                 fileInputStream = new FileInputStream(file);
                                 fileInputStream.read(bytes);
                                 fileInputStream.close();
-                                Class c = this.getClass(bytes);
+                       			Class c = this.getClass(bytes);
+                                //Class c = this.loadClass(file.getName().replace(".class", ""));
                                 if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
                                     this.resolveClass(c);
                                     classes.add(c);
@@ -104,7 +139,8 @@ public class Loader extends ClassLoader {
                                 fileInputStream = new FileInputStream(file);
                                 fileInputStream.read(bytes);
                                 fileInputStream.close();
-                                Class c = this.getClass(bytes);
+                                //Class c = this.getClass(bytes);
+                                Class c = this.loadClass(file.getName().replace(".class", ""));
                                 if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
                                     this.resolveClass(c);
                                     classes.add(c);
@@ -121,13 +157,43 @@ public class Loader extends ClassLoader {
         }
     }
     
+//    @Override
+//    public Class<?> findClass(String s) {
+//        try {
+//            byte[] bytes = loadClassData(s);
+//            return defineClass(s, bytes, 0, bytes.length);
+//        } catch (IOException ioe) {
+//            try {
+//                return super.loadClass(s);
+//            } catch (ClassNotFoundException ignore) { }
+//            	ioe.printStackTrace(System.out);
+//            return null;
+//        }
+//    }
+//
+//    private byte[] loadClassData(String className) throws IOException {
+//        File f = new File("ai/" + className.replaceAll("\\.", "/") + ".class");
+//        int size = (int) f.length();
+//        byte buff[] = new byte[size];
+//        FileInputStream fis = new FileInputStream(f);
+//        DataInputStream dis = new DataInputStream(fis);
+//        dis.readFully(buff);
+//        dis.close();
+//        return buff;
+//    }
+    
     private boolean isExcluded(File file) {
     	boolean matched = false;
     	String[] excluded = new String[] {
     		"Tank.class",
     		"TankInterface.class",
-    		"Entity.class"
-    	};
+    		"Entity.class",
+    		"Reloader.class",
+    		"Keyboard.class",
+    		"VisibleEntity.class",
+    		"VisibleEntity$Side.class",
+    		"VisibleEntity$Type.class"    		
+      	};
     	for (String name : excluded) {
     		if (name.compareTo(file.getName()) == 0) {
     			matched = true;

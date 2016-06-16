@@ -40,6 +40,10 @@ public class Util {
             os = Util.OS.UNKNOWN;
         }
     }
+    public static Loader loader;
+    static {
+    	loader = new Loader();
+    }
 
     public static Util.OS getOS() {
         return os;
@@ -57,6 +61,13 @@ public class Util {
 	}
 
 	public static void restartApplication() throws Exception {
+		try {
+			loader.close();
+			System.out.println("Original DynamicClassLoader Closed Successfully");
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		loader = new Loader();
 		VD game = new VD();
 	}	
 

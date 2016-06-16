@@ -68,6 +68,8 @@ public class Tank extends Entity implements TankInterface {
     private double cannonY;
     private boolean isTurretLocked = true;
     private double time = 0.0;
+    private double timeSinceTalk = 10000.0;
+    private String talkPhrase = "";
     private double bulletTime = 0.0;
     private double bulletWait = 850.0;
     private float turretSize = 1.0f;
@@ -134,7 +136,8 @@ public class Tank extends Entity implements TankInterface {
 	if (room != null) {
 	    loop(dt);
 	    time += dt;
-            bulletTime += dt;
+	    timeSinceTalk += dt;
+	    bulletTime += dt;
 	    double testX;
 	    double testY;
 	    Rectangle testRect;
@@ -203,12 +206,12 @@ public class Tank extends Entity implements TankInterface {
                 desiredTurret = angle;
             }
 	    double turretDiff = Math.abs(turret-desiredTurret);
-            double turretDivisor = 8.0;
+            double turretDivisor = 8.0;// was 8
             if (isTurretLocked) {
-                turretDivisor = 4.0;
+                turretDivisor = turretDivisor / 2; //was 4
             }
             if (isAiming) {
-                turretDivisor = 2.0;
+                turretDivisor = turretDivisor / 4; // was 2
             }
 	    double turretRate = turretDiff/turretDivisor;
 	    if (turretDiff > 1.0) {
@@ -240,8 +243,8 @@ public class Tank extends Entity implements TankInterface {
 	if (room != null) {
 	    treadSight.reset();
 	    turretSight.reset();
-	    treadSight = room.getSight(new Point((int)centerX, (int)centerY), tread, 45);
-	    turretSight = room.getSight(new Point((int)turretX, (int)turretY), turret, 45);
+	    treadSight = room.getSight(new Point((int)centerX, (int)centerY), tread, 35);
+	    turretSight = room.getSight(new Point((int)turretX, (int)turretY), turret, 10);
 	}
     }
 
@@ -310,6 +313,10 @@ public class Tank extends Entity implements TankInterface {
             g.drawLine(laser.xpoints[0], laser.ypoints[0], laser.xpoints[1], laser.ypoints[1]);
         }
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        if (timeSinceTalk < 4000) {
+        	Text text = new Text(talkPhrase, 0.1);
+        	text.draw(g, (int)x, (int)y);
+        }
     }
 
     public String toString() {
@@ -337,33 +344,34 @@ public class Tank extends Entity implements TankInterface {
     //implementable end
 
     //callable start
-    final void talk(String phrase) {
-        
+    final protected void talk(String phrase) {
+        timeSinceTalk = 0.0;
+        talkPhrase = phrase;
     }
     final protected double getSpeed() {
-	return lastSpeed;
+    	return lastSpeed;
     }
 
     final protected double getDir() {
-	return tread;
+    	return tread;
     }
 
     final protected double getTurretDir() {
-	return turret;
+    	return turret;
     }
     
     final protected HashSet<VisibleEntity> getVisibleEntities() {
-	if (room == null) return null;
-	HashSet<VisibleEntity> visible = room.getVisibleEntities(this, treadSight, turretSight);
-	return visible;
+		if (room == null) return null;
+		HashSet<VisibleEntity> visible = room.getVisibleEntities(this, treadSight, turretSight);
+		return visible;
     }
 
     final protected void forward() {
-	speed = 3.0;
+    	speed = 3.0;
     }
 
     final protected void backward() {
-	speed = -2.0;
+    	speed = -2.0;
     }
 
     final protected void turnTread(double deg, boolean isAbsolute) {
@@ -382,19 +390,19 @@ public class Tank extends Entity implements TankInterface {
     }
 
     final protected void turnTurretTo(double x, double y) {
-	isTurretLocked = false;
+    	isTurretLocked = false;
         isAiming = true;
         point = new Point((int)x, (int)y);
     }
 
     final protected void turnTurret(double deg, boolean isAbsolute) {
         isAiming = false;
-	isTurretLocked = false;
-	if (isAbsolute) {
-	    desiredTurret = deg;
-	} else {
-	    desiredTurret += deg;
-	}
+		isTurretLocked = false;
+		if (isAbsolute) {
+		    desiredTurret = deg;
+		} else {
+		    desiredTurret += deg;
+		}
     }
 
     final protected boolean isFireAllowed() {

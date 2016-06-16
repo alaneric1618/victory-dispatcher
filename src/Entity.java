@@ -31,7 +31,7 @@ public class Entity {
     }
 
     public Rectangle getBoundingBox() {
-	return boundingBox;
+    	return boundingBox;
     }
 
     public boolean isOld() {

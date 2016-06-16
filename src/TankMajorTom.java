@@ -32,7 +32,6 @@ public class TankMajorTom extends Tank implements TankInterface {
     
     public void loop(float dt) {
 	time += (double)dt;
-	HashSet<VisibleEntity> ents = getVisibleEntities();
 	turnTurret(1.0, false);
 	if (time > 1000) {
 	    fire();

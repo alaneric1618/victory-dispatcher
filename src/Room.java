@@ -62,38 +62,38 @@ public class Room {
     public Rectangle roomRect = new Rectangle(0, 0, vd.WIDTH-32, vd.HEIGHT-64);
 
     public Room(VD vd, Tank... tanks) {
-    	this.vd = vd;
-	for (Tank tank : tanks) {
-	    add(tank);
-	}
-	for (int i = 2; i < 9; i++) {
-	    if (i != 5) {
-		Block block = new Block(Block.Type.H, 4+i, 6);
-		blocks.add(block);
-		Block block2 = new Block(Block.Type.V,9, 1+i);
-		blocks.add(block2);
-	    } else {
-		Block block = new Block(Block.Type.ALL, 9, 6);
-		blocks.add(block);
-	    }
-	    Block block = new Block(Block.Type.DL, 9, 2);
-	    blocks.add(block);
-	    block = new Block(Block.Type.DR, 9, 2);
-	    blocks.add(block);
-	    block = new Block(Block.Type.H, 10, 2);
-	    blocks.add(block);
-	    block = new Block(Block.Type.H, 8, 2);
-	    blocks.add(block);
-
-	    block = new Block(Block.Type.UL, 9, 10);
-	    blocks.add(block);
-	    block = new Block(Block.Type.UR, 9, 10);
-	    blocks.add(block);
-	    block = new Block(Block.Type.H, 10, 10);
-	    blocks.add(block);
-	    block = new Block(Block.Type.H, 8, 10);
-	    blocks.add(block);
-	}
+     	this.vd = vd;
+		for (Tank tank : tanks) {
+		    add(tank);
+		}
+		for (int i = 2; i < 9; i++) {
+		    if (i != 5) {
+			Block block = new Block(Block.Type.H, 4+i, 6);
+			blocks.add(block);
+			Block block2 = new Block(Block.Type.V,9, 1+i);
+			blocks.add(block2);
+		    } else {
+			Block block = new Block(Block.Type.ALL, 9, 6);
+			blocks.add(block);
+		    }
+		    Block block = new Block(Block.Type.DL, 9, 2);
+		    blocks.add(block);
+		    block = new Block(Block.Type.DR, 9, 2);
+		    blocks.add(block);
+		    block = new Block(Block.Type.H, 10, 2);
+		    blocks.add(block);
+		    block = new Block(Block.Type.H, 8, 2);
+		    blocks.add(block);
+	
+		    block = new Block(Block.Type.UL, 9, 10);
+		    blocks.add(block);
+		    block = new Block(Block.Type.UR, 9, 10);
+		    blocks.add(block);
+		    block = new Block(Block.Type.H, 10, 10);
+		    blocks.add(block);
+		    block = new Block(Block.Type.H, 8, 10);
+		    blocks.add(block);
+		}
     }
 
     public void update(float dt) {
@@ -142,7 +142,7 @@ public class Room {
                 synchronized (tanks) {
                     ArrayList<Tank.Player> playersToRemove = new ArrayList<Tank.Player>();
                     for (Tank tank : tanks.values()) {
-			if (tank == null) continue;
+                    	if (tank == null) continue;
                         if (bullet.intersects(tank) && bullet.getPlayer() != tank.getPlayer()) {
                             toRemoveBullets.add(bullet);
                             for (int i = 0; i < 20; i++) {
@@ -156,6 +156,7 @@ public class Room {
                             AudioPlayer.EXPLOSION.play();
                             decals.add(new Decal(Decal.Type.FIRE, box.x-32, box.y-32));
                             Tank.Player player = tank.getPlayer();
+                            tank.onHit();
                             double hp = (double)hps.get(player);
                             //deduce health
                             double newHP = hp-23.0;
@@ -459,11 +460,11 @@ public class Room {
     }
 
     public HashSet<VisibleEntity> getVisibleEntities(Tank forTank, Polygon poly1, Polygon poly2) {
-	HashSet<VisibleEntity> ents = new HashSet<VisibleEntity>();
-        synchronized (tanks) {
-            for (Tank tank : tanks.values()) {
-		if (tank == null) break;
-                if (tank == forTank) continue;
+    	HashSet<VisibleEntity> ents = new HashSet<VisibleEntity>();
+       	synchronized (tanks) {
+       		for (Tank tank : tanks.values()) {
+       			if (tank == null) continue;
+       			if (tank == forTank) continue;
                 Rectangle box = tank.getBoundingBox();
                 if (poly1.intersects(box) || poly2.intersects(box)) {
                     VisibleEntity.Type type = VisibleEntity.Type.TANK;
@@ -477,21 +478,22 @@ public class Room {
                 }
             }
         }
-	for (Block block : blocks) {
-	    Rectangle box = block.getBoundingBox();
-	    if (poly1.intersects(box) || poly2.intersects(box)) {
-		VisibleEntity.Type type = VisibleEntity.Type.BLOCK;
-		VisibleEntity.Side side = VisibleEntity.Side.NEUTRAL;
-		Rectangle rect = box;
-		double dir = 0.0;
-		double turretDir = 0.0;
-		double speed = 0.0;
-		VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
-		ents.add(ent);
-	    }
-	}
-	return ents;
+       	for (Block block : blocks) {
+		    Rectangle box = block.getBoundingBox();
+		    if (poly1.intersects(box) || poly2.intersects(box)) {
+			VisibleEntity.Type type = VisibleEntity.Type.BLOCK;
+			VisibleEntity.Side side = VisibleEntity.Side.NEUTRAL;
+			Rectangle rect = box;
+			double dir = 0.0;
+			double turretDir = 0.0;
+			double speed = 0.0;
+			VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
+			ents.add(ent);
+		    }
+       	}
+       	return ents;
     }
-
+    
+    
 }
 

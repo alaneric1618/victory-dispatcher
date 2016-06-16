@@ -25,7 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -45,6 +44,8 @@ public class Editor extends JFrame {
     public static final String template = ""
         + "import javax.imageio.ImageIO;" + "\n"
         + "import java.io.File;" + "\n"
+        + "import java.awt.*;" + "\n"
+        + "import java.awt.geom.*;" + "\n"
         + "" + "\n"
         + "public class Tank<INSERT-YOUR-NAME> extends Tank implements TankInterface {" + "\n"
         + "\t// INSTANCE BLOCK - EXECUTES WHEN INSTANCE IS CREATED" + "\n"
@@ -52,7 +53,11 @@ public class Editor extends JFrame {
         + "\t{" + "\n"
         + "\t\tname = \"<INSERT-YOUT-NAME>\";" + "\n"
         + "\t\ttry {" + "\n"
-        + "\t\t\ticon = ImageIO.read(new File(\"./ai/<INSERT-YOUR-FILENAME>\"));" + "\n"
+        + "\t\t\t//LOAD CUSTOM ICON (46x46 pixels)" + "\n"
+        + "\t\t\t//icon = ImageIO.read(new File(\"./ai/<INSERT-YOUR-FILENAME>\"));" + "\n"
+        + "\t\t\t// OR" + "\n"
+        + "\t\t\t//DRAW CUSTOM ICON" + "\n"
+        + "\t\t\t//Graphics2D g = icon.getGraphics();" + "\n"
         + "\t\t} catch(Exception e) {" + "\n"
         + "\t\t\t" + "\n"
         + "\t\t}" + "\n"
@@ -161,54 +166,7 @@ public class Editor extends JFrame {
         textArea.setCodeFoldingEnabled(false);
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
 
-	// Complete Provider
-	DefaultCompletionProvider provider1 = new DefaultCompletionProvider() {
-		public boolean isAutoActivateOkay(JTextComponent tc) {
-			Document doc = tc.getDocument();
-			char ch = 0;
-			try {
-				String s = doc.getText(tc.getCaretPosition()-4, 5);
-				if (s.contains("this.")) return true;
-			} catch (BadLocationException ble) { // Never happens
-				ble.printStackTrace();
-			}
-			return false;
-		}
-	};
-	DefaultCompletionProvider provider2 = new DefaultCompletionProvider() {
-		public boolean isAutoActivateOkay(JTextComponent tc) {
-			Document doc = tc.getDocument();
-			char ch = 0;
-			try {
-				String s = doc.getText(tc.getCaretPosition()-4, 5);
-				if (s.contains("enum.")) return true;
-			} catch (BadLocationException ble) { // Never happens
-				ble.printStackTrace();
-			}
-			return false;
-		}
-	};
-	provider2.addCompletion(new FunctionCompletion(provider2, "works()", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "talk(String phrase)", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "getSpeed()", "double"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "getDir()", "double"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "getTurretDir()", "double"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "getVisibleEntities()", "HashSet<VisibleEntities>"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "forward()", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "backward()", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "turnTread(double deg, boolean isAbsolute)", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "lockTurret()", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "turnTurretTo(double x, double y)", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "turnTurret(double deg, boolean isAbsolute)", "void"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "isFireAllowed()", "boolean"));
-	provider1.addCompletion(new FunctionCompletion(provider1, "fire()", "void"));
-	LanguageAwareCompletionProvider laprovider = new LanguageAwareCompletionProvider(provider1);
-	AutoCompletion ac1 = new AutoCompletion(laprovider);
-	AutoCompletion ac2 = new AutoCompletion(provider2);
-	ac1.setAutoActivationEnabled(true);
-	ac2.setAutoActivationEnabled(true);
-	ac2.install(textArea);
-	ac1.install(textArea);
+        this.setupAutoComplete(textArea);
 		
         JPanel temp = new JPanel();
         temp.setBackground(Color.red);
@@ -299,6 +257,90 @@ public class Editor extends JFrame {
 			}
         	
         }).start();
+    }
+    
+    public void setupAutoComplete(RSyntaxTextArea area) {
+   		// Complete Provider
+		DefaultCompletionProvider thisProvider = new DefaultCompletionProvider() {
+			public boolean isAutoActivateOkay(JTextComponent tc) {
+				Document doc = tc.getDocument();
+				char ch = 0;
+				try {
+					String s1 = doc.getText(tc.getCaretPosition()-4, 5);
+					String s2 = doc.getText(tc.getCaretPosition()-2, 3);
+					if (s1.contains("this.")) return true;
+					if (s2.contains("for")) return true;
+				} catch (BadLocationException ble) { // Never happens
+					ble.printStackTrace();
+				}
+				return false;
+			}
+		};
+		DefaultCompletionProvider entProvider = new DefaultCompletionProvider() {
+			public boolean isAutoActivateOkay(JTextComponent tc) {
+				Document doc = tc.getDocument();
+				char ch = 0;
+				try {
+					String s1 = doc.getText(tc.getCaretPosition()-3, 4);
+					if (s1.contains("ent.")) return true;
+				} catch (BadLocationException ble) { // Never happens
+					ble.printStackTrace();
+				}
+				return false;
+			}
+		};
+		DefaultCompletionProvider statProvider = new DefaultCompletionProvider() {
+			public boolean isAutoActivateOkay(JTextComponent tc) {
+				Document doc = tc.getDocument();
+				char ch = 0;
+				try {
+					String s1 = doc.getText(tc.getCaretPosition()-2, 3);
+					boolean is = false;
+					if (s1.contains("vis")) is = true;
+					if (is) {
+						return true;
+					}
+				} catch (BadLocationException ble) { // Never happens
+					ble.printStackTrace();
+				}
+				return false;
+			}
+		};
+		entProvider.addCompletion(new VariableCompletion(entProvider, "type", "VisibleEntity.Type"));
+		entProvider.addCompletion(new VariableCompletion(entProvider, "side", "VisibleEntity.Side"));
+		entProvider.addCompletion(new VariableCompletion(entProvider, "dir", "double"));
+		entProvider.addCompletion(new VariableCompletion(entProvider, "rect", "Rectangle"));
+		entProvider.addCompletion(new VariableCompletion(entProvider, "speed", "double"));
+		entProvider.addCompletion(new VariableCompletion(entProvider, "turretDir", "double"));
+		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.GOOD", "VisibleEntity.Side.GOOD", ""));
+		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.BAD", "VisibleEntity.Side.BAD", ""));
+		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.NEUTRAL", "VisibleEntity.Side.NEUTRAL", ""));
+		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.TANK", "VisibleEntity.Type.TANK"));
+		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BLOCK", "VisibleEntity.Type.BLOCK", ""));
+		statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BULLET", "VisibleEntity.Type.BULLET", ""));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "talk(String phrase)", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getSpeed()", "double"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getDir()", "double"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getTurretDir()", "double"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "getVisibleEntities()", "HashSet<VisibleEntities>"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "forward()", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "backward()", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "turnTread(double deg, boolean isAbsolute)", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "lockTurret()", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "turnTurretTo(double x, double y)", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "turnTurret(double deg, boolean isAbsolute)", "void"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "isFireAllowed()", "boolean"));
+		thisProvider.addCompletion(new FunctionCompletion(thisProvider, "fire()", "void"));
+		thisProvider.addCompletion(new ShorthandCompletion(thisProvider, "for", "for (VisibleEntity ent : this.getVisibleEntities()) {", "Loop through visible items"));
+		AutoCompletion ac1 = new AutoCompletion(thisProvider);
+		AutoCompletion ac2 = new AutoCompletion(entProvider);
+		AutoCompletion ac3 = new AutoCompletion(statProvider);
+		ac1.setAutoActivationEnabled(true);
+		ac2.setAutoActivationEnabled(true);
+		ac3.setAutoActivationEnabled(true);
+		ac3.install(textArea);
+		ac2.install(textArea);
+		ac1.install(textArea);
     }
     
     public void setStatus(String status) {
