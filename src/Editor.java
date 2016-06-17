@@ -13,9 +13,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.jar.JarFile;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -580,11 +580,18 @@ public class Editor extends JFrame {
                 System.out.println();
                 return;
             }
-            String classPathString = " -cp ./bin";
+            boolean wasRunFromJar = Util.wasRunFromJar();
+            String bin;
+            if (wasRunFromJar) {
+            	bin = Util.getPathToRunningJar();
+            } else {
+            	bin = "./bin";
+            }
+            String classPathString = " -cp "+bin+";./ai";
             saveAction.actionPerformed(e);
             String javacString = javacField.getText().replaceAll("^C:", "c:");
             String aiPath = Util.getAIDirectory().getAbsolutePath();			
-            String outputDirectory = " -d ./bin ";
+            String outputDirectory = " -d ./ai ";
             String directorySeperator;
             if (Util.getOS() == Util.OS.WIN) {
                 directorySeperator = "\\";

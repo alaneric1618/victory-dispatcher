@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.util.Properties;
+import java.util.jar.JarFile;
 
 public class Util {
 
@@ -177,6 +179,44 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static boolean wasRunFromJar() {
+	    String classpath = System.getProperty("java.class.path");
+        String[] classpathEntries = classpath.split(File.pathSeparator);
+        for (String cp : classpathEntries) {
+            try {
+            	// Is the class in a jar file
+            	if (cp.endsWith(".jar")) {
+            		JarFile jar = new JarFile(cp);
+            		if (jar.getEntry("VD.class") != null || jar.getEntry("VD.java") != null) {
+            			return true;
+            		}
+            	}
+            } catch (Throwable t) {
+            	t.printStackTrace();
+            }
+        }
+        return false;
+    }
+    
+    public static String getPathToRunningJar() {
+    	String classpath = System.getProperty("java.class.path");
+        String[] classpathEntries = classpath.split(File.pathSeparator);
+        for (String cp : classpathEntries) {
+            try {
+            	// Is the class in a jar file
+            	if (cp.endsWith(".jar")) {
+            		JarFile jar = new JarFile(cp);
+            		if (jar.getEntry("VD.class") != null || jar.getEntry("VD.java") != null) {
+            			return cp;
+            		}
+            	}
+            } catch (Throwable t) {
+            	t.printStackTrace();
+            }
+        }
+        return "";    
     }
 
 	

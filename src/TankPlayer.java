@@ -9,7 +9,7 @@ public class TankPlayer extends Tank implements TankInterface {
     {
         name = "Player";
 	try {
-	    icon = ImageIO.read(new File("./media/player.png")); //Frames to animate
+	    icon = ImageIO.read(VD.class.getResourceAsStream("/media/player.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

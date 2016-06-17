@@ -15,7 +15,7 @@ public class TankMinja extends Tank implements TankInterface {
     {
         name = "Minja";
 	try {
-	    icon = ImageIO.read(new File("./media/minja.png")); //Frames to animate
+	    icon = ImageIO.read(VD.class.getResourceAsStream("/media/minja.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

@@ -1,7 +1,9 @@
 
 import javax.imageio.ImageIO;
+
 import java.awt.geom.AffineTransform;
 import java.io.File;
+import java.io.InputStream;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
@@ -18,8 +20,8 @@ public class Text extends Entity {
     public static BufferedImage textImageSelected;
     static {
 	try {
-	    textImage = ImageIO.read(new File("./media/text.png"));
-	    textImageSelected = ImageIO.read(new File("./media/text.png"));
+	    textImage = ImageIO.read(VD.class.getResourceAsStream("/media/text.png"));
+	    textImageSelected = ImageIO.read(VD.class.getResourceAsStream("/media/text.png"));
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
@@ -65,7 +67,7 @@ public class Text extends Entity {
     }
     
     public Text(final String text, double size) {
-	this(text, size, Text.Align.LEFT);
+    	this(text, size, Text.Align.LEFT);
     }
 
     public Text(final String text, double size, Text.Align align) {

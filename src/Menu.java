@@ -1,7 +1,9 @@
 import java.util.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
 import javax.imageio.ImageIO;
+
 import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.awt.event.*;
@@ -21,7 +23,8 @@ public class Menu {
     public static BufferedImage logo;
     static {
 		try {
-		    logo = ImageIO.read(new File("./media/mcleod_logo.png"));
+			InputStream is = VD.class.getResourceAsStream("/media/mcleod_logo.png");
+		    logo = ImageIO.read(is);
 		} catch(Exception e) {
 		    e.printStackTrace();
 		}
@@ -29,26 +32,26 @@ public class Menu {
     public static BufferedImage titleFront;
     public static BufferedImage titleBack;
     static {
-	try {
-	    titleFront = ImageIO.read(new File("./media/title_front.png"));
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+		try {
+		    titleFront = ImageIO.read(VD.class.getResourceAsStream("/media/title_front.png"));
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
     }
     static {
-	try {
-	    titleBack = ImageIO.read(new File("./media/title_back.png"));
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+		try {
+		    titleBack = ImageIO.read(VD.class.getResourceAsStream("/media/title_back.png"));
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
     }
     public static BufferedImage nope;
     static {
-	try {
-	    nope = ImageIO.read(new File("./media/nope.png"));
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+		try {
+		    nope = ImageIO.read(VD.class.getResourceAsStream("/media/nope.png"));
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
     }
     public static Text presented = new Text("Presented By", 0.5);
 

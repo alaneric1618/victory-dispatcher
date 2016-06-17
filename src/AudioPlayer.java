@@ -1,8 +1,9 @@
 
+import java.io.BufferedInputStream;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
-import java.io.File;
 
 public enum AudioPlayer {
     OPENER("opener.wav"),
@@ -16,10 +17,11 @@ public enum AudioPlayer {
     private Clip clip;
 
     AudioPlayer(String soundFileName) {
-        soundFileName = "./media/"+soundFileName;
+        soundFileName = "/media/"+soundFileName;
         try {
-            File soundFile = new File(soundFileName);
-            AudioInputStream ais = AudioSystem.getAudioInputStream(soundFile);
+            //File soundFile = new File(soundFileName);
+        	System.out.println(soundFileName);
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(VD.class.getResourceAsStream(soundFileName)));
             clip = AudioSystem.getClip();
             clip.open(ais);
         } catch (Exception e) {

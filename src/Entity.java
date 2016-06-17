@@ -1,8 +1,11 @@
 
 import java.awt.Color;
+
 import javax.imageio.ImageIO;
+
 import java.awt.geom.AffineTransform;
 import java.io.File;
+import java.io.InputStream;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
@@ -14,7 +17,7 @@ public class Entity {
     public static BufferedImage spriteMap;
     static {
 	try {
-	    spriteMap = ImageIO.read(new File("./media/vd_master_sheet.png")); //Frames to animate
+	    spriteMap = ImageIO.read(VD.class.getResourceAsStream("/media/vd_master_sheet.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

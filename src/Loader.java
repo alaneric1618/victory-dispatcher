@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Loader extends URLClassLoader {
 
@@ -43,6 +45,7 @@ public class Loader extends URLClassLoader {
         for (Class c : classes) {
             try {
                 String className = c.getName();
+                if (className.contains("$")) continue;
                 Object o = c.newInstance();// was null
                 Tank t = null;
                 if (o instanceof Tank) {
@@ -91,75 +94,96 @@ public class Loader extends URLClassLoader {
             String classpath = System.getProperty("java.class.path");
             String[] classpathEntries = classpath.split(File.pathSeparator);
             for (String cp : classpathEntries) {
-            	if (cp.endsWith(".jar")) {
-                    continue;
-                }
                 try {
-                    File dir = new File(cp);
-                    File[] files = dir.listFiles();
-                    for (File file : files) {
-                        if (file.isFile()) {
-                        	if (file.getName().endsWith(".class") && !isExcluded(file)) {
-                                FileInputStream fileInputStream=null;
-                                byte[] bytes = new byte[(int) file.length()];
-                                fileInputStream = new FileInputStream(file);
-                                fileInputStream.read(bytes);
-                                fileInputStream.close();
-                       			Class c = this.getClass(bytes);
-                                //Class c = this.loadClass(file.getName().replace(".class", ""));
-                                if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
-                                    this.resolveClass(c);
-                                    classes.add(c);
-                                    System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
-                                }
-                            }
-                        }
-                    }
+                	// Is the class in a jar file
+	            	if (cp.endsWith(".jar")) {
+	            		JarFile jar = new JarFile(cp);
+	            		if (jar.getEntry("VD.class") != null || jar.getEntry("VD.java") != null) {
+		            		Enumeration<JarEntry> entries = jar.entries();
+		            		while (entries.hasMoreElements()) {
+		            			JarEntry entry = entries.nextElement();
+		            			boolean isClass = entry.getName().contains(".class");
+		            			boolean hasTank = entry.getName().contains("Tank");
+		            			boolean isNotInterface = entry.getName().compareTo("Tank.class") != 0;
+		            			boolean isNotExcluded = !isExcluded(entry.getName());
+		            			if (isClass && hasTank && isNotInterface && isNotExcluded) {
+		            				InputStream is = jar.getInputStream(entry);
+		            				byte[] bytes = new byte[(int)entry.getSize()];
+		            				is.read(bytes);
+		            				is.close();
+			            			Class c = this.getClass(bytes);
+		            				this.resolveClass(c);
+		                            classes.add(c);
+		            			}
+		            		}
+	            		}
+	            	// Or a regular directory
+	                } else {
+	                    File dir = new File(cp);
+	                    File[] files = dir.listFiles();
+	                    for (File file : files) {
+	                        if (file.isFile()) {
+	                        	if (file.getName().endsWith(".class") && !isExcluded(file.getName())) {
+	                                FileInputStream fileInputStream=null;
+	                                byte[] bytes = new byte[(int) file.length()];
+	                                fileInputStream = new FileInputStream(file);
+	                                fileInputStream.read(bytes);
+	                                fileInputStream.close();
+	                       			Class c = this.getClass(bytes);
+	                                if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
+	                                    this.resolveClass(c);
+	                                    classes.add(c);
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Could not load files in classpath: "+cp);
                 }
             }
         } else {
-            classes = new ArrayList<Class>();
-            String classpath = System.getProperty("java.class.path");
-            String[] classpathEntries = classpath.split(";");
-            for (String cp : classpathEntries) {
-                if (cp.endsWith(".jar")) {
-                    continue;
-                }
-                try {
-                    File dir = new File(cp);
-                    File[] files = dir.listFiles();
-                    for (File file : files) {
-                        if (file.isFile()) {
-                            if (file.getName().endsWith(".class") && !isExcluded(file)) {
-                                FileInputStream fileInputStream=null;
-                                byte[] bytes = new byte[(int) file.length()];
-                                fileInputStream = new FileInputStream(file);
-                                fileInputStream.read(bytes);
-                                fileInputStream.close();
-                                //Class c = this.getClass(bytes);
-                                Class c = this.loadClass(file.getName().replace(".class", ""));
-                                if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
-                                    this.resolveClass(c);
-                                    classes.add(c);
-                                    System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Could not load files in classpath: "+cp);
-                }
-            }
-        }
+//            classes = new ArrayList<Class>();
+//            String classpath = System.getProperty("java.class.path");
+//            String[] classpathEntries = classpath.split(";");
+//            for (String cp : classpathEntries) {
+//                if (cp.endsWith(".jar")) {
+//                    continue;
+//                }
+//                try {
+//                    File dir = new File(cp);
+//                    File[] files = dir.listFiles();
+//                    for (File file : files) {
+//                        if (file.isFile()) {
+//                            if (file.getName().endsWith(".class") && !isExcluded(file)) {
+//                                FileInputStream fileInputStream=null;
+//                                byte[] bytes = new byte[(int) file.length()];
+//                                fileInputStream = new FileInputStream(file);
+//                                fileInputStream.read(bytes);
+//                                fileInputStream.close();
+//                                //Class c = this.getClass(bytes);
+//                                Class c = this.loadClass(file.getName().replace(".class", ""));
+//                                if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
+//                                    this.resolveClass(c);
+//                                    classes.add(c);
+//                                    System.out.println("CLASS: "+c.getName() + "    SUPER: " +c.getSuperclass().getName());
+//                                }
+//                            }
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    System.out.println("Could not load files in classpath: "+cp);
+//                }
+//            }
+        	}
     }
     
-    private boolean isExcluded(File file) {
+    private boolean isExcluded(String s) {
     	boolean matched = false;
     	String[] excluded = new String[] {
+    		"VD.class",
     		"Tank.class",
     		"TankInterface.class",
     		"Entity.class",
@@ -167,10 +191,10 @@ public class Loader extends URLClassLoader {
     		"Keyboard.class",
     		"VisibleEntity.class",
     		"VisibleEntity$Side.class",
-    		"VisibleEntity$Type.class"    		
-      	};
+    		"VisibleEntity$Type.class"
+    	};
     	for (String name : excluded) {
-    		if (name.compareTo(file.getName()) == 0) {
+    		if (name.compareTo(s) == 0) {
     			matched = true;
     		}
     	}

@@ -16,16 +16,16 @@ public class Room {
     public static BufferedImage hp4;
     static {
 	try {
-	    spriteMap = ImageIO.read(new File("./media/lot.png")); //Frames to animate
+	    spriteMap = ImageIO.read(VD.class.getResourceAsStream("/media/lot.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
 	try {
-	    hp = ImageIO.read(new File("./media/side.png")); //Frames to animate
-	    hp1 = ImageIO.read(new File("./media/side.png")); //Frames to animate
-	    hp2 = ImageIO.read(new File("./media/side.png")); //Frames to animate
-	    hp3 = ImageIO.read(new File("./media/side.png")); //Frames to animate
-	    hp4 = ImageIO.read(new File("./media/side.png")); //Frames to animate
+	    hp = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); //Frames to animate
+	    hp1 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); //Frames to animate
+	    hp2 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); //Frames to animate
+	    hp3 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); //Frames to animate
+	    hp4 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

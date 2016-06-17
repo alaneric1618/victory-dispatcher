@@ -15,7 +15,7 @@ public class TankJason extends Tank implements TankInterface {
     {
         name = "\"Jason\" Burtone";
 	try {
-	    icon = ImageIO.read(new File("./media/burtone.png")); //Frames to animate
+	    icon = ImageIO.read(VD.class.getResourceAsStream("/media/burtone.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

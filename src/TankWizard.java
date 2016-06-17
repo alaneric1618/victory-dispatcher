@@ -7,7 +7,7 @@ public class TankWizard extends Tank implements TankInterface {
     {
         name = "The Wizard of ECS";
 	try {
-	    icon = ImageIO.read(new File("./media/wizard.png")); //Frames to animate
+	    icon = ImageIO.read(VD.class.getResourceAsStream("/media/wizard.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}

@@ -39,7 +39,7 @@ public class Tank extends Entity implements TankInterface {
     protected BufferedImage icon;
     {
 	try {
-	    icon = ImageIO.read(new File("./media/unknown.png")); //Frames to animate
+	    icon = ImageIO.read(VD.class.getResourceAsStream("/media/unknown.png")); //Frames to animate
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
