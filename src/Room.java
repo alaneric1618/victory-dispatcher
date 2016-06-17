@@ -292,18 +292,19 @@ public class Room {
 	}
         //Draw background
         g.setColor(Color.black);
+        
 	g.setClip(new Rectangle(0, 0, vd.WIDTH, vd.HEIGHT));
         //System.out.println(spriteMap);
 	g.drawImage(spriteMap, new AffineTransform(0.615f, 0f , 0f , 0.42f, -250.0, -180.0), null);
         //Draw blocks
         for (Block block : blocks) {
-            block.draw(g);
+   			block.draw(g);
         }
         //draw pause
         if (vd.paused) {
             
         }
-	g.setColor(new Color(55, 55, 55));
+        g.setColor(new Color(55, 55, 55));
         g.drawLine(0, vd.HEIGHT-64, vd.WIDTH, vd.HEIGHT-64);
         g.setColor(new Color(125, 125, 125));
         g.fillRect(0, vd.HEIGHT-64, vd.WIDTH, 128);

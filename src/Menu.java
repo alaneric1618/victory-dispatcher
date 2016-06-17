@@ -69,7 +69,7 @@ public class Menu {
         } else {
         	menus.add(black);
         	menus.add(mcleod);
-        	menus.add(opener);
+        	//menus.add(opener);
         }
         menus.add(mainmenu);
         return menus;
