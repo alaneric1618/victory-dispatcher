@@ -15,7 +15,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.jar.JarFile;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -62,7 +61,7 @@ public class Editor extends JFrame {
         + "\t\t\t//icon = ImageIO.read(new File(\"./ai/<INSERT-YOUR-FILENAME>\"));" + "\n"
         + "\t\t\t// OR" + "\n"
         + "\t\t\t//DRAW CUSTOM ICON" + "\n"
-        + "\t\t\t//Graphics2D g = icon.getGraphics();" + "\n"
+        + "\t\t\t//Graphics g = icon.getGraphics();" + "\n"
         + "\t\t} catch(Exception e) {" + "\n"
         + "\t\t\t" + "\n"
         + "\t\t}" + "\n"
@@ -577,7 +576,6 @@ public class Editor extends JFrame {
             String name = Util.getClassName(textArea.getText());
             if (!Editor.isNameAllowed(name)) {
                 JOptionPane.showMessageDialog(null, "Tank filename/classname already taken. Please choose another one.", "Error", JOptionPane.ERROR_MESSAGE);
-                System.out.println();
                 return;
             }
             boolean wasRunFromJar = Util.wasRunFromJar();
@@ -590,8 +588,14 @@ public class Editor extends JFrame {
             String classPathString = " -cp "+bin+";./ai";
             saveAction.actionPerformed(e);
             String javacString = javacField.getText().replaceAll("^C:", "c:");
+            if (javacString == null || javacString.trim().isEmpty()) {
+            	JOptionPane.showMessageDialog(null, "Please choose a java compiler (javac) program before attempting to compile.", "Error", JOptionPane.ERROR_MESSAGE);
+            	ChooseAction choice = new ChooseAction();
+            	choice.actionPerformed(null);
+            	return;
+            }
             String aiPath = Util.getAIDirectory().getAbsolutePath();			
-            String outputDirectory = " -d ./ai ";
+            String outputDirectory = " -d ./ai";
             String directorySeperator;
             if (Util.getOS() == Util.OS.WIN) {
                 directorySeperator = "\\";
