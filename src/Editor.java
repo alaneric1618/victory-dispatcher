@@ -187,16 +187,6 @@ public class Editor extends JFrame {
     fileMenu.add(fileSave);
     // fileMenu.add(fileSaveAs);
 
-    // JMenu editMenu = new JMenu("Edit");
-    // JMenuItem editCopy = new JMenuItem("Copy");
-    // JMenuItem editCut = new JMenuItem("Cut");
-    // JMenuItem editPaste = new JMenuItem("Paste");
-    // JMenuItem editClear = new JMenuItem("Clear");
-    // editMenu.add(editCopy);
-    // editMenu.add(editCut);
-    // editMenu.add(editPaste);
-    // editMenu.add(editClear);
-
     JMenu viewMenu = new JMenu("View");
     JMenuItem zoomIn = new JMenuItem("Zoom In");
     JMenuItem zoomOut = new JMenuItem("Zoom Out");
@@ -358,37 +348,26 @@ public class Editor extends JFrame {
         return false;
       }
     };
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "draw3DRect(x, y, w, h, raised?)",
-        "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider,
-        "drawArc(x, y, w, h, startAngle, arcAngle)", ""));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "draw3DRect(x, y, w, h, raised?)", "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawArc(x, y, w, h, startAngle, arcAngle)", ""));
     gProvider.addCompletion(new FunctionCompletion(gProvider, "drawLine(x1, y1, x2, y2)", "void"));
     gProvider.addCompletion(new FunctionCompletion(gProvider, "drawOval(x, y w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolygon(int[] xs, int[] ys, n)",
-        "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider,
-        "drawPolyline(int[] xs, int[] ys, n)", "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolygon(int[] xs, int[] ys, n)", "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolyline(int[] xs, int[] ys, n)", "void"));
     gProvider.addCompletion(new FunctionCompletion(gProvider, "drawRect(x, y, w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider,
-        "drawRoundRect(x, y, w, h, arcW, arcH)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fill3DRect(x, y, w, h, raised?)",
-        "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider,
-        "fillArc(x, y, w, h, startAngle, arcAngle)", ""));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawRoundRect(x, y, w, h, arcW, arcH)", "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "fill3DRect(x, y, w, h, raised?)", "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillArc(x, y, w, h, startAngle, arcAngle)", ""));
     gProvider.addCompletion(new FunctionCompletion(gProvider, "fillOval(x, y w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillPolygon(int[] xs, int[] ys, n)",
-        "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillPolygon(int[] xs, int[] ys, n)", "void"));
     gProvider.addCompletion(new FunctionCompletion(gProvider, "fillRect(x, y, w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider,
-        "fillRoundRect(x, y, w, h, arcW, arcH)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "setColor(new Color(r, g, b))",
-        "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillRoundRect(x, y, w, h, arcW, arcH)", "void"));
+    gProvider.addCompletion(new FunctionCompletion(gProvider, "setColor(new Color(r, g, b))", "void"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getGraphics()", "Graphics"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getWidth()", "int"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getHeight()", "int"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getRGB(x, y)", "int"));
-    iconProvider
-        .addCompletion(new FunctionCompletion(iconProvider, ".setRGB(x, y, rgbInt)", "void"));
+    iconProvider.addCompletion(new FunctionCompletion(iconProvider, ".setRGB(x, y, rgbInt)", "void"));
     VariableCompletion var = null;
     ArrayList<Parameter> list = null;
     var = new VariableCompletion(entProvider, "type", "VisibleEntity.Type");
@@ -409,18 +388,12 @@ public class Editor extends JFrame {
     var = new VariableCompletion(entProvider, "turretDir", "double");
     var.setShortDescription("Only applicable if type is TANK. The direction of the tanks turret. The angle starts from the positive x-axis and continues clockwise.");
     entProvider.addCompletion(var);
-    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.GOOD",
-        "VisibleEntity.Side.GOOD", ""));
-    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.BAD",
-        "VisibleEntity.Side.BAD", ""));
-    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.NEUTRAL",
-        "VisibleEntity.Side.NEUTRAL", ""));
-    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.TANK",
-        "VisibleEntity.Type.TANK"));
-    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BLOCK",
-        "VisibleEntity.Type.BLOCK", ""));
-    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BULLET",
-        "VisibleEntity.Type.BULLET", ""));
+    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.GOOD","VisibleEntity.Side.GOOD", ""));
+    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.BAD", "VisibleEntity.Side.BAD", ""));
+    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Side.NEUTRAL", "VisibleEntity.Side.NEUTRAL", ""));
+    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.TANK", "VisibleEntity.Type.TANK"));
+    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BLOCK", "VisibleEntity.Type.BLOCK", ""));
+    statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BULLET", "VisibleEntity.Type.BULLET", ""));
     FunctionCompletion fun = null;
     fun = new FunctionCompletion(thisProvider, "talk", "void");
     list = new ArrayList<Parameter>();
@@ -485,9 +458,7 @@ public class Editor extends JFrame {
     fun.setReturnValueDescription("Return value description");
     fun.setShortDescription("Fires a bullet if the cannon is reloaded.");
     thisProvider.addCompletion(fun);
-    ShorthandCompletion sh =
-        new ShorthandCompletion(thisProvider, "for",
-            "for (VisibleEntity ent : this.getVisibleEntities()) {", " - Code Template");
+    ShorthandCompletion sh = new ShorthandCompletion(thisProvider, "for", "for (VisibleEntity ent : this.getVisibleEntities()) {", " - Code Template");
     // sh.setShortDescription("Code Template - Loop through all the objects your tank can see at this moment in time.");
     sh.setSummary("Loop through all the objects your tank can see at this moment in time.");
     thisProvider.addCompletion(sh);

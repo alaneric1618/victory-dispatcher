@@ -11,7 +11,8 @@ public class VD extends JFrame {
   public GamePanel runningGamePanel;
   public VD frame;
 
-  {
+  static {
+    System.out.println("Classpath Setup.");
     // ADD TO CLASSPATH
     String classpath = System.getProperty("java.class.path");
     if (Util.getOS() == Util.OS.WIN) {
@@ -31,7 +32,7 @@ public class VD extends JFrame {
   public long timePreviousFrame = System.currentTimeMillis();
   public long timeCurrentFrame = System.currentTimeMillis();
   public long timeStarted = System.currentTimeMillis();
-  public long timeInterval = 40L; // 25 fps
+  public long timeInterval = 33L; // 30 fps
   public Room currentRoom;
 
   int currentButton = 0;
@@ -292,6 +293,7 @@ public class VD extends JFrame {
 
 
   public static void main(String[] args) {
+    System.out.println("Game Started");
     VD game = new VD();
   }
 

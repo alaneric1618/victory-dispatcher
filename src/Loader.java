@@ -114,6 +114,7 @@ public class Loader extends URLClassLoader {
                   is.close();
                   Class c = this.getClass(bytes);
                   this.resolveClass(c);
+                  System.out.println("Loaded Class: "+c.getName() + "    Classloader: " + c.getClassLoader() + "     Super: " + c.getSuperclass() + "    Superloader: " +c.getSuperclass().getClassLoader());
                   classes.add(c);
                 }
               }
@@ -133,6 +134,7 @@ public class Loader extends URLClassLoader {
                   Class c = this.getClass(bytes);
                   if (c != null && c.getSuperclass().getName().compareTo("Tank") == 0) {
                     this.resolveClass(c);
+                    System.out.println("Loaded Class: "+c.getName() + "    Classloader: " + c.getClassLoader() + "     Super: " + c.getSuperclass() + "    Superloader: " +c.getSuperclass().getClassLoader());
                     classes.add(c);
                   }
                 }

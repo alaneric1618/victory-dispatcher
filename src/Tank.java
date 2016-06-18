@@ -39,11 +39,10 @@ public class Tank extends Entity implements TankInterface {
     }
   }
 
-
+  ArrayList<Integer> updateTimes = new ArrayList<Integer>();
   private Tank.Player player;
   private Room room;
   private Color color = Color.white;
-  private float cannonCooldown;
   private Polygon treadSight;
   private Polygon turretSight;
   private double tread;
@@ -72,7 +71,9 @@ public class Tank extends Entity implements TankInterface {
   private Point point = new Point(0, 0);
 
   public Tank() {
-    this.player = player;
+    for (int i = 0; i < 10; i++) {
+      updateTimes.add(5); 
+    }
     treadSight = new Polygon();
     turretSight = new Polygon();
     float cannonCooldown = -1;
@@ -90,7 +91,7 @@ public class Tank extends Entity implements TankInterface {
   public Tank.Player getPlayer() {
     return player;
   }
-
+  
   final public void setRoom(Room room) {
     player = room.getNewPlayerEnum();
     switch (player) {
@@ -138,7 +139,6 @@ public class Tank extends Entity implements TankInterface {
   final public void update(float dt) {
     super.update(dt);
     if (room != null) {
-      loop(dt);
       time += dt;
       timeSinceTalk += dt;
       bulletTime += dt;
@@ -185,7 +185,7 @@ public class Tank extends Entity implements TankInterface {
       boundingBox = new Rectangle((int) x + 16, (int) y + 16, 32, 32);
       // Tank Rotation
       double treadDiff = Math.abs(tread - desiredTread);
-      double treadRate = treadDiff / 2.0;
+      double treadRate = treadDiff / 2;
       if (treadDiff > 1.0) {
         if (treadDiff < 180) {
           if (tread < desiredTread)
@@ -245,8 +245,32 @@ public class Tank extends Entity implements TankInterface {
       desiredTurret = ((desiredTurret % 360) + 360) % 360;
       // Updates
       updateSight();
+      long initialTime = System.currentTimeMillis();
       loop(dt);
+      long finalTime = System.currentTimeMillis();
+      long delta = finalTime - initialTime;
+      synchronized (updateTimes) {
+        updateTimes.remove(updateTimes.size()-1);
+        updateTimes.add(new Integer((int)delta));
+      }
     }
+  }
+  
+  final public double getAverageUpdateTimes() {
+    double sum = 0;
+    double count = 0;
+    synchronized (updateTimes) {
+      for (Integer i : updateTimes) {
+        sum += i.doubleValue();
+        count++;
+      }
+    }
+    if (count > 0) {
+      return sum/count;
+    } else {
+      return 0.0;
+    }
+    
   }
 
   final private void updateSight() {
@@ -324,7 +348,7 @@ public class Tank extends Entity implements TankInterface {
     }
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     if (timeSinceTalk < 4000) {
-      Text text = new Text(talkPhrase, 0.1);
+      Text text = new Text(talkPhrase, 0.2);
       text.draw(g, (int) x, (int) y);
     }
   }
@@ -383,11 +407,11 @@ public class Tank extends Entity implements TankInterface {
   }
 
   final protected void forward() {
-    speed = 3.0;
+    speed = 2.0;
   }
 
   final protected void backward() {
-    speed = -2.0;
+    speed = -1.5;
   }
 
   final protected void turnTread(double deg, boolean isAbsolute) {

@@ -4,9 +4,6 @@ import javax.imageio.ImageIO;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Graphics2D;
 
@@ -20,18 +17,7 @@ public class Entity {
       spriteMap = ImageIO.read(VD.class.getResourceAsStream("/media/vd_master_sheet.png")); // Frames
                                                                                             // to
                                                                                             // animate
-      GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      GraphicsDevice device = env.getDefaultScreenDevice();
-      GraphicsConfiguration config = device.getDefaultConfiguration();
-      BufferedImage buffy =
-          config.createCompatibleImage(spriteMap.getWidth(), spriteMap.getHeight(),
-              spriteMap.getTransparency());
-      for (int x = 0; x < spriteMap.getWidth(); x++) {
-        for (int y = 0; y < spriteMap.getHeight(); y++) {
-          buffy.setRGB(x, y, spriteMap.getRGB(x, y));
-        }
-      }
-      spriteMap = buffy;
+      spriteMap = Util.convertImageToNative(spriteMap);
     } catch (Exception e) {
       e.printStackTrace();
     }

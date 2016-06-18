@@ -1,10 +1,13 @@
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.jar.JarFile;
 
@@ -29,7 +32,7 @@ public class Util {
       return s;
     }
   }
-
+  
 
   private static Util.OS os = Util.OS.UNKNOWN;
   static {
@@ -45,9 +48,9 @@ public class Util {
       os = Util.OS.UNKNOWN;
     }
   }
-  public static Loader loader;
-  static {
-    loader = new Loader();
+
+  public static Loader getNewLoader() {
+    return new Loader();
   }
 
   public static Util.OS getOS() {
@@ -67,13 +70,24 @@ public class Util {
 
   public static void restartApplication() throws Exception {
     try {
-      loader.close();
       System.out.println("Original DynamicClassLoader Closed Successfully");
     } catch (Throwable t) {
       t.printStackTrace();
     }
-    loader = new Loader();
     VD game = new VD();
+  }
+  
+  public static BufferedImage convertImageToNative(BufferedImage image) {
+    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = env.getDefaultScreenDevice();
+    GraphicsConfiguration config = device.getDefaultConfiguration();
+    BufferedImage buffy = config.createCompatibleImage(image.getWidth(), image.getHeight(), image.getTransparency());
+    for (int x = 0; x < image.getWidth(); x++) {
+      for (int y = 0; y < image.getHeight(); y++) {
+        buffy.setRGB(x, y, image.getRGB(x, y));
+      }
+    }
+    return buffy;
   }
 
   public static void setProperty(String propertyName, String propertyValue) {

@@ -16,6 +16,7 @@ public class Room {
   static {
     try {
       spriteMap = ImageIO.read(VD.class.getResourceAsStream("/media/lot.png")); // Frames to animate
+      spriteMap = Util.convertImageToNative(spriteMap);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -25,6 +26,11 @@ public class Room {
       hp2 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); // Frames to animate
       hp3 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); // Frames to animate
       hp4 = ImageIO.read(VD.class.getResourceAsStream("/media/side.png")); // Frames to animate
+      hp =  Util.convertImageToNative(hp);
+      hp1 = Util.convertImageToNative(hp1);
+      hp2 = Util.convertImageToNative(hp2);
+      hp3 = Util.convertImageToNative(hp3);
+      hp4 = Util.convertImageToNative(hp4);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -50,6 +56,7 @@ public class Room {
   ArrayList<Block> blocks = new ArrayList<Block>();
   ArrayList<Bullet> bullets = new ArrayList<Bullet>();
   ArrayList<Decal> decals = new ArrayList<Decal>();
+  ArrayList<Text> texts = new ArrayList<Text>();
   double shownHP1 = 70.0;
   double shownHP2 = 70.0;
   double shownHP3 = 70.0;
@@ -114,12 +121,16 @@ public class Room {
         // collision detect bullet with screen
         if (box.x < 8 || box.x > vd.WIDTH - 10 || box.y < 0 || box.y > vd.HEIGHT - 72) {
           toRemoveBullets.add(bullet);
-          decals.add(new Decal(Decal.Type.FIRE, box.x - 32, box.y - 32));
+          synchronized (decals) {
+            decals.add(new Decal(Decal.Type.FIRE, box.x - 32, box.y - 32));
+          }
           AudioPlayer.EXPLOSION.play();
           for (int i = 0; i < 20; i++) {
             int xr = (int) (10 * Math.random()) + 11;
             int yr = (int) (10 * Math.random()) + 11;
-            decals.add(new Decal(Decal.Type.SMOKE, box.x - 32 + xr, box.y - 32 + yr, bullet.angle));
+            synchronized (decals) {
+              decals.add(new Decal(Decal.Type.SMOKE, box.x - 32 + xr, box.y - 32 + yr, bullet.angle));
+            }
           }
         }
         // collision detect bullet w/ blocks
@@ -127,13 +138,16 @@ public class Room {
           if (bullet.intersects(block)) {
             toRemoveBullets.add(bullet);
             block.destroy();
-            decals.add(new Decal(Decal.Type.FIRE, box.x - 32, box.y - 32));
+            synchronized (decals) {
+              decals.add(new Decal(Decal.Type.FIRE, box.x - 32, box.y - 32));
+            }
             AudioPlayer.EXPLOSION.play();
             for (int i = 0; i < 20; i++) {
               int xr = (int) (10 * Math.random()) + 11;
               int yr = (int) (10 * Math.random()) + 11;
-              decals
-                  .add(new Decal(Decal.Type.SMOKE, box.x - 32 + xr, box.y - 32 + yr, bullet.angle));
+              synchronized (decals) {
+                decals.add(new Decal(Decal.Type.SMOKE, box.x - 32 + xr, box.y - 32 + yr, bullet.angle));
+              }
             }
           }
         }
@@ -148,14 +162,19 @@ public class Room {
               for (int i = 0; i < 20; i++) {
                 int xr = (int) (10 * Math.random()) + 11;
                 int yr = (int) (10 * Math.random()) + 11;
-                decals.add(new Decal(Decal.Type.SMOKE, box.x - 32 + xr, box.y - 32 + yr,
-                    bullet.angle));
+                synchronized (decals) {
+                  decals.add(new Decal(Decal.Type.SMOKE, box.x - 32 + xr, box.y - 32 + yr, bullet.angle));
+                }
                 if (i % 6 == 0) {
-                  decals.add(new Decal(Decal.Type.DEBRIS, box.x - 32, box.y - 32, bullet.angle));
+                  synchronized (decals) {
+                    decals.add(new Decal(Decal.Type.DEBRIS, box.x - 32, box.y - 32, bullet.angle));
+                  }
                 }
               }
               AudioPlayer.EXPLOSION.play();
-              decals.add(new Decal(Decal.Type.FIRE, box.x - 32, box.y - 32));
+              synchronized (decals) {
+                decals.add(new Decal(Decal.Type.FIRE, box.x - 32, box.y - 32));
+              }
               Tank.Player player = tank.getPlayer();
               tank.onHit();
               double hp = (double) hps.get(player);
@@ -167,26 +186,18 @@ public class Room {
               if (newHP < 0.0) { // dead
                 playersToRemove.add(player);
                 for (int i = 0; i < 20; i++) {
-                  decals.add(new Decal(Decal.Type.DEBRIS, box.x - 32, box.y - 32, bullet.angle));
+                  synchronized (decals) {
+                    decals.add(new Decal(Decal.Type.DEBRIS, box.x - 32, box.y - 32, bullet.angle));
+                  }
                 }
-                decals.add(new Decal(Decal.Type.BLAST, box.x - 32, box.y - 32, bullet.angle));
+                synchronized (decals) {
+                  decals.add(new Decal(Decal.Type.BLAST, box.x - 32, box.y - 32, bullet.angle));
+                }
               }
             }
             for (Tank.Player player : playersToRemove) {
               tanks.remove(player);
-              // search winner;
-              if (getPlayerCount() <= 1) {
-                isWinner = true;
-                Tank.Player winnerVar = null;
-                for (Tank.Player p : tanks.keySet()) {
-                  Tank potentialTank = tanks.get(p);
-                  if (potentialTank != null) {
-                    // winner found
-                    winnerVar = p;
-                  }
-                }
-                winner = winnerVar;
-              }
+              this.checkForWinner();
             }
 
           }
@@ -208,11 +219,41 @@ public class Room {
       }
     }
     synchronized (tanks) {
+      ArrayList<Tank.Player> playersToRemove = new ArrayList<Tank.Player>();
       for (Tank tank : tanks.values()) {
         if (tank == null)
           continue;
         tank.update(dt);
+        if (tank.getAverageUpdateTimes() > 7) {
+          synchronized (texts) {
+            Text text = new Text("Too Long", 0.2);
+            text.xStorage = (tank.getBoundingBox().x);
+            text.yStorage = (tank.getBoundingBox().y);
+            //texts.add(text);
+          }
+          playersToRemove.add(tank.getPlayer());
+        }
       }
+      for (Tank.Player player : playersToRemove) {
+        tanks.remove(player);
+        this.checkForWinner();
+      }
+    }
+  }
+  
+  public void checkForWinner() {
+    // search winner;
+    if (getPlayerCount() <= 1) {
+      isWinner = true;
+      Tank.Player winnerVar = null;
+      for (Tank.Player p : tanks.keySet()) {
+        Tank potentialTank = tanks.get(p);
+        if (potentialTank != null) {
+          // winner found
+          winnerVar = p;
+        }
+      }
+      winner = winnerVar;
     }
   }
 
@@ -322,11 +363,15 @@ public class Room {
         tank.draw(g);
       }
     }
-    for (Bullet bullet : bullets) {
-      bullet.draw(g);
+    synchronized (bullets) {
+      for (Bullet bullet : bullets) {
+        bullet.draw(g);
+      }
     }
-    for (Decal decal : decals) {
-      decal.draw(g);
+    synchronized (decals) {
+      for (Decal decal : decals) {
+        decal.draw(g);
+      }
     }
     // HUD
     for (Tank.Player player : hps.keySet()) {
@@ -393,10 +438,12 @@ public class Room {
     if (isWinner && !vd.paused) {
       winnerTime += 1.0;
       double prob = Math.random();
-      if (prob < 0.1) {
+      if (prob < 0.05) {
         int xc = (int) (640 * Math.random());
         int yc = (int) (480 * Math.random());
-        decals.add(new Decal(Decal.Type.BLAST, xc - 32, yc - 32, 0.0));
+        synchronized (decals) {
+          decals.add(new Decal(Decal.Type.BLAST, xc - 32, yc - 32, 0.0));
+        }
       }
     }
     double fontSize = winnerTime;
@@ -411,6 +458,12 @@ public class Room {
     int x = (int) (30 * Math.cos(winnerTime / 50.0));
     int y = (int) (10 * Math.cos(winnerTime / 15.0));
     g.drawString("WINNER", (int) (305 - 2 * fontSize) + x, 235 + y);
+    // Extra Text
+    synchronized (texts) {
+      for (Text text : texts) {
+        text.draw(g, (int)text.xStorage, (int)text.yStorage);
+      }
+    }
   }
 
   public Polygon getSight(Point p, double angle, double fov) {

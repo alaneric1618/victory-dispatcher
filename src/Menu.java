@@ -1,9 +1,7 @@
 import java.util.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
-
 import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.awt.event.*;
@@ -25,6 +23,7 @@ public class Menu {
     try {
       InputStream is = VD.class.getResourceAsStream("/media/mcleod_logo.png");
       logo = ImageIO.read(is);
+      logo = Util.convertImageToNative(logo);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -258,7 +257,10 @@ public class Menu {
     int i2;
     int i3;
     int i4;
-    Loader loader = Util.loader;
+    //Loader loader = Util.loader;
+    //Loader loader = new Loader();
+    //Loader loader = Util.loader;
+    Loader loader = Util.getNewLoader();
     ArrayList<Tank> tanks1 = loader.getTanks();
     ArrayList<Tank> tanks2 = loader.getTanks();
     ArrayList<Tank> tanks3 = loader.getTanks();

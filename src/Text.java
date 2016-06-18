@@ -11,12 +11,16 @@ public class Text extends Entity {
     LEFT, RIGHT, CENTER;
   }
 
+  public double xStorage = 0.0;
+  public double yStorage = 0.0;
   public static BufferedImage textImage;
   public static BufferedImage textImageSelected;
   static {
     try {
       textImage = ImageIO.read(VD.class.getResourceAsStream("/media/text.png"));
+      textImage = Util.convertImageToNative(textImage);
       textImageSelected = ImageIO.read(VD.class.getResourceAsStream("/media/text.png"));
+      textImageSelected = Util.convertImageToNative(textImageSelected);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -110,6 +114,12 @@ public class Text extends Entity {
         ij[0] = 729;
         ij[1] = 0 * 70 + 0;
         ij[2] = 60;
+        ij[3] = 70;
+        break;
+      case '.':
+        ij[0] = 788;
+        ij[1] = 0 * 70 + 0;
+        ij[2] = 39;
         ij[3] = 70;
         break;
       case '0':

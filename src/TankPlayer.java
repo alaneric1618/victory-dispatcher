@@ -52,10 +52,10 @@ public class TankPlayer extends Tank implements TankInterface {
   final private void handleUserControl() {
     boolean[] keys = Keyboard.keys;
     if (keys[KeyEvent.VK_A]) {
-      turnTread(-5.0, false);
+      turnTread(-7.5, false);
     }
     if (keys[KeyEvent.VK_D]) {
-      turnTread(5.0, false);
+      turnTread(7.5, false);
     }
     if (keys[KeyEvent.VK_W]) {
       forward();
