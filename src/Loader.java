@@ -34,7 +34,8 @@ public class Loader extends URLClassLoader {
   }
 
   public Loader() {
-    super(urls, Util.class.getClassLoader());
+    super(urls, VD.class.getClassLoader());
+    //super(urls, Util.class.getClassLoader());
     findClasses();
     getTankClasses();
   }

@@ -145,6 +145,9 @@ public class Tank extends Entity implements TankInterface {
       double testX;
       double testY;
       Rectangle testRect;
+      // Dial Speed to change in time
+      double timeScale = dt/30.0;
+      double speed = this.speed*timeScale;
       // test X and Y
       testX = x + speed * Math.cos(Math.toRadians(tread));
       testY = y + speed * Math.sin(Math.toRadians(tread));
@@ -178,14 +181,14 @@ public class Tank extends Entity implements TankInterface {
       cannonX = turretX + (16 * Math.cos(Math.toRadians(turret)));
       cannonY = turretY + (16 * Math.sin(Math.toRadians(turret)));
       lastSpeed = speed;
-      speed = 0;
+      this.speed = 0;
       turretSize = ((turretSize - 1.0f) / 2.0f) + 1.0f;
       turretPull = ((turretPull - 1.0f) / 1.3f) + 1.0f;
       boundingSprite = new Rectangle((int) x, (int) y, 64, 64);
       boundingBox = new Rectangle((int) x + 16, (int) y + 16, 32, 32);
       // Tank Rotation
       double treadDiff = Math.abs(tread - desiredTread);
-      double treadRate = treadDiff / 2;
+      double treadRate = timeScale*(treadDiff / 2);
       if (treadDiff > 1.0) {
         if (treadDiff < 180) {
           if (tread < desiredTread)
@@ -222,7 +225,7 @@ public class Tank extends Entity implements TankInterface {
       if (isAiming) {
         turretDivisor = turretDivisor / 4; // was 2
       }
-      double turretRate = turretDiff / turretDivisor;
+      double turretRate = timeScale*(turretDiff / turretDivisor);
       if (turretDiff > 1.0) {
         if (turretDiff < 180) {
           if (turret < desiredTurret)
@@ -278,7 +281,7 @@ public class Tank extends Entity implements TankInterface {
       treadSight.reset();
       turretSight.reset();
       treadSight = room.getSight(new Point((int) centerX, (int) centerY), tread, 35);
-      turretSight = room.getSight(new Point((int) turretX, (int) turretY), turret, 10);
+      turretSight = room.getSight(new Point((int) turretX, (int) turretY), turret, 25);
     }
   }
 
@@ -364,15 +367,15 @@ public class Tank extends Entity implements TankInterface {
 
   // implementable start
   public void onCreation() {
-
+    System.out.println("Error, ["+this.getName()+"]s onCreation method is without proper override.");
   }
 
   public void onHit() {
-
+    System.out.println("Error, ["+this.getName()+"]s onHit method is without proper override.");
   }
 
   public void loop(float dt) {
-
+    System.out.println("Error, ["+this.getName()+"]s loop method is without proper override.");
   }
 
   public BufferedImage getIcon() {

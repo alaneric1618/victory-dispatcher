@@ -414,6 +414,10 @@ public class Editor extends JFrame {
     fun.setReturnValueDescription("A HashSet of Visible Entities. Use the \"for-in\" construct to iterate through. Any variable with the name \"ent\" will auto-complete for VisibleEntity.");
     fun.setShortDescription("This provides a list of every object your tank can currently see in it's line of sight from all vision cones. Press 'h' in game to see vision cones.");
     thisProvider.addCompletion(fun);
+    fun = new FunctionCompletion(thisProvider, "getBoundingBox", "Rectangle");
+    fun.setReturnValueDescription("The rectangle representing this objects hitbox.");
+    fun.setShortDescription("This is helpful for knowing where your tank is at in the world.");
+    thisProvider.addCompletion(fun);
     fun = new FunctionCompletion(thisProvider, "forward", "void");
     fun.setReturnValueDescription("");
     fun.setShortDescription("Move your tank forward at a fixed speed.");

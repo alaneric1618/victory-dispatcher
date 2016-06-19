@@ -10,20 +10,22 @@ public class VisibleEntity {
     GOOD, BAD, NEUTRAL
   }
 
-  public final Type type;
-  public final Side side;
-  public final Rectangle rect;
-  public final double dir;
-  public final double turretDir;
-  public final double speed;
+  public Type type;
+  public Side side;
+  public Rectangle rect;
+  public double dir;
+  public double turretDir;
+  public double speed;
+  public boolean isDestroyed;
 
   public VisibleEntity(Type type, Side side, Rectangle rect, double dir, double turretDir,
-      double speed) {
+      double speed, boolean isDestoryed) {
     this.type = type;
     this.side = side;
     this.rect = rect;
     this.dir = dir;
     this.turretDir = turretDir;
     this.speed = speed;
+    this.isDestroyed = false;
   }
 }

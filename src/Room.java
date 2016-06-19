@@ -70,6 +70,9 @@ public class Room {
   public Room(VD vd, Tank... tanks) {
     this.vd = vd;
     for (Tank tank : tanks) {
+      if (tank != null) {
+        System.out.println(tank.getName());
+      }
       add(tank);
     }
     for (int i = 2; i < 9; i++) {
@@ -536,27 +539,55 @@ public class Room {
         Rectangle box = tank.getBoundingBox();
         if (poly1.intersects(box) || poly2.intersects(box)) {
           VisibleEntity.Type type = VisibleEntity.Type.TANK;
-          VisibleEntity.Side side = VisibleEntity.Side.BAD;
+          VisibleEntity.Side side;
+          if (tank.getPlayer() == forTank.getPlayer()) {
+            side = VisibleEntity.Side.GOOD;
+          } else {
+            side = VisibleEntity.Side.BAD;
+          }
           Rectangle rect = box;
           double dir = tank.getDir();
           double turretDir = tank.getTurretDir();
           double speed = tank.getSpeed();
-          VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
+          VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed, false);
           ents.add(ent);
         }
       }
     }
-    for (Block block : blocks) {
-      Rectangle box = block.getBoundingBox();
-      if (poly1.intersects(box) || poly2.intersects(box)) {
-        VisibleEntity.Type type = VisibleEntity.Type.BLOCK;
-        VisibleEntity.Side side = VisibleEntity.Side.NEUTRAL;
-        Rectangle rect = box;
-        double dir = 0.0;
-        double turretDir = 0.0;
-        double speed = 0.0;
-        VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed);
-        ents.add(ent);
+    synchronized (blocks) {
+      for (Block block : blocks) {
+        Rectangle box = block.getBoundingBox();
+        if ((poly1.intersects(box) || poly2.intersects(box)) && !block.isDestroyed()) {
+          VisibleEntity.Type type = VisibleEntity.Type.BLOCK;
+          VisibleEntity.Side side = VisibleEntity.Side.NEUTRAL;
+          Rectangle rect = box;
+          double dir = 0.0;
+          double turretDir = 0.0;
+          double speed = 0.0;
+          boolean isDestroyed = block.isDestroyed();
+          VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed, isDestroyed);
+          ents.add(ent);
+        }
+      }
+    }
+    synchronized (bullets) {
+      for (Bullet bullet : bullets) {
+        Rectangle box = bullet.getBoundingBox();
+        if (poly1.intersects(box) || poly2.intersects(box)) {
+          VisibleEntity.Type type = VisibleEntity.Type.BULLET;
+          VisibleEntity.Side side;
+          if (bullet.getPlayer() == forTank.getPlayer()) {
+            side = VisibleEntity.Side.GOOD;
+          } else {
+            side = VisibleEntity.Side.BAD;
+          }
+          Rectangle rect = box;
+          double dir = bullet.angle;
+          double turretDir = 0.0;
+          double speed = bullet.getSpeed();
+          VisibleEntity ent = new VisibleEntity(type, side, rect, dir, turretDir, speed, false);
+          ents.add(ent);
+        }
       }
     }
     return ents;
