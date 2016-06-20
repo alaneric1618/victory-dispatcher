@@ -272,7 +272,7 @@ public class Menu {
     ArrayList<Particle> particles = new ArrayList<Particle>();
 
     final private void handleUserControl() {
-      if (Keyboard.keys[KeyEvent.VK_UP]) {
+      if (Keyboard.keys[KeyEvent.VK_UP] || Keyboard.keys[KeyEvent.VK_W]) {
         if (AudioPlayer.SELECT_LOW1.isPlaying()) {
           AudioPlayer.SELECT_LOW1.stop();
           AudioPlayer.SELECT_LOW2.play();
@@ -297,8 +297,9 @@ public class Menu {
           i4 = i4 % (tanks4.size());
         }
         Keyboard.keys[KeyEvent.VK_UP] = false;
+        Keyboard.keys[KeyEvent.VK_W] = false;
       }
-      if (Keyboard.keys[KeyEvent.VK_DOWN]) {
+      if (Keyboard.keys[KeyEvent.VK_DOWN] || Keyboard.keys[KeyEvent.VK_S]) {
         if (AudioPlayer.SELECT_LOW1.isPlaying()) {
           AudioPlayer.SELECT_LOW1.stop();
           AudioPlayer.SELECT_LOW2.play();
@@ -331,8 +332,9 @@ public class Menu {
           }
         }
         Keyboard.keys[KeyEvent.VK_DOWN] = false;
+        Keyboard.keys[KeyEvent.VK_S] = false;
       }
-      if (Keyboard.keys[KeyEvent.VK_LEFT]) {
+      if (Keyboard.keys[KeyEvent.VK_LEFT] || Keyboard.keys[KeyEvent.VK_A]) {
         if (AudioPlayer.SELECT_HI1.isPlaying()) {
           AudioPlayer.SELECT_HI1.stop();
           AudioPlayer.SELECT_HI2.play();
@@ -345,8 +347,9 @@ public class Menu {
           selector = 4;
         }
         Keyboard.keys[KeyEvent.VK_LEFT] = false;
+        Keyboard.keys[KeyEvent.VK_A] = false;
       }
-      if (Keyboard.keys[KeyEvent.VK_RIGHT]) {
+      if (Keyboard.keys[KeyEvent.VK_RIGHT] || Keyboard.keys[KeyEvent.VK_D]) {
         if (AudioPlayer.SELECT_HI1.isPlaying()) {
           AudioPlayer.SELECT_HI1.stop();
           AudioPlayer.SELECT_HI2.play();
@@ -359,11 +362,7 @@ public class Menu {
         if (selector == 0)
           selector++;
         Keyboard.keys[KeyEvent.VK_RIGHT] = false;
-      }
-      if (Keyboard.keys[KeyEvent.VK_F2]) {
-        new Editor();
-        menu.vd.dispose();
-        Keyboard.keys[KeyEvent.VK_F2] = false;
+        Keyboard.keys[KeyEvent.VK_D] = false;
       }
       if (selector == 1) {
         if (i1 >= 0 && (i1 < tanks1.size()))

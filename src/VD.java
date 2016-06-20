@@ -69,7 +69,7 @@ public class VD extends JFrame {
   public ArrayList<Entity> openingScreens = menu.getMenus();
 
   public VD() {
-    VD vd = this;
+    final VD vd = this;
     new Thread(new Runnable() {
       @Override
       public void run() {
@@ -158,6 +158,12 @@ public class VD extends JFrame {
   }
 
   final private void handleUserControl() {
+    if (Keyboard.keys[KeyEvent.VK_F2]) {
+        Editor editor = new Editor();
+        editor.setFocusable(true);
+        menu.vd.dispose();
+        Keyboard.keys[KeyEvent.VK_F2] = false;
+    }
     if (Keyboard.keys[KeyEvent.VK_ESCAPE] || Keyboard.keys[KeyEvent.VK_Q]) {
       this.dispose();
     }

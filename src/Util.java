@@ -75,6 +75,7 @@ public class Util {
       t.printStackTrace();
     }
     VD game = new VD();
+    game.setFocusable(true);
   }
   
   public static BufferedImage convertImageToNative(BufferedImage image) {

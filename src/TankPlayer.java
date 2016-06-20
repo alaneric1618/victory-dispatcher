@@ -51,16 +51,16 @@ public class TankPlayer extends Tank implements TankInterface {
 
   final private void handleUserControl() {
     boolean[] keys = Keyboard.keys;
-    if (keys[KeyEvent.VK_A]) {
+    if (keys[KeyEvent.VK_A] || Keyboard.keys[KeyEvent.VK_LEFT]) {
       turnTread(-7.5, false);
     }
-    if (keys[KeyEvent.VK_D]) {
+    if (keys[KeyEvent.VK_D] || Keyboard.keys[KeyEvent.VK_RIGHT]) {
       turnTread(7.5, false);
     }
-    if (keys[KeyEvent.VK_W]) {
+    if (keys[KeyEvent.VK_W] || Keyboard.keys[KeyEvent.VK_UP]) {
       forward();
     }
-    if (keys[KeyEvent.VK_S]) {
+    if (keys[KeyEvent.VK_S] || Keyboard.keys[KeyEvent.VK_DOWN]) {
       backward();
     }
     if (keys[KeyEvent.VK_J]) {

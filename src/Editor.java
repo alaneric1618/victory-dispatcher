@@ -93,7 +93,7 @@ public class Editor extends JFrame {
   ZoomInAction zoomInAction = new ZoomInAction();
   ZoomOutAction zoomOutAction = new ZoomOutAction();
 
-  int fontSize = 14;
+  int fontSize = 20;
 
   TimerTask clearStatusTask = new TimerTask() {
     @Override
@@ -348,28 +348,201 @@ public class Editor extends JFrame {
         return false;
       }
     };
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "draw3DRect(x, y, w, h, raised?)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawArc(x, y, w, h, startAngle, arcAngle)", ""));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawLine(x1, y1, x2, y2)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawOval(x, y w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolygon(int[] xs, int[] ys, n)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawPolyline(int[] xs, int[] ys, n)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawRect(x, y, w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "drawRoundRect(x, y, w, h, arcW, arcH)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fill3DRect(x, y, w, h, raised?)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillArc(x, y, w, h, startAngle, arcAngle)", ""));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillOval(x, y w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillPolygon(int[] xs, int[] ys, n)", "void"));
+    FunctionCompletion fun = null;
+    VariableCompletion var = null;
+    ArrayList<Parameter> list = null;
+    // g start
+    fun = new FunctionCompletion(gProvider, "draw3DRect", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    list.add(new Parameter("boolean", "raised", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawArc", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    list.add(new Parameter("double", "startAngle", true));
+    list.add(new Parameter("double", "arcAngle", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawLine", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x1", false));
+    list.add(new Parameter("int", "y1", true));
+    list.add(new Parameter("int", "x2", false));
+    list.add(new Parameter("int", "y2", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawOval", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawPolygon", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int[]", "xs", false));
+    list.add(new Parameter("int[]", "ys", true));
+    list.add(new Parameter("int", "n", false));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawPolyline", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int[]", "xs", false));
+    list.add(new Parameter("int[]", "ys", true));
+    list.add(new Parameter("int", "n", false));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawRect", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "drawRoundRect", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    list.add(new Parameter("double", "ArcW", true));
+    list.add(new Parameter("double", "ArcH", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "fill3DRect", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    list.add(new Parameter("boolean", "raised", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "fillArc", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    list.add(new Parameter("double", "startAngle", true));
+    list.add(new Parameter("double", "arcAngle", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "fillOval", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "fillPolygon", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int[]", "xs", false));
+    list.add(new Parameter("int[]", "ys", true));
+    list.add(new Parameter("int", "n", false));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
     gProvider.addCompletion(new FunctionCompletion(gProvider, "fillRect(x, y, w, h)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "fillRoundRect(x, y, w, h, arcW, arcH)", "void"));
-    gProvider.addCompletion(new FunctionCompletion(gProvider, "setColor(new Color(r, g, b))", "void"));
+    // g start
+    fun = new FunctionCompletion(gProvider, "fillRect", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "fillRoundRect", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "w", false));
+    list.add(new Parameter("int", "h", true));
+    list.add(new Parameter("double", "ArcW", true));
+    list.add(new Parameter("double", "ArcH", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
+    // g start
+    fun = new FunctionCompletion(gProvider, "setColor(new Color", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "r", false));
+    list.add(new Parameter("int", "g", true));
+    list.add(new Parameter("int", "b", false));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    gProvider.addCompletion(fun);
+    // g end
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getGraphics()", "Graphics"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getWidth()", "int"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getHeight()", "int"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getRGB(x, y)", "int"));
     iconProvider.addCompletion(new FunctionCompletion(iconProvider, ".setRGB(x, y, rgbInt)", "void"));
-    VariableCompletion var = null;
-    ArrayList<Parameter> list = null;
     var = new VariableCompletion(entProvider, "type", "VisibleEntity.Type");
     var.setShortDescription("Can either be BLOCK, BULLET or TANK. Type \"vis\" to auto-complete full type names.");
     entProvider.addCompletion(var);
@@ -394,7 +567,6 @@ public class Editor extends JFrame {
     statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.TANK", "VisibleEntity.Type.TANK"));
     statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BLOCK", "VisibleEntity.Type.BLOCK", ""));
     statProvider.addCompletion(new ShorthandCompletion(statProvider, "VisibleEntity.Type.BULLET", "VisibleEntity.Type.BULLET", ""));
-    FunctionCompletion fun = null;
     fun = new FunctionCompletion(thisProvider, "talk", "void");
     list = new ArrayList<Parameter>();
     list.add(new Parameter("String", "phrase", true));
@@ -479,8 +651,8 @@ public class Editor extends JFrame {
     thisProvider.setParameterizedCompletionParams('(', ", ", ')');
     entProvider.setParameterizedCompletionParams('(', ", ", ')');
     statProvider.setParameterizedCompletionParams('(', ", ", ')');
-    // iconProvider.setParameterizedCompletionParams('', "", '');
-    // gProvider.setParameterizedCompletionParams('', "", '');
+    iconProvider.setParameterizedCompletionParams('(', ", ", ')');
+    gProvider.setParameterizedCompletionParams('(', ", ", ')');
     ac1.setParameterAssistanceEnabled(true);
     ac2.setParameterAssistanceEnabled(true);
     ac3.setParameterAssistanceEnabled(true);
