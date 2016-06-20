@@ -538,11 +538,51 @@ public class Editor extends JFrame {
     fun.setShortDescription(".");
     gProvider.addCompletion(fun);
     // g end
-    iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getGraphics()", "Graphics"));
-    iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getWidth()", "int"));
-    iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getHeight()", "int"));
-    iconProvider.addCompletion(new FunctionCompletion(iconProvider, "getRGB(x, y)", "int"));
-    iconProvider.addCompletion(new FunctionCompletion(iconProvider, ".setRGB(x, y, rgbInt)", "void"));
+    // icon start
+    fun = new FunctionCompletion(iconProvider, "getGraphics", "Graphics");
+    list = new ArrayList<Parameter>();
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    iconProvider.addCompletion(fun);
+    // icon end
+    // icon start
+    fun = new FunctionCompletion(iconProvider, "getWidth", "int");
+    list = new ArrayList<Parameter>();
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    iconProvider.addCompletion(fun);
+    // icon end
+    // icon start
+    fun = new FunctionCompletion(iconProvider, "getHeight", "int");
+    list = new ArrayList<Parameter>();
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    iconProvider.addCompletion(fun);
+    // icon end
+    // icon start
+    fun = new FunctionCompletion(iconProvider, "getRGB", "int");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    iconProvider.addCompletion(fun);
+    // icon end
+    // icon start
+    fun = new FunctionCompletion(iconProvider, "setRGB", "void");
+    list = new ArrayList<Parameter>();
+    list.add(new Parameter("int", "x", false));
+    list.add(new Parameter("int", "y", true));
+    list.add(new Parameter("int", "rgb", true));
+    fun.setParams(list);
+    fun.setReturnValueDescription("");
+    fun.setShortDescription(".");
+    iconProvider.addCompletion(fun);
+    // icon end
     var = new VariableCompletion(entProvider, "type", "VisibleEntity.Type");
     var.setShortDescription("Can either be BLOCK, BULLET or TANK. Type \"vis\" to auto-complete full type names.");
     entProvider.addCompletion(var);
