@@ -8,5 +8,5 @@ for file in `ls ./src`; do
         files=$files" ./src/"$file
     fi
 done
-javac -cp ./bin/ -cp rsyntaxtextarea-2.5.8.jar -sourcepath rsyntaxtextarea-2.5.8.jar -sourcepath autocomplete-2.5.8.jar -d ./bin $files
-java -cp ./rsyntaxtextarea-2.5.8.jar:./autocomplete-2.5.8.jar:./bin/ VD
+javac -cp "./bin/:rsyntaxtextarea-2.5.8.jar:./autocomplete-2.5.8.jar" -sourcepath "rsyntaxtextarea-2.5.8.jar:autocomplete-2.5.8.jar" -d ./bin $files
+java -cp "./rsyntaxtextarea-2.5.8.jar:./autocomplete-2.5.8.jar:./bin/" VD
